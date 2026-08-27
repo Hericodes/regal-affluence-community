@@ -11,6 +11,18 @@ import styled, {
 } from "styled-components";
 
 /* =====================================================
+   BASE URL
+===================================================== */
+
+const BASE_URL =
+  import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
+
+const BASE_PATH =
+  BASE_URL.replace(/\/$/, "");
+
+/* =====================================================
    NAVIGATION
 ===================================================== */
 
@@ -19,37 +31,49 @@ const navigationItems = [
     label: "About",
     href: "#about",
     id: "about",
+    type: "hash",
   },
   {
     label: "Community",
     href: "#community",
     id: "community",
+    type: "hash",
   },
   {
     label: "How It Works",
-    href: "/how-it-works",
+    href: "how-it-works",
     id: "how-it-works",
+    type: "route",
   },
 ] as const;
 
 const DESKTOP_BREAKPOINT = 900;
+
 const HEADER_HEIGHT = 82;
+
 const MOBILE_HEADER_HEIGHT = 72;
 
 /* =====================================================
-   BASE PATH
-   Works with the Vite GitHub Pages base path.
+   ROUTING HELPERS
 ===================================================== */
-
-const BASE_URL = import.meta.env.BASE_URL.endsWith("/")
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
 
 const homeHref = BASE_URL;
 
-const joinHref = `${BASE_URL}join`;
+const joinHref =
+  `${BASE_URL}join`;
 
-const howItWorksHref = `${BASE_URL}how-it-works`;
+const howItWorksHref =
+  `${BASE_URL}how-it-works`;
+
+const isHomePath = () => {
+  const pathname =
+    window.location.pathname;
+
+  return (
+    pathname === BASE_PATH ||
+    pathname === `${BASE_PATH}/`
+  );
+};
 
 /* =====================================================
    ANIMATIONS
@@ -71,23 +95,29 @@ const gradientShift = keyframes`
 
 const shimmer = keyframes`
   0% {
-    transform: translateX(-140%) skewX(-18deg);
+    transform:
+      translateX(-140%)
+      skewX(-18deg);
   }
 
   100% {
-    transform: translateX(220%) skewX(-18deg);
+    transform:
+      translateX(220%)
+      skewX(-18deg);
   }
 `;
 
 const mobileItemReveal = keyframes`
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform:
+      translateY(10px);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform:
+      translateY(0);
   }
 `;
 
@@ -130,36 +160,53 @@ const Navbar = () => {
     let ticking = false;
 
     const updateNavigation = () => {
-      const scrollY = window.scrollY;
+      const scrollY =
+        window.scrollY;
 
-      setScrolled(scrollY > 24);
+      setScrolled(
+        scrollY > 24
+      );
 
-      if (window.location.pathname !== "/") {
+      /*
+       * Only activate section tracking
+       * on the actual homepage.
+       */
+
+      if (!isHomePath()) {
         setActiveSection("");
+
         ticking = false;
+
         return;
       }
 
-      const sections = navigationItems
-        .filter((item) =>
-          item.href.startsWith("#")
-        )
-        .map((item) =>
-          document.getElementById(item.id)
-        )
-        .filter(
-          (
-            section
-          ): section is HTMLElement =>
-            section instanceof HTMLElement
-        );
+      const sections =
+        navigationItems
+          .filter(
+            (item) =>
+              item.type === "hash"
+          )
+          .map((item) =>
+            document.getElementById(
+              item.id
+            )
+          )
+          .filter(
+            (
+              section
+            ): section is HTMLElement =>
+              section instanceof
+              HTMLElement
+          );
 
       if (
         scrollY < 70 ||
         sections.length === 0
       ) {
         setActiveSection("");
+
         ticking = false;
+
         return;
       }
 
@@ -168,20 +215,26 @@ const Navbar = () => {
 
       let currentSection = "";
 
-      for (const section of sections) {
+      for (
+        const section of sections
+      ) {
         const rect =
           section.getBoundingClientRect();
 
         if (
-          rect.top <= activationPoint
+          rect.top <=
+          activationPoint
         ) {
-          currentSection = section.id;
+          currentSection =
+            section.id;
         } else {
           break;
         }
       }
 
-      setActiveSection(currentSection);
+      setActiveSection(
+        currentSection
+      );
 
       ticking = false;
     };
@@ -249,7 +302,9 @@ const Navbar = () => {
     const handleKeyDown = (
       event: KeyboardEvent
     ) => {
-      if (event.key === "Escape") {
+      if (
+        event.key === "Escape"
+      ) {
         closeMenu();
 
         window.setTimeout(() => {
@@ -278,7 +333,9 @@ const Navbar = () => {
     );
 
     return () => {
-      window.clearTimeout(focusTimer);
+      window.clearTimeout(
+        focusTimer
+      );
 
       document.body.style.overflow =
         previousBodyOverflow.current;
@@ -293,7 +350,10 @@ const Navbar = () => {
         handleResize
       );
     };
-  }, [menuOpen, closeMenu]);
+  }, [
+    menuOpen,
+    closeMenu,
+  ]);
 
   /* ===================================================
      HASH SCROLL
@@ -305,7 +365,9 @@ const Navbar = () => {
       behavior: ScrollBehavior = "smooth"
     ) => {
       const target =
-        document.getElementById(hash);
+        document.getElementById(
+          hash
+        );
 
       if (!target) return;
 
@@ -321,7 +383,10 @@ const Navbar = () => {
         offset;
 
       window.scrollTo({
-        top: Math.max(0, position),
+        top: Math.max(
+          0,
+          position
+        ),
         behavior,
       });
 
@@ -330,10 +395,12 @@ const Navbar = () => {
     []
   );
 
+  /* ===================================================
+     HASH ON INITIAL LOAD
+  =================================================== */
+
   useEffect(() => {
-    if (
-      window.location.pathname !== "/"
-    ) {
+    if (!isHomePath()) {
       return;
     }
 
@@ -343,7 +410,9 @@ const Navbar = () => {
         ""
       );
 
-    if (!hash) return;
+    if (!hash) {
+      return;
+    }
 
     const timer =
       window.setTimeout(() => {
@@ -351,10 +420,12 @@ const Navbar = () => {
           hash,
           "auto"
         );
-      }, 120);
+      }, 150);
 
     return () => {
-      window.clearTimeout(timer);
+      window.clearTimeout(
+        timer
+      );
     };
   }, [scrollToHash]);
 
@@ -369,9 +440,21 @@ const Navbar = () => {
   ) => {
     closeMenu();
 
-    if (item.href.startsWith("/")) {
+    /*
+     * Route navigation:
+     *
+     * /regal-affluence-community/how-it-works
+     */
+
+    if (
+      item.type === "route"
+    ) {
       return;
     }
+
+    /*
+     * Hash navigation.
+     */
 
     const target =
       document.getElementById(
@@ -379,11 +462,13 @@ const Navbar = () => {
       );
 
     /*
-     * If we are not on the homepage,
-     * allow normal navigation to homepage hash.
+     * If we're not on homepage
+     * or target doesn't exist,
+     * allow normal browser navigation.
      */
+
     if (
-      window.location.pathname !== "/" ||
+      !isHomePath() ||
       !target
     ) {
       return;
@@ -402,10 +487,13 @@ const Navbar = () => {
       window.scrollY -
       offset;
 
+    const newUrl =
+      `${BASE_URL}#${item.id}`;
+
     window.history.pushState(
       null,
       "",
-      `${BASE_URL}#${item.id}`
+      newUrl
     );
 
     window.scrollTo({
@@ -416,7 +504,9 @@ const Navbar = () => {
       behavior: "smooth",
     });
 
-    setActiveSection(item.id);
+    setActiveSection(
+      item.id
+    );
   };
 
   /* ===================================================
@@ -428,9 +518,7 @@ const Navbar = () => {
   ) => {
     closeMenu();
 
-    if (
-      window.location.pathname !== "/"
-    ) {
+    if (!isHomePath()) {
       return;
     }
 
@@ -439,7 +527,7 @@ const Navbar = () => {
     window.history.replaceState(
       null,
       "",
-      BASE_URL
+      homeHref
     );
 
     window.scrollTo({
@@ -457,7 +545,7 @@ const Navbar = () => {
   return (
     <>
       {/* =================================================
-          DESKTOP / MOBILE HEADER
+          HEADER
       ================================================= */}
 
       <Header
@@ -465,6 +553,7 @@ const Navbar = () => {
         $menuOpen={menuOpen}
       >
         <HeaderInner>
+
           {/* =================================================
               LOGO
           ================================================= */}
@@ -472,7 +561,9 @@ const Navbar = () => {
           <Logo
             href={homeHref}
             aria-label="Regal Affluence home"
-            onClick={handleLogoClick}
+            onClick={
+              handleLogoClick
+            }
           >
             <LogoImage
               src={`${BASE_URL}images/regal-affluence-logo.png`}
@@ -482,30 +573,39 @@ const Navbar = () => {
           </Logo>
 
           {/* =================================================
-              DESKTOP NAVIGATION
+              DESKTOP NAV
           ================================================= */}
 
-          <DesktopNav aria-label="Primary navigation">
+          <DesktopNav
+            aria-label="Primary navigation"
+          >
             {navigationItems.map(
               (item) => {
-                const isRoute =
-                  item.href.startsWith("/");
-
                 const active =
-                  !isRoute &&
+                  item.type ===
+                    "hash" &&
                   activeSection ===
                     item.id;
 
-                const href = isRoute
-                  ? howItWorksHref
-                  : `${BASE_URL}${item.href}`;
+                const href =
+                  item.type ===
+                  "route"
+                    ? howItWorksHref
+                    : `${BASE_URL}${item.href}`;
 
                 return (
                   <NavItem
                     key={item.id}
                     href={href}
                     $active={active}
-                    onClick={(event) =>
+                    aria-current={
+                      active
+                        ? "location"
+                        : undefined
+                    }
+                    onClick={(
+                      event
+                    ) =>
                       handleNavigation(
                         event,
                         item
@@ -516,7 +616,10 @@ const Navbar = () => {
                       {item.label}
                     </span>
 
-                    <span className="nav-indicator" />
+                    <span
+                      className="nav-indicator"
+                      aria-hidden="true"
+                    />
                   </NavItem>
                 );
               }
@@ -531,7 +634,10 @@ const Navbar = () => {
             href={joinHref}
             aria-label="Join the Regal Affluence community"
           >
-            <span className="button-shine" />
+            <span
+              className="button-shine"
+              aria-hidden="true"
+            />
 
             <span className="button-content">
               <span>
@@ -548,7 +654,7 @@ const Navbar = () => {
           </JoinButton>
 
           {/* =================================================
-              MOBILE BUTTON
+              MOBILE MENU BUTTON
           ================================================= */}
 
           <MenuButton
@@ -560,11 +666,14 @@ const Navbar = () => {
                 ? "Close navigation menu"
                 : "Open navigation menu"
             }
-            aria-expanded={menuOpen}
+            aria-expanded={
+              menuOpen
+            }
             aria-controls="mobile-navigation"
             onClick={() =>
               setMenuOpen(
-                (current) => !current
+                (current) =>
+                  !current
               )
             }
           >
@@ -595,6 +704,7 @@ const Navbar = () => {
               />
             </span>
           </MenuButton>
+
         </HeaderInner>
       </Header>
 
@@ -620,9 +730,10 @@ const Navbar = () => {
         <div className="menu-glow" />
 
         <div className="menu-inner">
-          {/* -------------------------------------------------
-              MOBILE INTRO
-          ------------------------------------------------- */}
+
+          {/* =================================================
+              INTRO
+          ================================================= */}
 
           <div className="mobile-intro">
             <span className="intro-line" />
@@ -636,32 +747,40 @@ const Navbar = () => {
             </span>
           </div>
 
+          {/* =================================================
+              HEADING
+          ================================================= */}
+
           <div className="mobile-heading">
-            <span>Explore.</span>
+            <span>
+              Explore.
+            </span>
 
             <span className="heading-muted">
               Connect.
             </span>
           </div>
 
-          {/* -------------------------------------------------
-              MOBILE LINKS
-          ------------------------------------------------- */}
+          {/* =================================================
+              MOBILE NAV
+          ================================================= */}
 
-          <MobileNav aria-label="Mobile navigation">
+          <MobileNav
+            aria-label="Mobile navigation"
+          >
             {navigationItems.map(
               (item, index) => {
-                const isRoute =
-                  item.href.startsWith("/");
-
                 const active =
-                  !isRoute &&
+                  item.type ===
+                    "hash" &&
                   activeSection ===
                     item.id;
 
-                const href = isRoute
-                  ? howItWorksHref
-                  : `${BASE_URL}${item.href}`;
+                const href =
+                  item.type ===
+                  "route"
+                    ? howItWorksHref
+                    : `${BASE_URL}${item.href}`;
 
                 return (
                   <MobileNavItem
@@ -674,11 +793,12 @@ const Navbar = () => {
                     href={href}
                     $active={active}
                     style={{
-                      animationDelay: `${
-                        index * 70
-                      }ms`,
+                      animationDelay:
+                        `${index * 70}ms`,
                     }}
-                    onClick={(event) =>
+                    onClick={(
+                      event
+                    ) =>
                       handleNavigation(
                         event,
                         item
@@ -688,14 +808,20 @@ const Navbar = () => {
                     <span className="number">
                       {String(
                         index + 1
-                      ).padStart(2, "0")}
+                      ).padStart(
+                        2,
+                        "0"
+                      )}
                     </span>
 
                     <span className="label">
                       {item.label}
                     </span>
 
-                    <span className="arrow">
+                    <span
+                      className="arrow"
+                      aria-hidden="true"
+                    >
                       ↗
                     </span>
                   </MobileNavItem>
@@ -704,11 +830,16 @@ const Navbar = () => {
             )}
           </MobileNav>
 
-          {/* -------------------------------------------------
+          {/* =================================================
               MOBILE CTA
-          ------------------------------------------------- */}
+          ================================================= */}
 
-          <MobileJoinButton href={joinHref}>
+          <MobileJoinButton
+            href={joinHref}
+            onClick={
+              closeMenu
+            }
+          >
             <span className="mobile-cta-main">
               Join Community
             </span>
@@ -722,9 +853,9 @@ const Navbar = () => {
             </span>
           </MobileJoinButton>
 
-          {/* -------------------------------------------------
-              FOOTER
-          ------------------------------------------------- */}
+          {/* =================================================
+              MOBILE FOOTER
+          ================================================= */}
 
           <div className="mobile-footer">
             <span>
@@ -735,6 +866,7 @@ const Navbar = () => {
               REGAL AFFLUENCE GROUP
             </span>
           </div>
+
         </div>
       </MobileMenu>
     </>
@@ -765,9 +897,24 @@ const Header = styled.header<{
   background:
     linear-gradient(
       110deg,
-      rgba(243, 237, 255, 0.96),
-      rgba(250, 248, 243, 0.97),
-      rgba(238, 231, 250, 0.96)
+      rgba(
+        243,
+        237,
+        255,
+        0.96
+      ),
+      rgba(
+        250,
+        248,
+        243,
+        0.97
+      ),
+      rgba(
+        238,
+        231,
+        250,
+        0.96
+      )
     );
 
   background-size:
@@ -806,14 +953,33 @@ const Header = styled.header<{
     background:
       linear-gradient(
         120deg,
-        rgba(243, 237, 255, 0.98),
-        rgba(250, 248, 243, 0.98),
-        rgba(238, 231, 250, 0.98)
+        rgba(
+          243,
+          237,
+          255,
+          0.98
+        ),
+        rgba(
+          250,
+          248,
+          243,
+          0.98
+        ),
+        rgba(
+          238,
+          231,
+          250,
+          0.98
+        )
       );
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  @media (
+    prefers-reduced-motion:
+      reduce
+  ) {
     animation: none;
+
     transition: none;
   }
 `;
@@ -837,7 +1003,8 @@ const HeaderInner = styled.div`
 
   align-items: center;
 
-  justify-content: space-between;
+  justify-content:
+    space-between;
 
   gap: 30px;
 
@@ -904,7 +1071,8 @@ const Logo = styled.a`
   }
 
   @media (
-    prefers-reduced-motion: reduce
+    prefers-reduced-motion:
+      reduce
   ) {
     transition: none;
 
@@ -975,7 +1143,8 @@ const NavItem = styled.a<{
 
   min-height: 42px;
 
-  padding: 0 17px;
+  padding:
+    0 17px;
 
   color:
     ${({ $active, theme }) =>
@@ -987,7 +1156,8 @@ const NavItem = styled.a<{
 
   font-weight: 700;
 
-  letter-spacing: 0.055em;
+  letter-spacing:
+    0.055em;
 
   text-decoration: none;
 
@@ -1008,6 +1178,7 @@ const NavItem = styled.a<{
 
     left: 16px;
     right: 16px;
+
     bottom: 5px;
 
     height: 2px;
@@ -1051,7 +1222,8 @@ const NavItem = styled.a<{
   }
 
   &:hover .nav-indicator {
-    transform: scaleX(1);
+    transform:
+      scaleX(1);
 
     opacity: 1;
   }
@@ -1068,7 +1240,8 @@ const NavItem = styled.a<{
   }
 
   @media (
-    prefers-reduced-motion: reduce
+    prefers-reduced-motion:
+      reduce
   ) {
     transition: none;
 
@@ -1082,710 +1255,724 @@ const NavItem = styled.a<{
    JOIN BUTTON
 ===================================================== */
 
-const JoinButton = styled.a`
-  position: relative;
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  min-height: 46px;
-
-  padding:
-    0
-    21px;
-
-  overflow: hidden;
-
-  flex-shrink: 0;
-
-  border:
-    1px solid
-    rgba(
-      91,
-      33,
-      182,
-      0.12
-    );
-
-  border-radius:
-    ${({ theme }) =>
-      theme.radius.pill};
-
-  background:
-    linear-gradient(
-      135deg,
-      ${({ theme }) =>
-        theme.colors.purple},
-      #7652a8
-    );
-
-  color:
-    ${({ theme }) =>
-      theme.colors.white};
-
-  font-size: 10px;
-
-  font-weight: 800;
-
-  letter-spacing: 0.085em;
-
-  text-decoration: none;
-
-  text-transform: uppercase;
-
-  box-shadow:
-    0
-    9px
-    26px
-    rgba(
-      91,
-      33,
-      182,
-      0.17
-    );
-
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-
-  .button-shine {
-    position: absolute;
-
-    top: -30%;
-    left: -110%;
-
-    width: 55%;
-    height: 160%;
-
-    background:
-      linear-gradient(
-        90deg,
-        transparent,
-        rgba(
-          255,
-          255,
-          255,
-          0.4
-        ),
-        transparent
-      );
-
-    transform:
-      skewX(-18deg);
-
-    pointer-events: none;
-  }
-
-  .button-content {
+const JoinButton =
+  styled.a`
     position: relative;
-
-    z-index: 2;
 
     display: inline-flex;
 
     align-items: center;
 
-    gap: 10px;
-  }
+    justify-content: center;
 
-  .button-arrow {
-    font-size: 15px;
+    min-height: 46px;
 
-    line-height: 1;
+    padding:
+      0 21px;
 
-    transition:
-      transform 0.3s ease;
-  }
+    overflow: hidden;
 
-  &:hover {
-    transform:
-      translateY(-2px);
+    flex-shrink: 0;
 
-    box-shadow:
-      0
-      14px
-      32px
+    border:
+      1px solid
       rgba(
         91,
         33,
         182,
-        0.25
+        0.12
       );
-  }
 
-  &:hover .button-shine {
-    animation:
-      ${shimmer}
-      0.8s
-      ease
-      forwards;
-  }
-
-  &:hover .button-arrow {
-    transform:
-      translate(
-        2px,
-        -2px
-      );
-  }
-
-  &:active {
-    transform:
-      translateY(0)
-      scale(0.99);
-  }
-
-  &:focus-visible {
-    outline:
-      2px solid
+    border-radius:
       ${({ theme }) =>
-        theme.colors.champagne};
+        theme.radius.pill};
 
-    outline-offset: 5px;
-  }
+    background:
+      linear-gradient(
+        135deg,
+        ${({ theme }) =>
+          theme.colors.purple},
+        #7652a8
+      );
 
-  @media (max-width: 900px) {
-    display: none;
-  }
+    color:
+      ${({ theme }) =>
+        theme.colors.white};
 
-  @media (
-    prefers-reduced-motion: reduce
-  ) {
-    transition: none;
+    font-size: 10px;
 
-    &:hover,
-    &:active {
-      transform: none;
+    font-weight: 800;
+
+    letter-spacing:
+      0.085em;
+
+    text-decoration: none;
+
+    text-transform:
+      uppercase;
+
+    box-shadow:
+      0
+      9px
+      26px
+      rgba(
+        91,
+        33,
+        182,
+        0.17
+      );
+
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+
+    .button-shine {
+      position: absolute;
+
+      top: -30%;
+      left: -110%;
+
+      width: 55%;
+      height: 160%;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(
+            255,
+            255,
+            255,
+            0.4
+          ),
+          transparent
+        );
+
+      transform:
+        skewX(-18deg);
+
+      pointer-events:
+        none;
+    }
+
+    .button-content {
+      position: relative;
+
+      z-index: 2;
+
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 10px;
+    }
+
+    .button-arrow {
+      font-size: 15px;
+
+      line-height: 1;
+
+      transition:
+        transform 0.3s ease;
+    }
+
+    &:hover {
+      transform:
+        translateY(-2px);
+
+      box-shadow:
+        0
+        14px
+        32px
+        rgba(
+          91,
+          33,
+          182,
+          0.25
+        );
     }
 
     &:hover .button-shine {
-      animation: none;
+      animation:
+        ${shimmer}
+        0.8s
+        ease
+        forwards;
     }
 
     &:hover .button-arrow {
-      transform: none;
+      transform:
+        translate(
+          2px,
+          -2px
+        );
     }
-  }
-`;
+
+    &:active {
+      transform:
+        translateY(0)
+        scale(0.99);
+    }
+
+    &:focus-visible {
+      outline:
+        2px solid
+        ${({ theme }) =>
+          theme.colors.champagne};
+
+      outline-offset: 5px;
+    }
+
+    @media (max-width: 900px) {
+      display: none;
+    }
+
+    @media (
+      prefers-reduced-motion:
+        reduce
+    ) {
+      transition: none;
+
+      &:hover,
+      &:active {
+        transform: none;
+      }
+
+      &:hover .button-shine {
+        animation: none;
+      }
+
+      &:hover .button-arrow {
+        transform: none;
+      }
+    }
+  `;
 
 /* =====================================================
    MOBILE MENU BUTTON
 ===================================================== */
 
-const MenuButton = styled.button<{
-  $open: boolean;
-}>`
-  display: none;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 9px;
-
-  width: 82px;
-  height: 42px;
-
-  padding: 0;
-
-  border:
-    1px solid
-    rgba(
-      91,
-      33,
-      182,
-      0.14
-    );
-
-  border-radius:
-    ${({ theme }) =>
-      theme.radius.pill};
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.42
-    );
-
-  color:
-    ${({ theme }) =>
-      theme.colors.purpleDeep};
-
-  cursor: pointer;
-
-  backdrop-filter:
-    blur(10px);
-
-  -webkit-backdrop-filter:
-    blur(10px);
-
-  transition:
-    transform 0.25s ease,
-    background 0.25s ease;
-
-  .menu-text {
-    font-size: 9px;
-
-    font-weight: 800;
-
-    letter-spacing: 0.13em;
-
-    text-transform: uppercase;
-  }
-
-  .menu-icon {
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    gap: 4px;
-  }
-
-  .line {
-    display: block;
-
-    width: 16px;
-    height: 1px;
-
-    background: currentColor;
-
-    transform-origin: center;
-
-    transition:
-      transform 0.3s ease;
-  }
-
-  .line-one.open {
-    transform:
-      translateY(2.5px)
-      rotate(45deg);
-  }
-
-  .line-two.open {
-    transform:
-      translateY(-2.5px)
-      rotate(-45deg);
-  }
-
-  &:hover {
-    transform:
-      translateY(-1px);
-
-    background:
-      rgba(
-        255,
-        255,
-        255,
-        0.62
-      );
-  }
-
-  &:active {
-    transform:
-      scale(0.97);
-  }
-
-  &:focus-visible {
-    outline:
-      2px solid
-      ${({ theme }) =>
-        theme.colors.purple};
-
-    outline-offset: 4px;
-  }
-
-  @media (max-width: 900px) {
-    display: flex;
-  }
-
-  @media (max-width: 480px) {
-    width: 76px;
-    height: 40px;
-  }
-
-  @media (
-    prefers-reduced-motion: reduce
-  ) {
-    transition: none;
-
-    .line {
-      transition: none;
-    }
-
-    &:hover,
-    &:active {
-      transform: none;
-    }
-  }
-`;
-
-/* =====================================================
-   MOBILE BACKDROP
-===================================================== */
-
-const MobileBackdrop = styled.div<{
-  $open: boolean;
-}>`
-  position: fixed;
-
-  inset: 0;
-
-  z-index: 998;
-
-  background:
-    rgba(
-      32,
-      18,
-      50,
-      0.48
-    );
-
-  backdrop-filter:
-    blur(7px);
-
-  -webkit-backdrop-filter:
-    blur(7px);
-
-  opacity:
-    ${({ $open }) =>
-      $open ? 1 : 0};
-
-  visibility:
-    ${({ $open }) =>
-      $open
-        ? "visible"
-        : "hidden"};
-
-  pointer-events:
-    ${({ $open }) =>
-      $open
-        ? "auto"
-        : "none"};
-
-  transition:
-    opacity 0.35s ease,
-    visibility 0.35s ease;
-
-  @media (min-width: 901px) {
+const MenuButton =
+  styled.button<{
+    $open: boolean;
+  }>`
     display: none;
-  }
-
-  @media (
-    prefers-reduced-motion: reduce
-  ) {
-    transition: none;
-  }
-`;
-
-/* =====================================================
-   MOBILE MENU
-===================================================== */
-
-const MobileMenu = styled.div<{
-  $open: boolean;
-}>`
-  position: fixed;
-
-  top: 84px;
-  left: 12px;
-  right: 12px;
-
-  z-index: 999;
-
-  max-height:
-    calc(
-      100vh - 98px
-    );
-
-  overflow-y: auto;
-
-  border:
-    1px solid
-    rgba(
-      91,
-      33,
-      182,
-      0.12
-    );
-
-  border-radius: 24px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(
-        246,
-        241,
-        255,
-        0.98
-      ),
-      rgba(
-        250,
-        248,
-        243,
-        0.98
-      ),
-      rgba(
-        239,
-        232,
-        251,
-        0.98
-      )
-    );
-
-  box-shadow:
-    0
-    28px
-    80px
-    rgba(
-      38,
-      22,
-      57,
-      0.2
-    );
-
-  opacity:
-    ${({ $open }) =>
-      $open ? 1 : 0};
-
-  visibility:
-    ${({ $open }) =>
-      $open
-        ? "visible"
-        : "hidden"};
-
-  pointer-events:
-    ${({ $open }) =>
-      $open
-        ? "auto"
-        : "none"};
-
-  transform:
-    ${({ $open }) =>
-      $open
-        ? "translateY(0) scale(1)"
-        : "translateY(-10px) scale(.98)"};
-
-  transition:
-    opacity 0.3s ease,
-    transform 0.4s
-      cubic-bezier(
-        0.16,
-        1,
-        0.3,
-        1
-      ),
-    visibility 0.3s ease;
-
-  .menu-glow {
-    position: absolute;
-
-    top: -90px;
-    right: -80px;
-
-    width: 230px;
-    height: 230px;
-
-    border-radius: 50%;
-
-    background:
-      radial-gradient(
-        circle,
-        rgba(
-          123,
-          84,
-          181,
-          0.16
-        ),
-        transparent 68%
-      );
-
-    filter: blur(30px);
-
-    pointer-events: none;
-  }
-
-  .menu-inner {
-    position: relative;
-
-    z-index: 1;
-
-    padding:
-      28px
-      24px
-      22px;
-  }
-
-  /* --------------------------------------------------
-     INTRO
-  -------------------------------------------------- */
-
-  .mobile-intro {
-    display: flex;
 
     align-items: center;
 
+    justify-content: center;
+
     gap: 9px;
 
-    margin-bottom: 15px;
+    width: 82px;
 
-    color:
+    height: 42px;
+
+    padding: 0;
+
+    border:
+      1px solid
+      rgba(
+        91,
+        33,
+        182,
+        0.14
+      );
+
+    border-radius:
       ${({ theme }) =>
-        theme.colors.purple};
-
-    font-size: 8px;
-
-    font-weight: 800;
-
-    letter-spacing: 0.18em;
-  }
-
-  .intro-line {
-    width: 24px;
-    height: 1px;
+        theme.radius.pill};
 
     background:
-      ${({ theme }) =>
-        theme.colors.champagne};
-  }
-
-  .intro-mark {
-    margin-left: auto;
-
-    color:
-      ${({ theme }) =>
-        theme.colors.champagne};
-
-    font-size: 11px;
-  }
-
-  /* --------------------------------------------------
-     HEADING
-  -------------------------------------------------- */
-
-  .mobile-heading {
-    display: flex;
-
-    flex-direction: column;
-
-    margin-bottom: 24px;
+      rgba(
+        255,
+        255,
+        255,
+        0.42
+      );
 
     color:
       ${({ theme }) =>
         theme.colors.purpleDeep};
 
-    font-family:
-      ${({ theme }) =>
-        theme.fonts.display};
+    cursor: pointer;
 
-    font-size: 38px;
+    backdrop-filter:
+      blur(10px);
 
-    font-weight: 500;
+    -webkit-backdrop-filter:
+      blur(10px);
 
-    line-height: 0.94;
+    transition:
+      transform 0.25s ease,
+      background 0.25s ease;
 
-    letter-spacing:
-      -0.045em;
-  }
+    .menu-text {
+      font-size: 9px;
 
-  .heading-muted {
-    color:
-      ${({ theme }) =>
-        theme.colors.textMuted};
-  }
+      font-weight: 800;
 
-  /* --------------------------------------------------
-     FOOTER
-  -------------------------------------------------- */
+      letter-spacing:
+        0.13em;
 
-  .mobile-footer {
-    display: flex;
+      text-transform:
+        uppercase;
+    }
 
-    align-items: center;
+    .menu-icon {
+      display: flex;
 
-    justify-content: space-between;
+      flex-direction:
+        column;
 
-    gap: 12px;
+      justify-content:
+        center;
 
-    margin-top: 20px;
+      gap: 4px;
+    }
 
-    padding-top: 17px;
+    .line {
+      display: block;
 
-    border-top:
-      1px solid
-      ${({ theme }) =>
-        theme.colors.border};
+      width: 16px;
+      height: 1px;
 
-    color:
-      ${({ theme }) =>
-        theme.colors.textMuted};
+      background:
+        currentColor;
 
-    font-size: 7px;
+      transform-origin:
+        center;
 
-    font-weight: 800;
+      transition:
+        transform 0.3s ease;
+    }
 
-    letter-spacing: 0.09em;
-  }
+    .line-one.open {
+      transform:
+        translateY(2.5px)
+        rotate(45deg);
+    }
 
-  @media (max-width: 768px) {
-    top: 78px;
-  }
+    .line-two.open {
+      transform:
+        translateY(-2.5px)
+        rotate(-45deg);
+    }
 
-  @media (max-width: 480px) {
-    top: 76px;
+    &:hover {
+      transform:
+        translateY(-1px);
 
-    left: 8px;
-    right: 8px;
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.62
+        );
+    }
+
+    &:active {
+      transform:
+        scale(0.97);
+    }
+
+    &:focus-visible {
+      outline:
+        2px solid
+        ${({ theme }) =>
+          theme.colors.purple};
+
+      outline-offset: 4px;
+    }
+
+    @media (max-width: 900px) {
+      display: flex;
+    }
+
+    @media (max-width: 480px) {
+      width: 76px;
+      height: 40px;
+    }
+
+    @media (
+      prefers-reduced-motion:
+        reduce
+    ) {
+      transition: none;
+
+      .line {
+        transition: none;
+      }
+
+      &:hover,
+      &:active {
+        transform: none;
+      }
+    }
+  `;
+
+/* =====================================================
+   MOBILE BACKDROP
+===================================================== */
+
+const MobileBackdrop =
+  styled.div<{
+    $open: boolean;
+  }>`
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 998;
+
+    background:
+      rgba(
+        32,
+        18,
+        50,
+        0.48
+      );
+
+    backdrop-filter:
+      blur(7px);
+
+    -webkit-backdrop-filter:
+      blur(7px);
+
+    opacity:
+      ${({ $open }) =>
+        $open ? 1 : 0};
+
+    visibility:
+      ${({ $open }) =>
+        $open
+          ? "visible"
+          : "hidden"};
+
+    pointer-events:
+      ${({ $open }) =>
+        $open
+          ? "auto"
+          : "none"};
+
+    transition:
+      opacity 0.35s ease,
+      visibility 0.35s ease;
+
+    @media (min-width: 901px) {
+      display: none;
+    }
+
+    @media (
+      prefers-reduced-motion:
+        reduce
+    ) {
+      transition: none;
+    }
+  `;
+
+/* =====================================================
+   MOBILE MENU
+===================================================== */
+
+const MobileMenu =
+  styled.div<{
+    $open: boolean;
+  }>`
+    position: fixed;
+
+    top: 84px;
+
+    left: 12px;
+    right: 12px;
+
+    z-index: 999;
 
     max-height:
       calc(
-        100vh - 86px
+        100vh - 98px
       );
 
-    border-radius: 21px;
+    overflow-y: auto;
+
+    border:
+      1px solid
+      rgba(
+        91,
+        33,
+        182,
+        0.12
+      );
+
+    border-radius: 24px;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(
+          246,
+          241,
+          255,
+          0.98
+        ),
+        rgba(
+          250,
+          248,
+          243,
+          0.98
+        ),
+        rgba(
+          239,
+          232,
+          251,
+          0.98
+        )
+      );
+
+    box-shadow:
+      0
+      28px
+      80px
+      rgba(
+        38,
+        22,
+        57,
+        0.2
+      );
+
+    opacity:
+      ${({ $open }) =>
+        $open ? 1 : 0};
+
+    visibility:
+      ${({ $open }) =>
+        $open
+          ? "visible"
+          : "hidden"};
+
+    pointer-events:
+      ${({ $open }) =>
+        $open
+          ? "auto"
+          : "none"};
+
+    transform:
+      ${({ $open }) =>
+        $open
+          ? "translateY(0) scale(1)"
+          : "translateY(-10px) scale(.98)"};
+
+    transition:
+      opacity 0.3s ease,
+      transform 0.4s
+        cubic-bezier(
+          0.16,
+          1,
+          0.3,
+          1
+        ),
+      visibility 0.3s ease;
+
+    .menu-glow {
+      position: absolute;
+
+      top: -90px;
+      right: -80px;
+
+      width: 230px;
+      height: 230px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(
+            123,
+            84,
+            181,
+            0.16
+          ),
+          transparent 68%
+        );
+
+      filter:
+        blur(30px);
+
+      pointer-events:
+        none;
+    }
 
     .menu-inner {
+      position: relative;
+
+      z-index: 1;
+
       padding:
+        28px
         24px
-        20px
-        18px;
+        22px;
+    }
+
+    .mobile-intro {
+      display: flex;
+
+      align-items: center;
+
+      gap: 9px;
+
+      margin-bottom: 15px;
+
+      color:
+        ${({ theme }) =>
+          theme.colors.purple};
+
+      font-size: 8px;
+
+      font-weight: 800;
+
+      letter-spacing:
+        0.18em;
+    }
+
+    .intro-line {
+      width: 24px;
+
+      height: 1px;
+
+      background:
+        ${({ theme }) =>
+          theme.colors.champagne};
+    }
+
+    .intro-mark {
+      margin-left: auto;
+
+      color:
+        ${({ theme }) =>
+          theme.colors.champagne};
+
+      font-size: 11px;
     }
 
     .mobile-heading {
-      font-size: 34px;
+      display: flex;
+
+      flex-direction:
+        column;
+
+      margin-bottom: 24px;
+
+      color:
+        ${({ theme }) =>
+          theme.colors.purpleDeep};
+
+      font-family:
+        ${({ theme }) =>
+          theme.fonts.display};
+
+      font-size: 38px;
+
+      font-weight: 500;
+
+      line-height: 0.94;
+
+      letter-spacing:
+        -0.045em;
     }
-  }
 
-  @media (
-    prefers-reduced-motion: reduce
-  ) {
-    transition: none;
+    .heading-muted {
+      color:
+        ${({ theme }) =>
+          theme.colors.textMuted};
+    }
 
-    transform: none;
-  }
-`;
+    .mobile-footer {
+      display: flex;
+
+      align-items: center;
+
+      justify-content:
+        space-between;
+
+      gap: 12px;
+
+      margin-top: 20px;
+
+      padding-top: 17px;
+
+      border-top:
+        1px solid
+        ${({ theme }) =>
+          theme.colors.border};
+
+      color:
+        ${({ theme }) =>
+          theme.colors.textMuted};
+
+      font-size: 7px;
+
+      font-weight: 800;
+
+      letter-spacing:
+        0.09em;
+    }
+
+    @media (max-width: 768px) {
+      top: 78px;
+    }
+
+    @media (max-width: 480px) {
+      top: 76px;
+
+      left: 8px;
+      right: 8px;
+
+      max-height:
+        calc(
+          100vh - 86px
+        );
+
+      border-radius: 21px;
+
+      .menu-inner {
+        padding:
+          24px
+          20px
+          18px;
+      }
+
+      .mobile-heading {
+        font-size: 34px;
+      }
+    }
+
+    @media (
+      prefers-reduced-motion:
+        reduce
+    ) {
+      transition: none;
+
+      transform: none;
+    }
+  `;
 
 /* =====================================================
    MOBILE NAV
 ===================================================== */
 
-const MobileNav = styled.nav`
-  display: flex;
+const MobileNav =
+  styled.nav`
+    display: flex;
 
-  flex-direction: column;
+    flex-direction: column;
 
-  border-top:
-    1px solid
-    ${({ theme }) =>
-      theme.colors.border};
-`;
+    border-top:
+      1px solid
+      ${({ theme }) =>
+        theme.colors.border};
+  `;
 
 /* =====================================================
    MOBILE NAV ITEM
@@ -1842,7 +2029,8 @@ const MobileNavItem =
 
       font-weight: 800;
 
-      letter-spacing: 0.08em;
+      letter-spacing:
+        0.08em;
     }
 
     .label {
@@ -1949,7 +2137,8 @@ const MobileNavItem =
     }
 
     @media (
-      prefers-reduced-motion: reduce
+      prefers-reduced-motion:
+        reduce
     ) {
       animation: none;
 
@@ -1978,7 +2167,8 @@ const MobileJoinButton =
 
     align-items: center;
 
-    justify-content: space-between;
+    justify-content:
+      space-between;
 
     gap: 16px;
 
@@ -1987,8 +2177,7 @@ const MobileJoinButton =
     margin-top: 20px;
 
     padding:
-      0
-      20px;
+      0 20px;
 
     border-radius:
       ${({ theme }) =>
@@ -2050,7 +2239,8 @@ const MobileJoinButton =
 
       font-weight: 700;
 
-      letter-spacing: 0.06em;
+      letter-spacing:
+        0.06em;
     }
 
     &:hover {
