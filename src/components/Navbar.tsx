@@ -79,18 +79,6 @@ const shimmer = keyframes`
   }
 `;
 
-const menuReveal = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(-12px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-`;
-
 const mobileItemReveal = keyframes`
   from {
     opacity: 0;
