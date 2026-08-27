@@ -51,7 +51,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
 
-      <BrowserRouter>
+      <BrowserRouter basename="/regal-affluence-community">
         <Routes>
 
           {/* ========================================
