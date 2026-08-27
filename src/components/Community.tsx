@@ -1,10 +1,277 @@
 import styled, { keyframes } from "styled-components";
 
 /* ========================================
-   TYPES
+   DATA TYPES
 ======================================== */
 
-type GlowPosition = "top" | "bottom";
+interface Activity {
+  number: string;
+  icon: string;
+  title: string;
+  description: string;
+}
+
+interface ParticipationMethod {
+  number: string;
+  title: string;
+  description: string;
+}
+
+/* ========================================
+   DATA
+======================================== */
+
+const activities: Activity[] = [
+  {
+    number: "01",
+    icon: "◎",
+    title: "Networking",
+    description:
+      "Build meaningful relationships with ambitious people and professionals who share a commitment to growth and excellence.",
+  },
+  {
+    number: "02",
+    icon: "◇",
+    title: "Mentorship",
+    description:
+      "Learn from experienced professionals and gain guidance that supports your personal, professional, and real estate growth.",
+  },
+  {
+    number: "03",
+    icon: "◈",
+    title: "Investment Opportunities",
+    description:
+      "Gain access to valuable real estate and investment opportunities while becoming better equipped to make informed decisions.",
+  },
+  {
+    number: "04",
+    icon: "∞",
+    title: "Partnerships",
+    description:
+      "Create relationships that can develop into meaningful collaborations, partnerships, and long-term professional opportunities.",
+  },
+];
+
+const participation: ParticipationMethod[] = [
+  {
+    number: "01",
+    title: "WhatsApp Groups",
+    description:
+      "Stay connected with the community, conversations, opportunities, and updates.",
+  },
+  {
+    number: "02",
+    title: "Online Events",
+    description:
+      "Learn, connect, and participate in community activities from wherever you are.",
+  },
+  {
+    number: "03",
+    title: "Physical Meetings",
+    description:
+      "Build stronger relationships through in-person meetings, networking, and community experiences.",
+  },
+];
+
+/* ========================================
+   COMPONENT
+======================================== */
+
+const Community = () => {
+  return (
+    <Section id="community">
+      <BackgroundGlow
+        $position="top"
+        aria-hidden="true"
+      />
+
+      <BackgroundGlow
+        $position="bottom"
+        aria-hidden="true"
+      />
+
+      <GridPattern aria-hidden="true" />
+
+      <Container>
+        {/* ========================================
+            HEADER
+        ======================================== */}
+
+        <Header>
+          <HeaderContent>
+            <Eyebrow>
+              The Regal Affluence Community
+            </Eyebrow>
+
+            <Heading>
+              Where ambitious people
+              <br />
+              <span>connect and grow.</span>
+            </Heading>
+          </HeaderContent>
+
+          <HeaderMeta aria-hidden="true">
+            <HeaderMetaNumber>
+              RA
+            </HeaderMetaNumber>
+
+            <HeaderMetaLabel>
+              PEOPLE
+              <br />
+              POWERED
+            </HeaderMetaLabel>
+          </HeaderMeta>
+
+          <Description>
+            Regal Affluence is built around people,
+            relationships, opportunities, and growth. Our
+            community gives ambitious individuals a platform
+            to learn, connect, collaborate, and create
+            meaningful opportunities together.
+          </Description>
+        </Header>
+
+        {/* ========================================
+            COMMUNITY EXPERIENCE
+        ======================================== */}
+
+        <CommunityLayout>
+          <CommunityIntro>
+            <CommunityLabel>
+              What happens here
+            </CommunityLabel>
+
+            <CommunityTitle>
+              More than a network.
+              <br />
+              <span>A place to grow.</span>
+            </CommunityTitle>
+
+            <CommunityDescription>
+              Members become part of a growing professional
+              community where knowledge is shared,
+              relationships are built, opportunities are
+              discovered, and people are encouraged to become
+              better versions of themselves.
+            </CommunityDescription>
+
+            <CommunityRule
+              aria-hidden="true"
+            />
+          </CommunityIntro>
+
+          <ActivitiesGrid>
+            {activities.map((activity) => (
+              <ActivityCard
+                key={activity.number}
+              >
+                <ActivityTop>
+                  <ActivityNumber>
+                    {activity.number}
+                  </ActivityNumber>
+
+                  <ActivityIcon
+                    aria-hidden="true"
+                  >
+                    {activity.icon}
+                  </ActivityIcon>
+                </ActivityTop>
+
+                <ActivityTitle>
+                  {activity.title}
+                </ActivityTitle>
+
+                <ActivityDescription>
+                  {activity.description}
+                </ActivityDescription>
+
+                <ActivityArrow
+                  aria-hidden="true"
+                >
+                  ↗
+                </ActivityArrow>
+              </ActivityCard>
+            ))}
+          </ActivitiesGrid>
+        </CommunityLayout>
+
+        {/* ========================================
+            PARTICIPATION
+        ======================================== */}
+
+        <Participation>
+          <ParticipationHeader>
+            <ParticipationContent>
+              <Eyebrow>
+                How Members Participate
+              </Eyebrow>
+
+              <ParticipationTitle>
+                Stay connected.
+                <br />
+                <span>Stay involved.</span>
+              </ParticipationTitle>
+            </ParticipationContent>
+
+            <ParticipationDescription>
+              Community participation currently happens
+              through a combination of digital and physical
+              experiences, making it easier for members to
+              stay connected and engaged.
+            </ParticipationDescription>
+          </ParticipationHeader>
+
+          <ParticipationList>
+            {participation.map((item) => (
+              <ParticipationItem
+                key={item.number}
+              >
+                <ParticipationNumber>
+                  {item.number}
+                </ParticipationNumber>
+
+                <ParticipationText>
+                  <strong>
+                    {item.title}
+                  </strong>
+
+                  <p>
+                    {item.description}
+                  </p>
+                </ParticipationText>
+
+                <ParticipationArrow
+                  aria-hidden="true"
+                >
+                  →
+                </ParticipationArrow>
+              </ParticipationItem>
+            ))}
+          </ParticipationList>
+        </Participation>
+
+        {/* ========================================
+            BOTTOM STATEMENT
+        ======================================== */}
+
+        <BottomStatement>
+          <BottomLine aria-hidden="true" />
+
+          <div>
+            <span>Connect.</span>
+            <span>Learn.</span>
+            <span>Collaborate.</span>
+            <span>Grow.</span>
+          </div>
+
+          <BottomLine aria-hidden="true" />
+        </BottomStatement>
+      </Container>
+    </Section>
+  );
+};
+
+export default Community;
 
 /* ========================================
    ANIMATIONS
@@ -13,11 +280,15 @@ type GlowPosition = "top" | "bottom";
 const ambientFloat = keyframes`
   0%,
   100% {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform:
+      translate3d(0, 0, 0)
+      scale(1);
   }
 
   50% {
-    transform: translate3d(0, -22px, 0) scale(1.06);
+    transform:
+      translate3d(0, -22px, 0)
+      scale(1.06);
   }
 `;
 
@@ -35,7 +306,7 @@ const shimmer = keyframes`
    SECTION
 ======================================== */
 
-export const Section = styled.section`
+const Section = styled.section`
   position: relative;
 
   width: 100%;
@@ -54,7 +325,8 @@ export const Section = styled.section`
       ${({ theme }) => theme.colors.cream} 100%
     );
 
-  color: ${({ theme }) => theme.colors.text};
+  color:
+    ${({ theme }) => theme.colors.text};
 
   @media (max-width: 768px) {
     padding: 100px 0 90px;
@@ -79,11 +351,15 @@ export const Section = styled.section`
    BACKGROUND GLOW
 ======================================== */
 
+type GlowPosition =
+  | "top"
+  | "bottom";
+
 interface BackgroundGlowProps {
   $position: GlowPosition;
 }
 
-export const BackgroundGlow =
+const BackgroundGlow =
   styled.div<BackgroundGlowProps>`
     position: absolute;
 
@@ -101,13 +377,16 @@ export const BackgroundGlow =
     background:
       radial-gradient(
         circle,
-        rgba(91, 33, 182, 0.10) 0%,
+        rgba(91, 33, 182, 0.1) 0%,
         rgba(91, 33, 182, 0.035) 42%,
         transparent 72%
       );
 
-    animation: ${ambientFloat} 12s
-      ease-in-out infinite;
+    animation:
+      ${ambientFloat}
+      12s
+      ease-in-out
+      infinite;
 
     ${({ $position }) =>
       $position === "top"
@@ -127,13 +406,17 @@ export const BackgroundGlow =
 
       filter: blur(80px);
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
   `;
 
 /* ========================================
    GRID PATTERN
 ======================================== */
 
-export const GridPattern = styled.div`
+const GridPattern = styled.div`
   position: absolute;
 
   inset: 0;
@@ -171,19 +454,31 @@ export const GridPattern = styled.div`
    CONTAINER
 ======================================== */
 
-export const Container = styled.div`
+const Container = styled.div`
   position: relative;
 
-  width: min(100% - 64px, 1320px);
+  width:
+    min(
+      100% - 64px,
+      1320px
+    );
 
   margin: 0 auto;
 
   @media (max-width: 768px) {
-    width: min(100% - 36px, 1320px);
+    width:
+      min(
+        100% - 36px,
+        1320px
+      );
   }
 
   @media (max-width: 480px) {
-    width: min(100% - 28px, 1320px);
+    width:
+      min(
+        100% - 28px,
+        1320px
+      );
   }
 `;
 
@@ -191,7 +486,7 @@ export const Container = styled.div`
    HEADER
 ======================================== */
 
-export const Header = styled.header`
+const Header = styled.header`
   position: relative;
 
   display: grid;
@@ -228,7 +523,7 @@ export const Header = styled.header`
    HEADER CONTENT
 ======================================== */
 
-export const HeaderContent = styled.div`
+const HeaderContent = styled.div`
   position: relative;
 `;
 
@@ -236,16 +531,20 @@ export const HeaderContent = styled.div`
    EYEBROW
 ======================================== */
 
-export const Eyebrow = styled.p`
+const Eyebrow = styled.p`
   display: inline-flex;
 
   align-items: center;
 
   gap: 11px;
 
-  margin: 0 0 24px;
+  margin:
+    0 0
+    24px;
 
-  color: ${({ theme }) => theme.colors.purple};
+  color:
+    ${({ theme }) =>
+      theme.colors.purple};
 
   font-size: 10px;
 
@@ -268,8 +567,10 @@ export const Eyebrow = styled.p`
     background:
       linear-gradient(
         90deg,
-        ${({ theme }) => theme.colors.champagne},
-        ${({ theme }) => theme.colors.purple}
+        ${({ theme }) =>
+          theme.colors.champagne},
+        ${({ theme }) =>
+          theme.colors.purple}
       );
   }
 
@@ -286,16 +587,25 @@ export const Eyebrow = styled.p`
    HEADING
 ======================================== */
 
-export const Heading = styled.h2`
+const Heading = styled.h2`
   max-width: 920px;
 
   margin: 0;
 
-  color: ${({ theme }) => theme.colors.text};
+  color:
+    ${({ theme }) =>
+      theme.colors.text};
 
-  font-family: ${({ theme }) => theme.fonts.display};
+  font-family:
+    ${({ theme }) =>
+      theme.fonts.display};
 
-  font-size: clamp(3.3rem, 6vw, 6.1rem);
+  font-size:
+    clamp(
+      3.3rem,
+      6vw,
+      6.1rem
+    );
 
   font-weight: 500;
 
@@ -308,7 +618,9 @@ export const Heading = styled.h2`
   span {
     position: relative;
 
-    color: ${({ theme }) => theme.colors.purple};
+    color:
+      ${({ theme }) =>
+        theme.colors.purple};
 
     font-style: italic;
 
@@ -329,7 +641,8 @@ export const Heading = styled.h2`
         linear-gradient(
           90deg,
           transparent,
-          ${({ theme }) => theme.colors.champagne},
+          ${({ theme }) =>
+            theme.colors.champagne},
           transparent
         );
 
@@ -338,13 +651,23 @@ export const Heading = styled.h2`
   }
 
   @media (max-width: 768px) {
-    font-size: clamp(2.8rem, 11vw, 4.8rem);
+    font-size:
+      clamp(
+        2.8rem,
+        11vw,
+        4.8rem
+      );
 
     line-height: 0.98;
   }
 
   @media (max-width: 480px) {
-    font-size: clamp(2.45rem, 12vw, 3.9rem);
+    font-size:
+      clamp(
+        2.45rem,
+        12vw,
+        3.9rem
+      );
   }
 `;
 
@@ -352,7 +675,7 @@ export const Heading = styled.h2`
    HEADER META
 ======================================== */
 
-export const HeaderMeta = styled.div`
+const HeaderMeta = styled.div`
   display: flex;
 
   flex-direction: column;
@@ -364,27 +687,48 @@ export const HeaderMeta = styled.div`
   width: 76px;
   height: 76px;
 
-  border: 1px solid
-    rgba(201, 169, 110, 0.32);
+  border:
+    1px solid
+    rgba(
+      201,
+      169,
+      110,
+      0.32
+    );
 
   border-radius: 50%;
 
   background:
-    rgba(255, 255, 255, 0.3);
+    rgba(
+      255,
+      255,
+      255,
+      0.3
+    );
 
   box-shadow:
-    inset 0 0 0 7px
-      rgba(255, 255, 255, 0.12);
+    inset
+      0 0 0 7px
+      rgba(
+        255,
+        255,
+        255,
+        0.12
+      );
 
   @media (max-width: 1100px) {
     display: none;
   }
 `;
 
-export const HeaderMetaNumber = styled.span`
-  color: ${({ theme }) => theme.colors.purpleDeep};
+const HeaderMetaNumber = styled.span`
+  color:
+    ${({ theme }) =>
+      theme.colors.purpleDeep};
 
-  font-family: ${({ theme }) => theme.fonts.display};
+  font-family:
+    ${({ theme }) =>
+      theme.fonts.display};
 
   font-size: 20px;
 
@@ -393,10 +737,12 @@ export const HeaderMetaNumber = styled.span`
   line-height: 1;
 `;
 
-export const HeaderMetaLabel = styled.span`
+const HeaderMetaLabel = styled.span`
   margin-top: 5px;
 
-  color: ${({ theme }) => theme.colors.champagne};
+  color:
+    ${({ theme }) =>
+      theme.colors.champagne};
 
   font-size: 5px;
 
@@ -413,12 +759,14 @@ export const HeaderMetaLabel = styled.span`
    DESCRIPTION
 ======================================== */
 
-export const Description = styled.p`
+const Description = styled.p`
   max-width: 520px;
 
   margin: 0;
 
-  color: ${({ theme }) => theme.colors.textMuted};
+  color:
+    ${({ theme }) =>
+      theme.colors.textMuted};
 
   font-size: 15px;
 
@@ -439,7 +787,7 @@ export const Description = styled.p`
    COMMUNITY LAYOUT
 ======================================== */
 
-export const CommunityLayout = styled.div`
+const CommunityLayout = styled.div`
   display: grid;
 
   grid-template-columns:
@@ -461,7 +809,7 @@ export const CommunityLayout = styled.div`
    COMMUNITY INTRO
 ======================================== */
 
-export const CommunityIntro = styled.div`
+const CommunityIntro = styled.div`
   position: sticky;
 
   top: 120px;
@@ -475,10 +823,14 @@ export const CommunityIntro = styled.div`
    COMMUNITY LABEL
 ======================================== */
 
-export const CommunityLabel = styled.p`
-  margin: 0 0 19px;
+const CommunityLabel = styled.p`
+  margin:
+    0 0
+    19px;
 
-  color: ${({ theme }) => theme.colors.champagne};
+  color:
+    ${({ theme }) =>
+      theme.colors.champagne};
 
   font-size: 9px;
 
@@ -495,16 +847,25 @@ export const CommunityLabel = styled.p`
    COMMUNITY TITLE
 ======================================== */
 
-export const CommunityTitle = styled.h3`
+const CommunityTitle = styled.h3`
   max-width: 470px;
 
   margin: 0;
 
-  color: ${({ theme }) => theme.colors.purpleDeep};
+  color:
+    ${({ theme }) =>
+      theme.colors.purpleDeep};
 
-  font-family: ${({ theme }) => theme.fonts.display};
+  font-family:
+    ${({ theme }) =>
+      theme.fonts.display};
 
-  font-size: clamp(2.35rem, 4vw, 3.8rem);
+  font-size:
+    clamp(
+      2.35rem,
+      4vw,
+      3.8rem
+    );
 
   font-weight: 500;
 
@@ -513,7 +874,9 @@ export const CommunityTitle = styled.h3`
   letter-spacing: -0.04em;
 
   span {
-    color: ${({ theme }) => theme.colors.purple};
+    color:
+      ${({ theme }) =>
+        theme.colors.purple};
 
     font-style: italic;
   }
@@ -523,12 +886,17 @@ export const CommunityTitle = styled.h3`
    COMMUNITY DESCRIPTION
 ======================================== */
 
-export const CommunityDescription = styled.p`
+const CommunityDescription = styled.p`
   max-width: 450px;
 
-  margin: 26px 0 0;
+  margin:
+    26px
+    0
+    0;
 
-  color: ${({ theme }) => theme.colors.textMuted};
+  color:
+    ${({ theme }) =>
+      theme.colors.textMuted};
 
   font-size: 14.5px;
 
@@ -539,11 +907,10 @@ export const CommunityDescription = styled.p`
    COMMUNITY RULE
 ======================================== */
 
-export const CommunityRule = styled.div`
+const CommunityRule = styled.div`
   position: relative;
 
   width: 120px;
-
   height: 1px;
 
   margin-top: 38px;
@@ -551,7 +918,12 @@ export const CommunityRule = styled.div`
   overflow: hidden;
 
   background:
-    rgba(91, 33, 182, 0.12);
+    rgba(
+      91,
+      33,
+      182,
+      0.12
+    );
 
   &::after {
     content: "";
@@ -565,12 +937,21 @@ export const CommunityRule = styled.div`
     background:
       linear-gradient(
         90deg,
-        ${({ theme }) => theme.colors.champagne},
-        ${({ theme }) => theme.colors.purple}
+        ${({ theme }) =>
+          theme.colors.champagne},
+        ${({ theme }) =>
+          theme.colors.purple}
       );
 
-    animation: ${shimmer} 4s
-      ease-in-out infinite;
+    animation:
+      ${shimmer}
+      4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &::after {
+      animation: none;
+    }
   }
 `;
 
@@ -578,27 +959,46 @@ export const CommunityRule = styled.div`
    ACTIVITIES GRID
 ======================================== */
 
-export const ActivitiesGrid = styled.div`
+const ActivitiesGrid = styled.div`
   display: grid;
 
   grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
 
   gap: 1px;
 
   overflow: hidden;
 
-  border: 1px solid
-    rgba(69, 35, 105, 0.12);
+  border:
+    1px solid
+    rgba(
+      69,
+      35,
+      105,
+      0.12
+    );
 
   border-radius: 24px;
 
   background:
-    rgba(69, 35, 105, 0.12);
+    rgba(
+      69,
+      35,
+      105,
+      0.12
+    );
 
   box-shadow:
     0 28px 70px
-      rgba(39, 17, 61, 0.07);
+    rgba(
+      39,
+      17,
+      61,
+      0.07
+    );
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -611,7 +1011,7 @@ export const ActivitiesGrid = styled.div`
    ACTIVITY CARD
 ======================================== */
 
-export const ActivityCard = styled.article`
+const ActivityCard = styled.article`
   position: relative;
 
   min-height: 258px;
@@ -623,13 +1023,28 @@ export const ActivityCard = styled.article`
   background:
     linear-gradient(
       145deg,
-      rgba(255, 255, 255, 0.95),
-      rgba(250, 248, 243, 0.92)
+      rgba(
+        255,
+        255,
+        255,
+        0.95
+      ),
+      rgba(
+        250,
+        248,
+        243,
+        0.92
+      )
     );
 
   transition:
     transform 0.4s
-      cubic-bezier(0.2, 0.8, 0.2, 1),
+      cubic-bezier(
+        0.2,
+        0.8,
+        0.2,
+        1
+      ),
     background 0.4s ease,
     box-shadow 0.4s ease;
 
@@ -648,8 +1063,10 @@ export const ActivityCard = styled.article`
       linear-gradient(
         90deg,
         transparent,
-        ${({ theme }) => theme.colors.champagne},
-        ${({ theme }) => theme.colors.purple},
+        ${({ theme }) =>
+          theme.colors.champagne},
+        ${({ theme }) =>
+          theme.colors.purple},
         transparent
       );
 
@@ -678,13 +1095,19 @@ export const ActivityCard = styled.article`
     background:
       radial-gradient(
         circle,
-        rgba(91, 33, 182, 0.11),
+        rgba(
+          91,
+          33,
+          182,
+          0.11
+        ),
         transparent 68%
       );
 
     opacity: 0;
 
-    transition: opacity 0.45s ease;
+    transition:
+      opacity 0.45s ease;
 
     pointer-events: none;
   }
@@ -692,23 +1115,38 @@ export const ActivityCard = styled.article`
   &:hover {
     z-index: 2;
 
-    transform: translateY(-4px);
+    transform:
+      translateY(-4px);
 
     background:
       linear-gradient(
         145deg,
-        ${({ theme }) => theme.colors.white},
-        rgba(250, 248, 243, 0.98)
+        ${({ theme }) =>
+          theme.colors.white},
+        rgba(
+          250,
+          248,
+          243,
+          0.98
+        )
       );
 
     box-shadow:
-      0 24px 55px
-        rgba(39, 17, 61, 0.11);
+      0
+      24px
+      55px
+      rgba(
+        39,
+        17,
+        61,
+        0.11
+      );
 
     &::before {
       opacity: 1;
 
-      transform: scaleX(1);
+      transform:
+        scaleX(1);
     }
 
     &::after {
@@ -725,7 +1163,9 @@ export const ActivityCard = styled.article`
   @media (max-width: 480px) {
     min-height: 220px;
 
-    padding: 27px 24px;
+    padding:
+      27px
+      24px;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -741,7 +1181,7 @@ export const ActivityCard = styled.article`
    ACTIVITY TOP
 ======================================== */
 
-export const ActivityTop = styled.div`
+const ActivityTop = styled.div`
   display: flex;
 
   align-items: center;
@@ -755,7 +1195,7 @@ export const ActivityTop = styled.div`
    ACTIVITY NUMBER
 ======================================== */
 
-export const ActivityNumber = styled.span`
+const ActivityNumber = styled.span`
   display: inline-flex;
 
   align-items: center;
@@ -765,17 +1205,32 @@ export const ActivityNumber = styled.span`
   width: 40px;
   height: 40px;
 
-  border: 1px solid
-    rgba(201, 169, 110, 0.35);
+  border:
+    1px solid
+    rgba(
+      201,
+      169,
+      110,
+      0.35
+    );
 
   border-radius: 50%;
 
   background:
-    rgba(201, 169, 110, 0.06);
+    rgba(
+      201,
+      169,
+      110,
+      0.06
+    );
 
-  color: ${({ theme }) => theme.colors.champagne};
+  color:
+    ${({ theme }) =>
+      theme.colors.champagne};
 
-  font-family: ${({ theme }) => theme.fonts.display};
+  font-family:
+    ${({ theme }) =>
+      theme.fonts.display};
 
   font-size: 13px;
 
@@ -786,7 +1241,7 @@ export const ActivityNumber = styled.span`
    ACTIVITY ICON
 ======================================== */
 
-export const ActivityIcon = styled.span`
+const ActivityIcon = styled.span`
   display: inline-flex;
 
   align-items: center;
@@ -796,15 +1251,28 @@ export const ActivityIcon = styled.span`
   width: 40px;
   height: 40px;
 
-  border: 1px solid
-    rgba(91, 33, 182, 0.14);
+  border:
+    1px solid
+    rgba(
+      91,
+      33,
+      182,
+      0.14
+    );
 
   border-radius: 50%;
 
   background:
-    rgba(91, 33, 182, 0.035);
+    rgba(
+      91,
+      33,
+      182,
+      0.035
+    );
 
-  color: ${({ theme }) => theme.colors.purple};
+  color:
+    ${({ theme }) =>
+      theme.colors.purple};
 
   font-size: 17px;
 
@@ -815,12 +1283,15 @@ export const ActivityIcon = styled.span`
 
   ${ActivityCard}:hover & {
     background:
-      ${({ theme }) => theme.colors.purple};
+      ${({ theme }) =>
+        theme.colors.purple};
 
     color:
-      ${({ theme }) => theme.colors.white};
+      ${({ theme }) =>
+        theme.colors.white};
 
-    transform: rotate(8deg);
+    transform:
+      rotate(8deg);
   }
 `;
 
@@ -828,14 +1299,21 @@ export const ActivityIcon = styled.span`
    ACTIVITY TITLE
 ======================================== */
 
-export const ActivityTitle = styled.h4`
+const ActivityTitle = styled.h4`
   max-width: 360px;
 
-  margin: 0 0 12px;
+  margin:
+    0
+    0
+    12px;
 
-  color: ${({ theme }) => theme.colors.purpleDeep};
+  color:
+    ${({ theme }) =>
+      theme.colors.purpleDeep};
 
-  font-family: ${({ theme }) => theme.fonts.display};
+  font-family:
+    ${({ theme }) =>
+      theme.fonts.display};
 
   font-size: 1.5rem;
 
@@ -850,40 +1328,47 @@ export const ActivityTitle = styled.h4`
    ACTIVITY DESCRIPTION
 ======================================== */
 
-export const ActivityDescription = styled.p`
+const ActivityDescription = styled.p`
   max-width: 400px;
 
   margin: 0;
 
-  color: ${({ theme }) => theme.colors.textMuted};
+  color:
+    ${({ theme }) =>
+      theme.colors.textMuted};
 
   font-size: 13.5px;
 
   line-height: 1.72;
-
-  @media (max-width: 480px) {
-    font-size: 13.5px;
-  }
 `;
 
 /* ========================================
    ACTIVITY ARROW
 ======================================== */
 
-export const ActivityArrow = styled.span`
+const ActivityArrow = styled.span`
   position: absolute;
 
   right: 30px;
   bottom: 25px;
 
-  color: rgba(91, 33, 182, 0.3);
+  color:
+    rgba(
+      91,
+      33,
+      182,
+      0.3
+    );
 
   font-size: 17px;
 
   opacity: 0;
 
   transform:
-    translate(-7px, 7px);
+    translate(
+      -7px,
+      7px
+    );
 
   transition:
     opacity 0.3s ease,
@@ -893,10 +1378,14 @@ export const ActivityArrow = styled.span`
     opacity: 1;
 
     transform:
-      translate(0, 0);
+      translate(
+        0,
+        0
+      );
 
     color:
-      ${({ theme }) => theme.colors.purple};
+      ${({ theme }) =>
+        theme.colors.purple};
   }
 
   @media (max-width: 768px) {
@@ -908,14 +1397,19 @@ export const ActivityArrow = styled.span`
    PARTICIPATION
 ======================================== */
 
-export const Participation = styled.section`
+const Participation = styled.section`
   margin-top: 120px;
 
   padding-top: 92px;
 
   border-top:
     1px solid
-    rgba(69, 35, 105, 0.13);
+    rgba(
+      69,
+      35,
+      105,
+      0.13
+    );
 
   @media (max-width: 768px) {
     margin-top: 82px;
@@ -934,7 +1428,7 @@ export const Participation = styled.section`
    PARTICIPATION HEADER
 ======================================== */
 
-export const ParticipationHeader = styled.div`
+const ParticipationHeader = styled.div`
   display: grid;
 
   grid-template-columns:
@@ -960,7 +1454,7 @@ export const ParticipationHeader = styled.div`
    PARTICIPATION CONTENT
 ======================================== */
 
-export const ParticipationContent = styled.div`
+const ParticipationContent = styled.div`
   min-width: 0;
 `;
 
@@ -968,16 +1462,25 @@ export const ParticipationContent = styled.div`
    PARTICIPATION TITLE
 ======================================== */
 
-export const ParticipationTitle = styled.h3`
+const ParticipationTitle = styled.h3`
   max-width: 650px;
 
   margin: 0;
 
-  color: ${({ theme }) => theme.colors.purpleDeep};
+  color:
+    ${({ theme }) =>
+      theme.colors.purpleDeep};
 
-  font-family: ${({ theme }) => theme.fonts.display};
+  font-family:
+    ${({ theme }) =>
+      theme.fonts.display};
 
-  font-size: clamp(2.7rem, 5vw, 4.8rem);
+  font-size:
+    clamp(
+      2.7rem,
+      5vw,
+      4.8rem
+    );
 
   font-weight: 500;
 
@@ -986,13 +1489,20 @@ export const ParticipationTitle = styled.h3`
   letter-spacing: -0.045em;
 
   span {
-    color: ${({ theme }) => theme.colors.purple};
+    color:
+      ${({ theme }) =>
+        theme.colors.purple};
 
     font-style: italic;
   }
 
   @media (max-width: 768px) {
-    font-size: clamp(2.5rem, 10vw, 4rem);
+    font-size:
+      clamp(
+        2.5rem,
+        10vw,
+        4rem
+      );
   }
 `;
 
@@ -1000,12 +1510,14 @@ export const ParticipationTitle = styled.h3`
    PARTICIPATION DESCRIPTION
 ======================================== */
 
-export const ParticipationDescription = styled.p`
+const ParticipationDescription = styled.p`
   max-width: 500px;
 
   margin: 0;
 
-  color: ${({ theme }) => theme.colors.textMuted};
+  color:
+    ${({ theme }) =>
+      theme.colors.textMuted};
 
   font-size: 14.5px;
 
@@ -1016,11 +1528,14 @@ export const ParticipationDescription = styled.p`
    PARTICIPATION LIST
 ======================================== */
 
-export const ParticipationList = styled.div`
+const ParticipationList = styled.div`
   display: grid;
 
   grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
 
   gap: 1px;
 
@@ -1028,16 +1543,33 @@ export const ParticipationList = styled.div`
 
   border:
     1px solid
-    rgba(69, 35, 105, 0.12);
+    rgba(
+      69,
+      35,
+      105,
+      0.12
+    );
 
   border-radius: 22px;
 
   background:
-    rgba(69, 35, 105, 0.12);
+    rgba(
+      69,
+      35,
+      105,
+      0.12
+    );
 
   box-shadow:
-    0 25px 60px
-      rgba(39, 17, 61, 0.06);
+    0
+    25px
+    60px
+    rgba(
+      39,
+      17,
+      61,
+      0.06
+    );
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -1050,7 +1582,7 @@ export const ParticipationList = styled.div`
    PARTICIPATION ITEM
 ======================================== */
 
-export const ParticipationItem = styled.article`
+const ParticipationItem = styled.article`
   position: relative;
 
   min-height: 220px;
@@ -1058,7 +1590,12 @@ export const ParticipationItem = styled.article`
   padding: 32px;
 
   background:
-    rgba(255, 255, 255, 0.94);
+    rgba(
+      255,
+      255,
+      255,
+      0.94
+    );
 
   overflow: hidden;
 
@@ -1080,29 +1617,40 @@ export const ParticipationItem = styled.article`
     background:
       linear-gradient(
         90deg,
-        ${({ theme }) => theme.colors.purple},
-        ${({ theme }) => theme.colors.champagne}
+        ${({ theme }) =>
+          theme.colors.purple},
+        ${({ theme }) =>
+          theme.colors.champagne}
       );
 
-    transform: scaleX(0);
+    transform:
+      scaleX(0);
 
     transform-origin: left;
 
     transition:
       transform 0.4s
-        cubic-bezier(0.2, 0.8, 0.2, 1);
+      cubic-bezier(
+        0.2,
+        0.8,
+        0.2,
+        1
+      );
   }
 
   &:hover {
     z-index: 2;
 
     background:
-      ${({ theme }) => theme.colors.ivory};
+      ${({ theme }) =>
+        theme.colors.ivory};
 
-    transform: translateY(-3px);
+    transform:
+      translateY(-3px);
 
     &::before {
-      transform: scaleX(1);
+      transform:
+        scaleX(1);
     }
   }
 
@@ -1125,7 +1673,7 @@ export const ParticipationItem = styled.article`
    PARTICIPATION NUMBER
 ======================================== */
 
-export const ParticipationNumber = styled.span`
+const ParticipationNumber = styled.span`
   display: inline-flex;
 
   align-items: center;
@@ -1139,16 +1687,30 @@ export const ParticipationNumber = styled.span`
 
   border:
     1px solid
-    rgba(201, 169, 110, 0.32);
+    rgba(
+      201,
+      169,
+      110,
+      0.32
+    );
 
   border-radius: 50%;
 
   background:
-    rgba(201, 169, 110, 0.055);
+    rgba(
+      201,
+      169,
+      110,
+      0.055
+    );
 
-  color: ${({ theme }) => theme.colors.champagne};
+  color:
+    ${({ theme }) =>
+      theme.colors.champagne};
 
-  font-family: ${({ theme }) => theme.fonts.display};
+  font-family:
+    ${({ theme }) =>
+      theme.fonts.display};
 
   font-size: 13px;
 
@@ -1159,15 +1721,19 @@ export const ParticipationNumber = styled.span`
    PARTICIPATION TEXT
 ======================================== */
 
-export const ParticipationText = styled.div`
+const ParticipationText = styled.div`
   strong {
     display: block;
 
     margin-bottom: 10px;
 
-    color: ${({ theme }) => theme.colors.purpleDeep};
+    color:
+      ${({ theme }) =>
+        theme.colors.purpleDeep};
 
-    font-family: ${({ theme }) => theme.fonts.display};
+    font-family:
+      ${({ theme }) =>
+        theme.fonts.display};
 
     font-size: 1.4rem;
 
@@ -1183,7 +1749,9 @@ export const ParticipationText = styled.div`
 
     margin: 0;
 
-    color: ${({ theme }) => theme.colors.textMuted};
+    color:
+      ${({ theme }) =>
+        theme.colors.textMuted};
 
     font-size: 13.5px;
 
@@ -1195,20 +1763,26 @@ export const ParticipationText = styled.div`
    PARTICIPATION ARROW
 ======================================== */
 
-export const ParticipationArrow = styled.span`
+const ParticipationArrow = styled.span`
   position: absolute;
 
   right: 28px;
   top: 32px;
 
   color:
-    rgba(91, 33, 182, 0.25);
+    rgba(
+      91,
+      33,
+      182,
+      0.25
+    );
 
   font-size: 18px;
 
   opacity: 0;
 
-  transform: translateX(-6px);
+  transform:
+    translateX(-6px);
 
   transition:
     opacity 0.3s ease,
@@ -1217,10 +1791,12 @@ export const ParticipationArrow = styled.span`
   ${ParticipationItem}:hover & {
     opacity: 1;
 
-    transform: translateX(0);
+    transform:
+      translateX(0);
 
     color:
-      ${({ theme }) => theme.colors.purple};
+      ${({ theme }) =>
+        theme.colors.purple};
   }
 
   @media (max-width: 768px) {
@@ -1232,7 +1808,7 @@ export const ParticipationArrow = styled.span`
    BOTTOM STATEMENT
 ======================================== */
 
-export const BottomStatement = styled.div`
+const BottomStatement = styled.div`
   display: flex;
 
   align-items: center;
@@ -1241,7 +1817,9 @@ export const BottomStatement = styled.div`
 
   margin-top: 82px;
 
-  color: ${({ theme }) => theme.colors.purpleDeep};
+  color:
+    ${({ theme }) =>
+      theme.colors.purpleDeep};
 
   > div {
     display: flex;
@@ -1256,9 +1834,16 @@ export const BottomStatement = styled.div`
   }
 
   span {
-    font-family: ${({ theme }) => theme.fonts.display};
+    font-family:
+      ${({ theme }) =>
+        theme.fonts.display};
 
-    font-size: clamp(1.45rem, 3vw, 2.25rem);
+    font-size:
+      clamp(
+        1.45rem,
+        3vw,
+        2.25rem
+      );
 
     font-weight: 500;
 
@@ -1272,9 +1857,12 @@ export const BottomStatement = styled.div`
       margin-left: 22px;
 
       color:
-        ${({ theme }) => theme.colors.champagne};
+        ${({ theme }) =>
+          theme.colors.champagne};
 
-      font-family: ${({ theme }) => theme.fonts.body};
+      font-family:
+        ${({ theme }) =>
+          theme.fonts.body};
 
       font-size: 0.55em;
 
@@ -1319,7 +1907,7 @@ export const BottomStatement = styled.div`
    BOTTOM LINE
 ======================================== */
 
-export const BottomLine = styled.span`
+const BottomLine = styled.span`
   display: block;
 
   flex: 1;
@@ -1332,14 +1920,24 @@ export const BottomLine = styled.span`
     linear-gradient(
       90deg,
       transparent,
-      rgba(201, 169, 110, 0.55)
+      rgba(
+        201,
+        169,
+        110,
+        0.55
+      )
     );
 
   &:last-child {
     background:
       linear-gradient(
         90deg,
-        rgba(201, 169, 110, 0.55),
+        rgba(
+          201,
+          169,
+          110,
+          0.55
+        ),
         transparent
       );
   }
