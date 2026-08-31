@@ -29,15 +29,21 @@ const BASE_PATH =
 const navigationItems = [
   {
     label: "About",
-    href: "#about",
+    href: "about",
     id: "about",
-    type: "hash",
+    type: "route",
   },
   {
     label: "Community",
     href: "#community",
     id: "community",
     type: "hash",
+  },
+  {
+    label: "Team",
+    href: "team",
+    id: "team",
+    type: "route",
   },
   {
     label: "How It Works",
@@ -57,10 +63,17 @@ const MOBILE_HEADER_HEIGHT = 72;
    ROUTING HELPERS
 ===================================================== */
 
-const homeHref = BASE_URL;
+const homeHref =
+  BASE_URL;
 
 const joinHref =
   `${BASE_URL}join`;
+
+const aboutHref =
+  `${BASE_URL}about`;
+
+const teamHref =
+  `${BASE_URL}team`;
 
 const howItWorksHref =
   `${BASE_URL}how-it-works`;
@@ -71,7 +84,8 @@ const isHomePath = () => {
 
   return (
     pathname === BASE_PATH ||
-    pathname === `${BASE_PATH}/`
+    pathname ===
+      `${BASE_PATH}/`
   );
 };
 
@@ -168,8 +182,12 @@ const Navbar = () => {
       );
 
       /*
-       * Only activate section tracking
-       * on the actual homepage.
+       * Only track sections that
+       * actually live on the homepage.
+       *
+       * About is now its own page,
+       * so it is intentionally NOT
+       * included here.
        */
 
       if (!isHomePath()) {
@@ -184,7 +202,8 @@ const Navbar = () => {
         navigationItems
           .filter(
             (item) =>
-              item.type === "hash"
+              item.type ===
+                "hash"
           )
           .map((item) =>
             document.getElementById(
@@ -211,7 +230,8 @@ const Navbar = () => {
       }
 
       const activationPoint =
-        window.innerHeight * 0.28;
+        window.innerHeight *
+        0.28;
 
       let currentSection = "";
 
@@ -362,7 +382,8 @@ const Navbar = () => {
   const scrollToHash = useCallback(
     (
       hash: string,
-      behavior: ScrollBehavior = "smooth"
+      behavior: ScrollBehavior =
+        "smooth"
     ) => {
       const target =
         document.getElementById(
@@ -427,7 +448,9 @@ const Navbar = () => {
         timer
       );
     };
-  }, [scrollToHash]);
+  }, [
+    scrollToHash,
+  ]);
 
   /* ===================================================
      NAVIGATION HANDLER
@@ -441,9 +464,11 @@ const Navbar = () => {
     closeMenu();
 
     /*
-     * Route navigation:
+     * ROUTE NAVIGATION
      *
-     * /regal-affluence-community/how-it-works
+     * About
+     * Team
+     * How It Works
      */
 
     if (
@@ -453,7 +478,9 @@ const Navbar = () => {
     }
 
     /*
-     * Hash navigation.
+     * HASH NAVIGATION
+     *
+     * Community
      */
 
     const target =
@@ -462,9 +489,10 @@ const Navbar = () => {
       );
 
     /*
-     * If we're not on homepage
-     * or target doesn't exist,
-     * allow normal browser navigation.
+     * If we're not on the
+     * homepage or the section
+     * doesn't exist, allow the
+     * browser to navigate normally.
      */
 
     if (
@@ -589,9 +617,15 @@ const Navbar = () => {
 
                 const href =
                   item.type ===
-                  "route"
-                    ? howItWorksHref
-                    : `${BASE_URL}${item.href}`;
+                  "hash"
+                    ? `${BASE_URL}${item.href}`
+                    : item.id ===
+                      "about"
+                      ? aboutHref
+                      : item.id ===
+                        "team"
+                        ? teamHref
+                        : howItWorksHref;
 
                 return (
                   <NavItem
@@ -778,9 +812,15 @@ const Navbar = () => {
 
                 const href =
                   item.type ===
-                  "route"
-                    ? howItWorksHref
-                    : `${BASE_URL}${item.href}`;
+                  "hash"
+                    ? `${BASE_URL}${item.href}`
+                    : item.id ===
+                      "about"
+                      ? aboutHref
+                      : item.id ===
+                        "team"
+                        ? teamHref
+                        : howItWorksHref;
 
                 return (
                   <MobileNavItem
@@ -897,24 +937,9 @@ const Header = styled.header<{
   background:
     linear-gradient(
       110deg,
-      rgba(
-        243,
-        237,
-        255,
-        0.96
-      ),
-      rgba(
-        250,
-        248,
-        243,
-        0.97
-      ),
-      rgba(
-        238,
-        231,
-        250,
-        0.96
-      )
+      rgba(243, 237, 255, 0.96),
+      rgba(250, 248, 243, 0.97),
+      rgba(238, 231, 250, 0.96)
     );
 
   background-size:
@@ -953,30 +978,14 @@ const Header = styled.header<{
     background:
       linear-gradient(
         120deg,
-        rgba(
-          243,
-          237,
-          255,
-          0.98
-        ),
-        rgba(
-          250,
-          248,
-          243,
-          0.98
-        ),
-        rgba(
-          238,
-          231,
-          250,
-          0.98
-        )
+        rgba(243, 237, 255, 0.98),
+        rgba(250, 248, 243, 0.98),
+        rgba(238, 231, 250, 0.98)
       );
   }
 
   @media (
-    prefers-reduced-motion:
-      reduce
+    prefers-reduced-motion: reduce
   ) {
     animation: none;
 
@@ -1014,6 +1023,8 @@ const HeaderInner = styled.div`
         calc(100% - 48px),
         1360px
       );
+
+    gap: 20px;
   }
 
   @media (max-width: 900px) {
@@ -1071,8 +1082,7 @@ const Logo = styled.a`
   }
 
   @media (
-    prefers-reduced-motion:
-      reduce
+    prefers-reduced-motion: reduce
   ) {
     transition: none;
 
@@ -1115,11 +1125,17 @@ const DesktopNav = styled.nav`
 
   align-items: center;
 
-  gap: 6px;
+  gap: 4px;
 
   margin-left: auto;
 
-  margin-right: 10px;
+  margin-right: 8px;
+
+  @media (max-width: 1180px) {
+    gap: 0;
+
+    margin-right: 4px;
+  }
 
   @media (max-width: 900px) {
     display: none;
@@ -1144,7 +1160,7 @@ const NavItem = styled.a<{
   min-height: 42px;
 
   padding:
-    0 17px;
+    0 15px;
 
   color:
     ${({ $active, theme }) =>
@@ -1157,7 +1173,7 @@ const NavItem = styled.a<{
   font-weight: 700;
 
   letter-spacing:
-    0.055em;
+    0.045em;
 
   text-decoration: none;
 
@@ -1176,8 +1192,8 @@ const NavItem = styled.a<{
   .nav-indicator {
     position: absolute;
 
-    left: 16px;
-    right: 16px;
+    left: 14px;
+    right: 14px;
 
     bottom: 5px;
 
@@ -1240,8 +1256,7 @@ const NavItem = styled.a<{
   }
 
   @media (
-    prefers-reduced-motion:
-      reduce
+    prefers-reduced-motion: reduce
   ) {
     transition: none;
 
@@ -1255,152 +1270,861 @@ const NavItem = styled.a<{
    JOIN BUTTON
 ===================================================== */
 
-const JoinButton =
-  styled.a`
+const JoinButton = styled.a`
+  position: relative;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 46px;
+
+  padding:
+    0 21px;
+
+  overflow: hidden;
+
+  flex-shrink: 0;
+
+  border:
+    1px solid
+    rgba(
+      91,
+      33,
+      182,
+      0.12
+    );
+
+  border-radius:
+    ${({ theme }) =>
+      theme.radius.pill};
+
+  background:
+    linear-gradient(
+      135deg,
+      ${({ theme }) =>
+        theme.colors.purple},
+      #7652a8
+    );
+
+  color:
+    ${({ theme }) =>
+      theme.colors.white};
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.07em;
+
+  text-decoration: none;
+
+  text-transform:
+    uppercase;
+
+  box-shadow:
+    0
+    9px
+    26px
+    rgba(
+      91,
+      33,
+      182,
+      0.17
+    );
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  .button-shine {
+    position: absolute;
+
+    top: -30%;
+
+    left: -110%;
+
+    width: 55%;
+
+    height: 160%;
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        rgba(
+          255,
+          255,
+          255,
+          0.4
+        ),
+        transparent
+      );
+
+    transform:
+      skewX(-18deg);
+
+    pointer-events: none;
+  }
+
+  .button-content {
     position: relative;
+
+    z-index: 2;
 
     display: inline-flex;
 
     align-items: center;
 
-    justify-content: center;
+    gap: 10px;
+  }
 
-    min-height: 46px;
+  .button-arrow {
+    font-size: 15px;
 
-    padding:
-      0 21px;
+    line-height: 1;
 
-    overflow: hidden;
+    transition:
+      transform 0.3s ease;
+  }
 
-    flex-shrink: 0;
+  &:hover {
+    transform:
+      translateY(-2px);
 
-    border:
-      1px solid
+    box-shadow:
+      0
+      14px
+      32px
       rgba(
         91,
         33,
         182,
-        0.12
+        0.25
       );
+  }
 
-    border-radius:
-      ${({ theme }) =>
-        theme.radius.pill};
+  &:hover .button-shine {
+    animation:
+      ${shimmer}
+      0.8s
+      ease
+      forwards;
+  }
 
-    background:
-      linear-gradient(
-        135deg,
-        ${({ theme }) =>
-          theme.colors.purple},
-        #7652a8
+  &:hover .button-arrow {
+    transform:
+      translate(
+        2px,
+        -2px
       );
+  }
 
-    color:
+  &:active {
+    transform:
+      translateY(0)
+      scale(0.99);
+  }
+
+  &:focus-visible {
+    outline:
+      2px solid
       ${({ theme }) =>
-        theme.colors.white};
+        theme.colors.champagne};
 
+    outline-offset: 5px;
+  }
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+
+  @media (
+    prefers-reduced-motion: reduce
+  ) {
+    transition: none;
+
+    &:hover,
+    &:active {
+      transform: none;
+    }
+
+    &:hover .button-shine {
+      animation: none;
+    }
+
+    &:hover .button-arrow {
+      transform: none;
+    }
+  }
+`;
+
+/* =====================================================
+   MOBILE MENU BUTTON
+===================================================== */
+
+const MenuButton = styled.button<{
+  $open: boolean;
+}>`
+  display: none;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 9px;
+
+  width: 82px;
+
+  height: 42px;
+
+  padding: 0;
+
+  border:
+    1px solid
+    rgba(
+      91,
+      33,
+      182,
+      0.14
+    );
+
+  border-radius:
+    ${({ theme }) =>
+      theme.radius.pill};
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.42
+    );
+
+  color:
+    ${({ theme }) =>
+      theme.colors.purpleDeep};
+
+  cursor: pointer;
+
+  backdrop-filter:
+    blur(10px);
+
+  -webkit-backdrop-filter:
+    blur(10px);
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
+
+  .menu-text {
     font-size: 10px;
 
     font-weight: 800;
 
     letter-spacing:
-      0.085em;
-
-    text-decoration: none;
+      0.12em;
 
     text-transform:
       uppercase;
+  }
 
-    box-shadow:
-      0
-      9px
-      26px
-      rgba(
-        91,
-        33,
-        182,
-        0.17
-      );
+  .menu-icon {
+    display: flex;
+
+    flex-direction:
+      column;
+
+    justify-content:
+      center;
+
+    gap: 4px;
+  }
+
+  .line {
+    display: block;
+
+    width: 16px;
+
+    height: 1px;
+
+    background:
+      currentColor;
+
+    transform-origin:
+      center;
 
     transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
+      transform 0.3s ease;
+  }
 
-    .button-shine {
-      position: absolute;
+  .line-one.open {
+    transform:
+      translateY(2.5px)
+      rotate(45deg);
+  }
 
-      top: -30%;
-      left: -110%;
+  .line-two.open {
+    transform:
+      translateY(-2.5px)
+      rotate(-45deg);
+  }
 
-      width: 55%;
-      height: 160%;
+  &:hover {
+    transform:
+      translateY(-1px);
 
-      background:
-        linear-gradient(
-          90deg,
-          transparent,
-          rgba(
-            255,
-            255,
-            255,
-            0.4
-          ),
-          transparent
-        );
+    background:
+      rgba(
+        255,
+        255,
+        255,
+        0.62
+      );
+  }
 
-      transform:
-        skewX(-18deg);
+  &:active {
+    transform:
+      scale(0.97);
+  }
 
-      pointer-events:
-        none;
+  &:focus-visible {
+    outline:
+      2px solid
+      ${({ theme }) =>
+        theme.colors.purple};
+
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 900px) {
+    display: flex;
+  }
+
+  @media (max-width: 480px) {
+    width: 76px;
+
+    height: 40px;
+  }
+
+  @media (
+    prefers-reduced-motion: reduce
+  ) {
+    transition: none;
+
+    .line {
+      transition: none;
     }
 
-    .button-content {
-      position: relative;
-
-      z-index: 2;
-
-      display: inline-flex;
-
-      align-items: center;
-
-      gap: 10px;
+    &:hover,
+    &:active {
+      transform: none;
     }
+  }
+`;
 
-    .button-arrow {
-      font-size: 15px;
+/* =====================================================
+   MOBILE BACKDROP
+===================================================== */
 
-      line-height: 1;
+const MobileBackdrop = styled.div<{
+  $open: boolean;
+}>`
+  position: fixed;
 
-      transition:
-        transform 0.3s ease;
-    }
+  inset: 0;
 
-    &:hover {
-      transform:
-        translateY(-2px);
+  z-index: 998;
 
-      box-shadow:
-        0
-        14px
-        32px
+  background:
+    rgba(
+      32,
+      18,
+      50,
+      0.48
+    );
+
+  backdrop-filter:
+    blur(7px);
+
+  -webkit-backdrop-filter:
+    blur(7px);
+
+  opacity:
+    ${({ $open }) =>
+      $open ? 1 : 0};
+
+  visibility:
+    ${({ $open }) =>
+      $open
+        ? "visible"
+        : "hidden"};
+
+  pointer-events:
+    ${({ $open }) =>
+      $open
+        ? "auto"
+        : "none"};
+
+  transition:
+    opacity 0.35s ease,
+    visibility 0.35s ease;
+
+  @media (min-width: 901px) {
+    display: none;
+  }
+
+  @media (
+    prefers-reduced-motion: reduce
+  ) {
+    transition: none;
+  }
+`;
+
+/* =====================================================
+   MOBILE MENU
+===================================================== */
+
+const MobileMenu = styled.div<{
+  $open: boolean;
+}>`
+  position: fixed;
+
+  top: 84px;
+
+  left: 12px;
+
+  right: 12px;
+
+  z-index: 999;
+
+  max-height:
+    calc(
+      100vh - 98px
+    );
+
+  overflow-y: auto;
+
+  border:
+    1px solid
+    rgba(
+      91,
+      33,
+      182,
+      0.12
+    );
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(
+        246,
+        241,
+        255,
+        0.98
+      ),
+      rgba(
+        250,
+        248,
+        243,
+        0.98
+      ),
+      rgba(
+        239,
+        232,
+        251,
+        0.98
+      )
+    );
+
+  box-shadow:
+    0
+    28px
+    80px
+    rgba(
+      38,
+      22,
+      57,
+      0.2
+    );
+
+  opacity:
+    ${({ $open }) =>
+      $open ? 1 : 0};
+
+  visibility:
+    ${({ $open }) =>
+      $open
+        ? "visible"
+        : "hidden"};
+
+  pointer-events:
+    ${({ $open }) =>
+      $open
+        ? "auto"
+        : "none"};
+
+  transform:
+    ${({ $open }) =>
+      $open
+        ? "translateY(0) scale(1)"
+        : "translateY(-10px) scale(.98)"};
+
+  transition:
+    opacity 0.3s ease,
+    transform 0.4s
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      ),
+    visibility 0.3s ease;
+
+  .menu-glow {
+    position: absolute;
+
+    top: -90px;
+
+    right: -80px;
+
+    width: 230px;
+
+    height: 230px;
+
+    border-radius: 50%;
+
+    background:
+      radial-gradient(
+        circle,
         rgba(
-          91,
-          33,
-          182,
-          0.25
-        );
+          123,
+          84,
+          181,
+          0.16
+        ),
+        transparent 68%
+      );
+
+    filter:
+      blur(30px);
+
+    pointer-events:
+      none;
+  }
+
+  .menu-inner {
+    position: relative;
+
+    z-index: 1;
+
+    padding:
+      28px
+      24px
+      22px;
+  }
+
+  .mobile-intro {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom:
+      15px;
+
+    color:
+      ${({ theme }) =>
+        theme.colors.purple};
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing:
+      0.16em;
+  }
+
+  .intro-line {
+    width: 24px;
+
+    height: 1px;
+
+    background:
+      ${({ theme }) =>
+        theme.colors.champagne};
+  }
+
+  .intro-mark {
+    margin-left: auto;
+
+    color:
+      ${({ theme }) =>
+        theme.colors.champagne};
+
+    font-size: 11px;
+  }
+
+  .mobile-heading {
+    display: flex;
+
+    flex-direction:
+      column;
+
+    margin-bottom:
+      24px;
+
+    color:
+      ${({ theme }) =>
+        theme.colors.purpleDeep};
+
+    font-family:
+      ${({ theme }) =>
+        theme.fonts.display};
+
+    font-size: 38px;
+
+    font-weight: 500;
+
+    line-height:
+      0.94;
+
+    letter-spacing:
+      -0.045em;
+  }
+
+  .heading-muted {
+    color:
+      ${({ theme }) =>
+        theme.colors.textMuted};
+  }
+
+  .mobile-footer {
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+      space-between;
+
+    gap: 12px;
+
+    margin-top:
+      20px;
+
+    padding-top:
+      17px;
+
+    border-top:
+      1px solid
+      ${({ theme }) =>
+        theme.colors.border};
+
+    color:
+      ${({ theme }) =>
+        theme.colors.textMuted};
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing:
+      0.09em;
+  }
+
+  @media (max-width: 768px) {
+    top: 78px;
+  }
+
+  @media (max-width: 480px) {
+    top: 76px;
+
+    left: 8px;
+
+    right: 8px;
+
+    max-height:
+      calc(
+        100vh - 86px
+      );
+
+    border-radius:
+      21px;
+
+    .menu-inner {
+      padding:
+        24px
+        20px
+        18px;
     }
 
-    &:hover .button-shine {
-      animation:
-        ${shimmer}
-        0.8s
-        ease
-        forwards;
+    .mobile-heading {
+      font-size: 34px;
+    }
+  }
+
+  @media (
+    prefers-reduced-motion: reduce
+  ) {
+    transition: none;
+
+    transform: none;
+  }
+`;
+
+/* =====================================================
+   MOBILE NAV
+===================================================== */
+
+const MobileNav = styled.nav`
+  display: flex;
+
+  flex-direction:
+    column;
+
+  border-top:
+    1px solid
+    ${({ theme }) =>
+      theme.colors.border};
+`;
+
+/* =====================================================
+   MOBILE NAV ITEM
+===================================================== */
+
+const MobileNavItem = styled.a<{
+  $active: boolean;
+}>`
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    30px
+    1fr
+    24px;
+
+  align-items: center;
+
+  min-height: 66px;
+
+  gap: 8px;
+
+  padding: 0 3px;
+
+  border-bottom:
+    1px solid
+    ${({ theme }) =>
+      theme.colors.border};
+
+  color:
+    ${({ $active, theme }) =>
+      $active
+        ? theme.colors.purple
+        : theme.colors.text};
+
+  text-decoration: none;
+
+  animation:
+    ${mobileItemReveal}
+    0.45s
+    ease
+    both;
+
+  .number {
+    color:
+      ${({ $active, theme }) =>
+        $active
+          ? theme.colors.champagne
+          : theme.colors.textMuted};
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing:
+      0.08em;
+  }
+
+  .label {
+    font-family:
+      ${({ theme }) =>
+        theme.fonts.display};
+
+    font-size: 23px;
+
+    font-weight: 500;
+
+    letter-spacing:
+      -0.025em;
+
+    transition:
+      transform 0.25s ease;
+  }
+
+  .arrow {
+    justify-self: end;
+
+    color:
+      ${({ theme }) =>
+        theme.colors.champagne};
+
+    font-size: 16px;
+
+    opacity:
+      ${({ $active }) =>
+        $active ? 1 : 0.35};
+
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  &::before {
+    content: "";
+
+    position: absolute;
+
+    left: -12px;
+
+    top: 50%;
+
+    width: 3px;
+
+    height: 0;
+
+    border-radius: 999px;
+
+    background:
+      ${({ theme }) =>
+        theme.colors.purple};
+
+    transform:
+      translateY(-50%);
+
+    transition:
+      height 0.3s ease;
+  }
+
+  &:hover {
+    color:
+      ${({ theme }) =>
+        theme.colors.purple};
+
+    .label {
+      transform:
+        translateX(3px);
     }
 
-    &:hover .button-arrow {
+    .arrow {
+      opacity: 1;
+
       transform:
         translate(
           2px,
@@ -1408,754 +2132,49 @@ const JoinButton =
         );
     }
 
-    &:active {
-      transform:
-        translateY(0)
-        scale(0.99);
+    &::before {
+      height: 28px;
     }
+  }
 
-    &:focus-visible {
-      outline:
-        2px solid
-        ${({ theme }) =>
-          theme.colors.champagne};
-
-      outline-offset: 5px;
-    }
-
-    @media (max-width: 900px) {
-      display: none;
-    }
-
-    @media (
-      prefers-reduced-motion:
-        reduce
-    ) {
-      transition: none;
-
-      &:hover,
-      &:active {
-        transform: none;
-      }
-
-      &:hover .button-shine {
-        animation: none;
-      }
-
-      &:hover .button-arrow {
-        transform: none;
-      }
-    }
-  `;
-
-/* =====================================================
-   MOBILE MENU BUTTON
-===================================================== */
-
-const MenuButton =
-  styled.button<{
-    $open: boolean;
-  }>`
-    display: none;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 9px;
-
-    width: 82px;
-
-    height: 42px;
-
-    padding: 0;
-
-    border:
-      1px solid
-      rgba(
-        91,
-        33,
-        182,
-        0.14
-      );
-
-    border-radius:
+  &:focus-visible {
+    outline:
+      2px solid
       ${({ theme }) =>
-        theme.radius.pill};
+        theme.colors.purple};
 
-    background:
-      rgba(
-        255,
-        255,
-        255,
-        0.42
-      );
+    outline-offset: 3px;
 
-    color:
-      ${({ theme }) =>
-        theme.colors.purpleDeep};
+    border-radius: 5px;
+  }
 
-    cursor: pointer;
-
-    backdrop-filter:
-      blur(10px);
-
-    -webkit-backdrop-filter:
-      blur(10px);
-
-    transition:
-      transform 0.25s ease,
-      background 0.25s ease;
-
-    .menu-text {
-      font-size: 9px;
-
-      font-weight: 800;
-
-      letter-spacing:
-        0.13em;
-
-      text-transform:
-        uppercase;
-    }
-
-    .menu-icon {
-      display: flex;
-
-      flex-direction:
-        column;
-
-      justify-content:
-        center;
-
-      gap: 4px;
-    }
-
-    .line {
-      display: block;
-
-      width: 16px;
-      height: 1px;
-
-      background:
-        currentColor;
-
-      transform-origin:
-        center;
-
-      transition:
-        transform 0.3s ease;
-    }
-
-    .line-one.open {
-      transform:
-        translateY(2.5px)
-        rotate(45deg);
-    }
-
-    .line-two.open {
-      transform:
-        translateY(-2.5px)
-        rotate(-45deg);
-    }
-
-    &:hover {
-      transform:
-        translateY(-1px);
-
-      background:
-        rgba(
-          255,
-          255,
-          255,
-          0.62
-        );
-    }
-
-    &:active {
-      transform:
-        scale(0.97);
-    }
-
-    &:focus-visible {
-      outline:
-        2px solid
-        ${({ theme }) =>
-          theme.colors.purple};
-
-      outline-offset: 4px;
-    }
-
-    @media (max-width: 900px) {
-      display: flex;
-    }
-
-    @media (max-width: 480px) {
-      width: 76px;
-      height: 40px;
-    }
-
-    @media (
-      prefers-reduced-motion:
-        reduce
-    ) {
-      transition: none;
-
-      .line {
-        transition: none;
-      }
-
-      &:hover,
-      &:active {
-        transform: none;
-      }
-    }
-  `;
-
-/* =====================================================
-   MOBILE BACKDROP
-===================================================== */
-
-const MobileBackdrop =
-  styled.div<{
-    $open: boolean;
-  }>`
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 998;
-
-    background:
-      rgba(
-        32,
-        18,
-        50,
-        0.48
-      );
-
-    backdrop-filter:
-      blur(7px);
-
-    -webkit-backdrop-filter:
-      blur(7px);
-
-    opacity:
-      ${({ $open }) =>
-        $open ? 1 : 0};
-
-    visibility:
-      ${({ $open }) =>
-        $open
-          ? "visible"
-          : "hidden"};
-
-    pointer-events:
-      ${({ $open }) =>
-        $open
-          ? "auto"
-          : "none"};
-
-    transition:
-      opacity 0.35s ease,
-      visibility 0.35s ease;
-
-    @media (min-width: 901px) {
-      display: none;
-    }
-
-    @media (
-      prefers-reduced-motion:
-        reduce
-    ) {
-      transition: none;
-    }
-  `;
-
-/* =====================================================
-   MOBILE MENU
-===================================================== */
-
-const MobileMenu =
-  styled.div<{
-    $open: boolean;
-  }>`
-    position: fixed;
-
-    top: 84px;
-
-    left: 12px;
-    right: 12px;
-
-    z-index: 999;
-
-    max-height:
-      calc(
-        100vh - 98px
-      );
-
-    overflow-y: auto;
-
-    border:
-      1px solid
-      rgba(
-        91,
-        33,
-        182,
-        0.12
-      );
-
-    border-radius: 24px;
-
-    background:
-      linear-gradient(
-        145deg,
-        rgba(
-          246,
-          241,
-          255,
-          0.98
-        ),
-        rgba(
-          250,
-          248,
-          243,
-          0.98
-        ),
-        rgba(
-          239,
-          232,
-          251,
-          0.98
-        )
-      );
-
-    box-shadow:
-      0
-      28px
-      80px
-      rgba(
-        38,
-        22,
-        57,
-        0.2
-      );
-
-    opacity:
-      ${({ $open }) =>
-        $open ? 1 : 0};
-
-    visibility:
-      ${({ $open }) =>
-        $open
-          ? "visible"
-          : "hidden"};
-
-    pointer-events:
-      ${({ $open }) =>
-        $open
-          ? "auto"
-          : "none"};
-
-    transform:
-      ${({ $open }) =>
-        $open
-          ? "translateY(0) scale(1)"
-          : "translateY(-10px) scale(.98)"};
-
-    transition:
-      opacity 0.3s ease,
-      transform 0.4s
-        cubic-bezier(
-          0.16,
-          1,
-          0.3,
-          1
-        ),
-      visibility 0.3s ease;
-
-    .menu-glow {
-      position: absolute;
-
-      top: -90px;
-      right: -80px;
-
-      width: 230px;
-      height: 230px;
-
-      border-radius: 50%;
-
-      background:
-        radial-gradient(
-          circle,
-          rgba(
-            123,
-            84,
-            181,
-            0.16
-          ),
-          transparent 68%
-        );
-
-      filter:
-        blur(30px);
-
-      pointer-events:
-        none;
-    }
-
-    .menu-inner {
-      position: relative;
-
-      z-index: 1;
-
-      padding:
-        28px
-        24px
-        22px;
-    }
-
-    .mobile-intro {
-      display: flex;
-
-      align-items: center;
-
-      gap: 9px;
-
-      margin-bottom: 15px;
-
-      color:
-        ${({ theme }) =>
-          theme.colors.purple};
-
-      font-size: 8px;
-
-      font-weight: 800;
-
-      letter-spacing:
-        0.18em;
-    }
-
-    .intro-line {
-      width: 24px;
-
-      height: 1px;
-
-      background:
-        ${({ theme }) =>
-          theme.colors.champagne};
-    }
-
-    .intro-mark {
-      margin-left: auto;
-
-      color:
-        ${({ theme }) =>
-          theme.colors.champagne};
-
-      font-size: 11px;
-    }
-
-    .mobile-heading {
-      display: flex;
-
-      flex-direction:
-        column;
-
-      margin-bottom: 24px;
-
-      color:
-        ${({ theme }) =>
-          theme.colors.purpleDeep};
-
-      font-family:
-        ${({ theme }) =>
-          theme.fonts.display};
-
-      font-size: 38px;
-
-      font-weight: 500;
-
-      line-height: 0.94;
-
-      letter-spacing:
-        -0.045em;
-    }
-
-    .heading-muted {
-      color:
-        ${({ theme }) =>
-          theme.colors.textMuted};
-    }
-
-    .mobile-footer {
-      display: flex;
-
-      align-items: center;
-
-      justify-content:
-        space-between;
-
-      gap: 12px;
-
-      margin-top: 20px;
-
-      padding-top: 17px;
-
-      border-top:
-        1px solid
-        ${({ theme }) =>
-          theme.colors.border};
-
-      color:
-        ${({ theme }) =>
-          theme.colors.textMuted};
-
-      font-size: 7px;
-
-      font-weight: 800;
-
-      letter-spacing:
-        0.09em;
-    }
-
-    @media (max-width: 768px) {
-      top: 78px;
-    }
-
-    @media (max-width: 480px) {
-      top: 76px;
-
-      left: 8px;
-      right: 8px;
-
-      max-height:
-        calc(
-          100vh - 86px
-        );
-
-      border-radius: 21px;
-
-      .menu-inner {
-        padding:
-          24px
-          20px
-          18px;
-      }
-
-      .mobile-heading {
-        font-size: 34px;
-      }
-    }
-
-    @media (
-      prefers-reduced-motion:
-        reduce
-    ) {
-      transition: none;
-
-      transform: none;
-    }
-  `;
-
-/* =====================================================
-   MOBILE NAV
-===================================================== */
-
-const MobileNav =
-  styled.nav`
-    display: flex;
-
-    flex-direction: column;
-
-    border-top:
-      1px solid
-      ${({ theme }) =>
-        theme.colors.border};
-  `;
-
-/* =====================================================
-   MOBILE NAV ITEM
-===================================================== */
-
-const MobileNavItem =
-  styled.a<{
-    $active: boolean;
-  }>`
-    position: relative;
-
-    display: grid;
-
-    grid-template-columns:
-      30px
-      1fr
-      24px;
-
-    align-items: center;
-
-    min-height: 66px;
-
-    gap: 8px;
-
-    padding: 0 3px;
-
-    border-bottom:
-      1px solid
-      ${({ theme }) =>
-        theme.colors.border};
-
-    color:
-      ${({ $active, theme }) =>
-        $active
-          ? theme.colors.purple
-          : theme.colors.text};
-
-    text-decoration: none;
-
-    animation:
-      ${mobileItemReveal}
-      0.45s
-      ease
-      both;
-
-    .number {
-      color:
-        ${({ $active, theme }) =>
-          $active
-            ? theme.colors.champagne
-            : theme.colors.textMuted};
-
-      font-size: 8px;
-
-      font-weight: 800;
-
-      letter-spacing:
-        0.08em;
-    }
+  @media (max-width: 480px) {
+    min-height: 62px;
 
     .label {
-      font-family:
-        ${({ theme }) =>
-          theme.fonts.display};
+      font-size: 21px;
+    }
+  }
 
-      font-size: 23px;
+  @media (
+    prefers-reduced-motion: reduce
+  ) {
+    animation: none;
 
-      font-weight: 500;
-
-      letter-spacing:
-        -0.025em;
-
-      transition:
-        transform 0.25s ease;
+    .label,
+    .arrow {
+      transition: none;
     }
 
-    .arrow {
-      justify-self: end;
-
-      color:
-        ${({ theme }) =>
-          theme.colors.champagne};
-
-      font-size: 16px;
-
-      opacity:
-        ${({ $active }) =>
-          $active ? 1 : 0.35};
-
-      transition:
-        opacity 0.25s ease,
-        transform 0.25s ease;
+    &:hover .label {
+      transform: none;
     }
 
     &::before {
-      content: "";
-
-      position: absolute;
-
-      left: -12px;
-
-      top: 50%;
-
-      width: 3px;
-      height: 0;
-
-      border-radius: 999px;
-
-      background:
-        ${({ theme }) =>
-          theme.colors.purple};
-
-      transform:
-        translateY(-50%);
-
-      transition:
-        height 0.3s ease;
+      transition: none;
     }
-
-    &:hover {
-      color:
-        ${({ theme }) =>
-          theme.colors.purple};
-
-      .label {
-        transform:
-          translateX(3px);
-      }
-
-      .arrow {
-        opacity: 1;
-
-        transform:
-          translate(
-            2px,
-            -2px
-          );
-      }
-
-      &::before {
-        height: 28px;
-      }
-    }
-
-    &:focus-visible {
-      outline:
-        2px solid
-        ${({ theme }) =>
-          theme.colors.purple};
-
-      outline-offset: 3px;
-
-      border-radius: 5px;
-    }
-
-    @media (max-width: 480px) {
-      min-height: 62px;
-
-      .label {
-        font-size: 21px;
-      }
-    }
-
-    @media (
-      prefers-reduced-motion:
-        reduce
-    ) {
-      animation: none;
-
-      .label,
-      .arrow {
-        transition: none;
-      }
-
-      &:hover .label {
-        transform: none;
-      }
-
-      &::before {
-        transition: none;
-      }
-    }
-  `;
+  }
+`;
 
 /* =====================================================
    MOBILE CTA
@@ -2213,12 +2232,12 @@ const MobileJoinButton =
       box-shadow 0.25s ease;
 
     .mobile-cta-main {
-      font-size: 10px;
+      font-size: 11px;
 
       font-weight: 800;
 
       letter-spacing:
-        0.075em;
+        0.065em;
 
       text-transform:
         uppercase;
@@ -2235,12 +2254,12 @@ const MobileJoinButton =
         ${({ theme }) =>
           theme.colors.champagneLight};
 
-      font-size: 9px;
+      font-size: 10px;
 
       font-weight: 700;
 
       letter-spacing:
-        0.06em;
+        0.05em;
     }
 
     &:hover {
@@ -2269,8 +2288,7 @@ const MobileJoinButton =
     }
 
     @media (
-      prefers-reduced-motion:
-        reduce
+      prefers-reduced-motion: reduce
     ) {
       transition: none;
 

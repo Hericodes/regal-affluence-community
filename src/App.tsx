@@ -9,16 +9,25 @@ import {
 import GlobalStyles from "./styles/GlobalStyles";
 import theme from "./styles/theme";
 
+/* =====================================================
+   COMPONENTS
+===================================================== */
+
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import About from "./components/About";
 import Community from "./components/Community";
 import Footer from "./components/Footer";
 
+/* =====================================================
+   PAGES
+===================================================== */
+
+import About from "./components/About";
 import Join from "./pages/Join/Join";
 import Benefits from "./pages/Benefits";
 import HowItWorks from "./pages/HowItWorks";
 import WhoItsFor from "./pages/WhoItsFor";
+import Team from "./pages/Team";
 import Privacy from "./pages/Privacy/Privacy";
 import Terms from "./pages/Terms/Terms";
 
@@ -33,8 +42,8 @@ import Terms from "./pages/Terms/Terms";
  * Cloudflare custom domain:
  * /
  *
- * vite.config.ts controls the mode used
- * when building for each environment.
+ * vite.config.ts controls which
+ * environment is being built.
  */
 
 const ROUTER_BASENAME =
@@ -43,7 +52,7 @@ const ROUTER_BASENAME =
     : "";
 
 /* =====================================================
-   HOME
+   HOME PAGE
 ===================================================== */
 
 function Home() {
@@ -53,7 +62,6 @@ function Home() {
 
       <main>
         <Hero />
-        <About />
         <Community />
       </main>
 
@@ -63,7 +71,25 @@ function Home() {
 }
 
 /* =====================================================
-   JOIN
+   ABOUT PAGE
+===================================================== */
+
+function AboutPage() {
+  return (
+    <>
+      <Navbar />
+
+      <main>
+        <About />
+      </main>
+
+      <Footer />
+    </>
+  );
+}
+
+/* =====================================================
+   JOIN PAGE
 ===================================================== */
 
 function JoinPage() {
@@ -79,7 +105,7 @@ function JoinPage() {
 }
 
 /* =====================================================
-   BENEFITS
+   BENEFITS PAGE
 ===================================================== */
 
 function BenefitsPage() {
@@ -97,7 +123,7 @@ function BenefitsPage() {
 }
 
 /* =====================================================
-   HOW IT WORKS
+   HOW IT WORKS PAGE
 ===================================================== */
 
 function HowItWorksPage() {
@@ -115,7 +141,7 @@ function HowItWorksPage() {
 }
 
 /* =====================================================
-   WHO IT'S FOR
+   WHO IT'S FOR PAGE
 ===================================================== */
 
 function WhoItsForPage() {
@@ -133,7 +159,25 @@ function WhoItsForPage() {
 }
 
 /* =====================================================
-   PRIVACY
+   TEAM PAGE
+===================================================== */
+
+function TeamPage() {
+  return (
+    <>
+      <Navbar />
+
+      <main>
+        <Team />
+      </main>
+
+      <Footer />
+    </>
+  );
+}
+
+/* =====================================================
+   PRIVACY PAGE
 ===================================================== */
 
 function PrivacyPage() {
@@ -151,7 +195,7 @@ function PrivacyPage() {
 }
 
 /* =====================================================
-   TERMS
+   TERMS PAGE
 ===================================================== */
 
 function TermsPage() {
@@ -192,6 +236,15 @@ function App() {
           />
 
           {/* =================================================
+              ABOUT
+          ================================================= */}
+
+          <Route
+            path="/about"
+            element={<AboutPage />}
+          />
+
+          {/* =================================================
               JOIN
           ================================================= */}
 
@@ -225,6 +278,15 @@ function App() {
           <Route
             path="/who-its-for"
             element={<WhoItsForPage />}
+          />
+
+          {/* =================================================
+              TEAM
+          ================================================= */}
+
+          <Route
+            path="/team"
+            element={<TeamPage />}
           />
 
           {/* =================================================

@@ -27,7 +27,7 @@ const joinHref =
   `${BASE_URL}join`;
 
 const aboutHref =
-  `${BASE_URL}#about`;
+  `${BASE_URL}about`;
 
 const heroImage =
   `${BASE_URL}images/hero-community.jpeg`;
@@ -114,12 +114,14 @@ const glowPulse = keyframes`
   0%,
   100% {
     opacity: 0.35;
+
     transform:
       scale(1);
   }
 
   50% {
     opacity: 0.6;
+
     transform:
       scale(1.08);
   }
@@ -168,6 +170,7 @@ const scrollMove = keyframes`
   0% {
     transform:
       translateY(-6px);
+
     opacity: 0;
   }
 
@@ -178,6 +181,7 @@ const scrollMove = keyframes`
   100% {
     transform:
       translateY(18px);
+
     opacity: 0;
   }
 `;
@@ -388,7 +392,7 @@ const Hero = () => {
 
       <ScrollIndicator
         href={aboutHref}
-        aria-label="Scroll to discover more"
+        aria-label="Go to the About page"
       >
         <ScrollText>
           Explore
@@ -513,7 +517,8 @@ const Section =
     }
 
     @media (
-      prefers-reduced-motion: reduce
+      prefers-reduced-motion:
+        reduce
     ) {
       & *,
       & *::before,
@@ -1153,7 +1158,8 @@ const Eyebrow =
 
     line-height: 1.4;
 
-    text-transform: uppercase;
+    text-transform:
+      uppercase;
 
     &::before {
       content: "";
@@ -1342,12 +1348,14 @@ const Description =
 
     font-weight: 400;
 
-    line-height: 1.75;
+    line-height:
+      1.75;
 
     letter-spacing:
       -0.005em;
 
-    text-wrap: pretty;
+    text-wrap:
+      pretty;
 
     @media (max-width: 768px) {
       max-width: 550px;
@@ -1355,7 +1363,8 @@ const Description =
       margin-top:
         23px;
 
-      font-size: 15px;
+      font-size:
+        15px;
 
       line-height:
         1.68;
@@ -1385,7 +1394,8 @@ const Actions =
 
     gap: 12px;
 
-    margin-top: 35px;
+    margin-top:
+      35px;
 
     @media (max-width: 520px) {
       flex-direction:
@@ -1421,7 +1431,8 @@ const PrimaryButton =
     min-height: 56px;
 
     padding:
-      0 25px;
+      0
+      25px;
 
     overflow: hidden;
 
@@ -1517,13 +1528,15 @@ const PrimaryButton =
           0.35
         );
 
-      filter: blur(10px);
+      filter:
+        blur(10px);
 
       transform:
         translateX(-140%)
         skewX(-18deg);
 
-      pointer-events: none;
+      pointer-events:
+        none;
     }
 
     .arrow {
@@ -1821,7 +1834,8 @@ const StatStrip =
 
     width: fit-content;
 
-    margin-top: 43px;
+    margin-top:
+      43px;
 
     padding:
       14px
@@ -1848,19 +1862,23 @@ const StatStrip =
     @media (max-width: 600px) {
       width: 100%;
 
-      margin-top: 34px;
+      margin-top:
+        34px;
     }
   `;
 
 const Stat =
   styled.div`
-    min-width: 105px;
+    min-width:
+      105px;
 
     padding:
-      0 20px;
+      0
+      20px;
 
     &:first-child {
-      padding-left: 0;
+      padding-left:
+        0;
     }
 
     & + & {
@@ -1875,19 +1893,23 @@ const Stat =
     }
 
     @media (max-width: 600px) {
-      min-width: 0;
+      min-width:
+        0;
 
       flex: 1;
 
       padding:
-        0 13px;
+        0
+        13px;
 
       &:first-child {
-        padding-left: 0;
+        padding-left:
+          0;
       }
 
       &:last-child {
-        padding-right: 0;
+        padding-right:
+          0;
       }
     }
   `;
@@ -1904,18 +1926,22 @@ const StatValue =
       ${({ theme }) =>
         theme.fonts.display};
 
-    font-size: 20px;
+    font-size:
+      20px;
 
-    font-weight: 500;
+    font-weight:
+      500;
 
-    line-height: 1;
+    line-height:
+      1;
   `;
 
 const StatLabel =
   styled.span`
     display: block;
 
-    margin-top: 5px;
+    margin-top:
+      5px;
 
     color:
       rgba(
@@ -1925,9 +1951,11 @@ const StatLabel =
         0.47
       );
 
-    font-size: 8px;
+    font-size:
+      8px;
 
-    font-weight: 700;
+    font-weight:
+      700;
 
     letter-spacing:
       0.12em;
@@ -1936,7 +1964,8 @@ const StatLabel =
       uppercase;
 
     @media (max-width: 480px) {
-      font-size: 7px;
+      font-size:
+        7px;
 
       letter-spacing:
         0.08em;
@@ -1993,7 +2022,8 @@ const ScrollIndicator =
         ${({ theme }) =>
           theme.colors.champagneLight};
 
-      outline-offset: 6px;
+      outline-offset:
+        6px;
     }
 
     @media (max-width: 768px) {
@@ -2003,9 +2033,11 @@ const ScrollIndicator =
 
 const ScrollText =
   styled.span`
-    font-size: 8px;
+    font-size:
+      8px;
 
-    font-weight: 700;
+    font-weight:
+      700;
 
     letter-spacing:
       0.18em;
@@ -2096,14 +2128,17 @@ const BottomNote =
         0.46
       );
 
-    font-size: 8px;
+    font-size:
+      8px;
 
-    font-weight: 700;
+    font-weight:
+      700;
 
     letter-spacing:
       0.18em;
 
-    line-height: 1.4;
+    line-height:
+      1.4;
 
     text-transform:
       uppercase;
@@ -2111,7 +2146,8 @@ const BottomNote =
     white-space:
       nowrap;
 
-    pointer-events: none;
+    pointer-events:
+      none;
 
     span {
       width: 26px;
@@ -2152,7 +2188,8 @@ const BottomNote =
 
       gap: 7px;
 
-      font-size: 7px;
+      font-size:
+        7px;
 
       letter-spacing:
         0.1em;
