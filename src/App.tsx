@@ -23,6 +23,26 @@ import Privacy from "./pages/Privacy/Privacy";
 import Terms from "./pages/Terms/Terms";
 
 /* ========================================
+   ROUTER BASE
+======================================== */
+
+/*
+ * GitHub Pages:
+ *   /regal-affluence-community
+ *
+ * Cloudflare / custom domain:
+ *   /
+ *
+ * We use the "github" Vite mode only
+ * when building specifically for GitHub Pages.
+ */
+
+const ROUTER_BASENAME =
+  import.meta.env.MODE === "github"
+    ? "/regal-affluence-community"
+    : "/";
+
+/* ========================================
    HOME PAGE
 ======================================== */
 
@@ -51,7 +71,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
 
-      <BrowserRouter basename="/regal-affluence-community">
+      <BrowserRouter
+        basename={ROUTER_BASENAME}
+      >
         <Routes>
 
           {/* ========================================
