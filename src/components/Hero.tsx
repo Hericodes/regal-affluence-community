@@ -1,4 +1,36 @@
-import styled, { keyframes } from "styled-components";
+import styled, {
+  keyframes,
+} from "styled-components";
+
+/* ========================================
+   BASE URL
+======================================== */
+
+/*
+ * GitHub Pages:
+ * /regal-affluence-community/
+ *
+ * Cloudflare:
+ * /
+ */
+
+const BASE_URL =
+  import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
+
+/* ========================================
+   ROUTES
+======================================== */
+
+const joinHref =
+  `${BASE_URL}join`;
+
+const aboutHref =
+  `${BASE_URL}#about`;
+
+const heroImage =
+  `${BASE_URL}images/hero-community.jpeg`;
 
 /* ========================================
    TYPES
@@ -24,36 +56,42 @@ type OrbPosition =
 const heroReveal = keyframes`
   from {
     opacity: 0;
-    transform: translate3d(0, 36px, 0);
+    transform:
+      translate3d(0, 36px, 0);
   }
 
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform:
+      translate3d(0, 0, 0);
   }
 `;
 
 const badgeReveal = keyframes`
   from {
     opacity: 0;
-    transform: translate3d(0, 16px, 0);
+    transform:
+      translate3d(0, 16px, 0);
   }
 
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform:
+      translate3d(0, 0, 0);
   }
 `;
 
 const heroImageReveal = keyframes`
   from {
     opacity: 0;
-    transform: scale(1.08);
+    transform:
+      scale(1.08);
   }
 
   to {
     opacity: 1;
-    transform: scale(1.035);
+    transform:
+      scale(1.035);
   }
 `;
 
@@ -76,12 +114,14 @@ const glowPulse = keyframes`
   0%,
   100% {
     opacity: 0.35;
-    transform: scale(1);
+    transform:
+      scale(1);
   }
 
   50% {
     opacity: 0.6;
-    transform: scale(1.08);
+    transform:
+      scale(1.08);
   }
 `;
 
@@ -126,7 +166,8 @@ const dotPulse = keyframes`
 
 const scrollMove = keyframes`
   0% {
-    transform: translateY(-6px);
+    transform:
+      translateY(-6px);
     opacity: 0;
   }
 
@@ -135,7 +176,8 @@ const scrollMove = keyframes`
   }
 
   100% {
-    transform: translateY(18px);
+    transform:
+      translateY(18px);
     opacity: 0;
   }
 `;
@@ -204,6 +246,11 @@ const Hero = () => {
 
       <Container>
         <Content>
+
+          {/* ======================================
+              BADGE
+          ====================================== */}
+
           <HeroBadge>
             <HeroBadgeDot
               aria-hidden="true"
@@ -214,9 +261,17 @@ const Hero = () => {
             </HeroBadgeText>
           </HeroBadge>
 
+          {/* ======================================
+              EYEBROW
+          ====================================== */}
+
           <Eyebrow>
             A community built for the ambitious
           </Eyebrow>
+
+          {/* ======================================
+              HEADING
+          ====================================== */}
 
           <Heading>
             Build your
@@ -229,6 +284,10 @@ const Hero = () => {
             </span>
           </Heading>
 
+          {/* ======================================
+              DESCRIPTION
+          ====================================== */}
+
           <Description>
             A growing community of ambitious people
             building meaningful relationships, accessing
@@ -236,8 +295,19 @@ const Hero = () => {
             through real estate.
           </Description>
 
+          {/* ======================================
+              ACTIONS
+          ====================================== */}
+
           <Actions>
-            <PrimaryButton href="/regal-affluence-community/join">
+
+            {/* ====================================
+                PRIMARY CTA
+            ==================================== */}
+
+            <PrimaryButton
+              href={joinHref}
+            >
               <span>
                 Join the community
               </span>
@@ -250,7 +320,13 @@ const Hero = () => {
               </span>
             </PrimaryButton>
 
-            <SecondaryButton href="#about">
+            {/* ====================================
+                SECONDARY CTA
+            ==================================== */}
+
+            <SecondaryButton
+              href={aboutHref}
+            >
               <span>
                 Discover Regal Affluence
               </span>
@@ -262,9 +338,15 @@ const Hero = () => {
                 ↓
               </span>
             </SecondaryButton>
+
           </Actions>
 
+          {/* ======================================
+              STAT STRIP
+          ====================================== */}
+
           <StatStrip>
+
             <Stat>
               <StatValue>
                 01
@@ -294,7 +376,9 @@ const Hero = () => {
                 Mindset
               </StatLabel>
             </Stat>
+
           </StatStrip>
+
         </Content>
       </Container>
 
@@ -303,7 +387,7 @@ const Hero = () => {
       ======================================== */}
 
       <ScrollIndicator
-        href="#about"
+        href={aboutHref}
         aria-label="Scroll to discover more"
       >
         <ScrollText>
@@ -328,6 +412,7 @@ const Hero = () => {
 
         <span aria-hidden="true" />
       </BottomNote>
+
     </Section>
   );
 };
@@ -338,112 +423,115 @@ export default Hero;
    HERO SECTION
 ======================================== */
 
-const Section = styled.section`
-  position: relative;
+const Section =
+  styled.section`
+    position: relative;
 
-  width: 100%;
+    width: 100%;
 
-  min-height: 100svh;
+    min-height: 100svh;
 
-  display: flex;
+    display: flex;
 
-  align-items: center;
+    align-items: center;
 
-  overflow: hidden;
+    overflow: hidden;
 
-  isolation: isolate;
+    isolation: isolate;
 
-  background:
-    radial-gradient(
-      circle at 75% 35%,
-      rgba(
-        108,
-        54,
-        164,
-        0.18
-      ),
-      transparent 30%
-    ),
-    ${({ theme }) =>
-      theme.colors.purpleDeep};
-
-  color:
-    ${({ theme }) =>
-      theme.colors.white};
-
-  &::before {
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 0;
-
-    pointer-events: none;
-
-    background-image:
-      linear-gradient(
+    background:
+      radial-gradient(
+        circle at 75% 35%,
         rgba(
-          255,
-          255,
-          255,
-          0.018
-        ) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        90deg,
-        rgba(
-          255,
-          255,
-          255,
-          0.018
-        ) 1px,
-        transparent 1px
-      );
-
-    background-size:
-      80px
-      80px;
-
-    mask-image:
-      linear-gradient(
-        to bottom,
-        rgba(
-          0,
-          0,
-          0,
-          0.35
+          108,
+          54,
+          164,
+          0.18
         ),
-        transparent 70%
-      );
+        transparent 30%
+      ),
+      ${({ theme }) =>
+        theme.colors.purpleDeep};
 
-    opacity: 0.35;
-  }
+    color:
+      ${({ theme }) =>
+        theme.colors.white};
 
-  @media (max-width: 768px) {
-    min-height: 760px;
-  }
+    &::before {
+      content: "";
 
-  @media (prefers-reduced-motion: reduce) {
-    & *,
-    & *::before,
-    & *::after {
-      animation-duration:
-        0.01ms !important;
+      position: absolute;
 
-      animation-iteration-count:
-        1 !important;
+      inset: 0;
 
-      transition-duration:
-        0.01ms !important;
+      z-index: 0;
 
-      scroll-behavior:
-        auto !important;
+      pointer-events: none;
+
+      background-image:
+        linear-gradient(
+          rgba(
+            255,
+            255,
+            255,
+            0.018
+          ) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(
+            255,
+            255,
+            255,
+            0.018
+          ) 1px,
+          transparent 1px
+        );
+
+      background-size:
+        80px
+        80px;
+
+      mask-image:
+        linear-gradient(
+          to bottom,
+          rgba(
+            0,
+            0,
+            0,
+            0.35
+          ),
+          transparent 70%
+        );
+
+      opacity: 0.35;
     }
-  }
-`;
+
+    @media (max-width: 768px) {
+      min-height: 760px;
+    }
+
+    @media (
+      prefers-reduced-motion: reduce
+    ) {
+      & *,
+      & *::before,
+      & *::after {
+        animation-duration:
+          0.01ms !important;
+
+        animation-iteration-count:
+          1 !important;
+
+        transition-duration:
+          0.01ms !important;
+
+        scroll-behavior:
+          auto !important;
+      }
+    }
+  `;
 
 /* ========================================
    BACKGROUND IMAGE
@@ -461,13 +549,13 @@ const BackgroundImage =
     height: 100%;
 
     background-image:
-      url(
-        "/regal-affluence-community/images/hero-community.jpeg"
-      );
+      url("${heroImage}");
 
-    background-repeat: no-repeat;
+    background-repeat:
+      no-repeat;
 
-    background-size: cover;
+    background-size:
+      cover;
 
     background-position:
       center center;
@@ -683,7 +771,8 @@ const Glow =
 
     pointer-events: none;
 
-    filter: blur(80px);
+    filter:
+      blur(80px);
 
     background:
       rgba(
@@ -806,7 +895,9 @@ const DecorativeOrb =
       infinite;
 
     ${({ $position }) => {
-      if ($position === "one") {
+      if (
+        $position === "one"
+      ) {
         return `
           right: 8%;
           top: 22%;
@@ -1023,11 +1114,13 @@ const HeroBadgeText =
 
     font-weight: 700;
 
-    letter-spacing: 0.18em;
+    letter-spacing:
+      0.18em;
 
     line-height: 1;
 
-    text-transform: uppercase;
+    text-transform:
+      uppercase;
   `;
 
 /* ========================================
@@ -1055,7 +1148,8 @@ const Eyebrow =
 
     font-weight: 700;
 
-    letter-spacing: 0.2em;
+    letter-spacing:
+      0.2em;
 
     line-height: 1.4;
 
@@ -1090,7 +1184,8 @@ const Eyebrow =
 
       font-size: 9px;
 
-      letter-spacing: 0.16em;
+      letter-spacing:
+        0.16em;
     }
   `;
 
@@ -1121,7 +1216,8 @@ const Heading =
 
     line-height: 0.88;
 
-    letter-spacing: -0.052em;
+    letter-spacing:
+      -0.052em;
 
     color:
       ${({ theme }) =>
@@ -1204,7 +1300,8 @@ const Heading =
           5.4rem
         );
 
-      line-height: 0.91;
+      line-height:
+        0.91;
 
       letter-spacing:
         -0.045em;
@@ -1255,19 +1352,24 @@ const Description =
     @media (max-width: 768px) {
       max-width: 550px;
 
-      margin-top: 23px;
+      margin-top:
+        23px;
 
       font-size: 15px;
 
-      line-height: 1.68;
+      line-height:
+        1.68;
     }
 
     @media (max-width: 480px) {
-      margin-top: 20px;
+      margin-top:
+        20px;
 
-      font-size: 14px;
+      font-size:
+        14px;
 
-      line-height: 1.65;
+      line-height:
+        1.65;
     }
   `;
 
@@ -1286,13 +1388,16 @@ const Actions =
     margin-top: 35px;
 
     @media (max-width: 520px) {
-      flex-direction: column;
+      flex-direction:
+        column;
 
-      align-items: stretch;
+      align-items:
+        stretch;
 
       gap: 10px;
 
-      margin-top: 29px;
+      margin-top:
+        29px;
     }
   `;
 
@@ -1308,15 +1413,15 @@ const PrimaryButton =
 
     align-items: center;
 
-    justify-content: center;
+    justify-content:
+      center;
 
     gap: 14px;
 
     min-height: 56px;
 
     padding:
-      0
-      25px;
+      0 25px;
 
     overflow: hidden;
 
@@ -1350,11 +1455,14 @@ const PrimaryButton =
 
     font-weight: 800;
 
-    letter-spacing: 0.095em;
+    letter-spacing:
+      0.095em;
 
-    text-transform: uppercase;
+    text-transform:
+      uppercase;
 
-    text-decoration: none;
+    text-decoration:
+      none;
 
     box-shadow:
       0
@@ -1394,9 +1502,11 @@ const PrimaryButton =
       position: absolute;
 
       top: -40%;
+
       left: 0;
 
       width: 38%;
+
       height: 180%;
 
       background:
@@ -1421,9 +1531,11 @@ const PrimaryButton =
 
       align-items: center;
 
-      justify-content: center;
+      justify-content:
+        center;
 
       width: 25px;
+
       height: 25px;
 
       border-radius: 50%;
@@ -1510,6 +1622,22 @@ const PrimaryButton =
     @media (max-width: 520px) {
       width: 100%;
     }
+
+    @media (
+      prefers-reduced-motion:
+        reduce
+    ) {
+      transition: none;
+
+      &:hover,
+      &:active {
+        transform: none;
+      }
+
+      &:hover::before {
+        animation: none;
+      }
+    }
   `;
 
 /* ========================================
@@ -1522,15 +1650,15 @@ const SecondaryButton =
 
     align-items: center;
 
-    justify-content: center;
+    justify-content:
+      center;
 
     gap: 12px;
 
     min-height: 56px;
 
     padding:
-      0
-      23px;
+      0 23px;
 
     border:
       1px solid
@@ -1561,11 +1689,14 @@ const SecondaryButton =
 
     font-weight: 700;
 
-    letter-spacing: 0.085em;
+    letter-spacing:
+      0.085em;
 
-    text-transform: uppercase;
+    text-transform:
+      uppercase;
 
-    text-decoration: none;
+    text-decoration:
+      none;
 
     backdrop-filter:
       blur(12px);
@@ -1584,9 +1715,11 @@ const SecondaryButton =
 
       align-items: center;
 
-      justify-content: center;
+      justify-content:
+        center;
 
       width: 23px;
+
       height: 23px;
 
       border:
@@ -1663,6 +1796,17 @@ const SecondaryButton =
     @media (max-width: 520px) {
       width: 100%;
     }
+
+    @media (
+      prefers-reduced-motion:
+        reduce
+    ) {
+      transition: none;
+
+      &:hover {
+        transform: none;
+      }
+    }
   `;
 
 /* ========================================
@@ -1713,8 +1857,7 @@ const Stat =
     min-width: 105px;
 
     padding:
-      0
-      20px;
+      0 20px;
 
     &:first-child {
       padding-left: 0;
@@ -1737,8 +1880,7 @@ const Stat =
       flex: 1;
 
       padding:
-        0
-        13px;
+        0 13px;
 
       &:first-child {
         padding-left: 0;
@@ -1787,14 +1929,17 @@ const StatLabel =
 
     font-weight: 700;
 
-    letter-spacing: 0.12em;
+    letter-spacing:
+      0.12em;
 
-    text-transform: uppercase;
+    text-transform:
+      uppercase;
 
     @media (max-width: 480px) {
       font-size: 7px;
 
-      letter-spacing: 0.08em;
+      letter-spacing:
+        0.08em;
     }
   `;
 
@@ -1826,7 +1971,8 @@ const ScrollIndicator =
         0.52
       );
 
-    text-decoration: none;
+    text-decoration:
+      none;
 
     transition:
       color 0.25s ease,
@@ -1861,9 +2007,11 @@ const ScrollText =
 
     font-weight: 700;
 
-    letter-spacing: 0.18em;
+    letter-spacing:
+      0.18em;
 
-    text-transform: uppercase;
+    text-transform:
+      uppercase;
 
     writing-mode:
       vertical-rl;
@@ -1896,6 +2044,7 @@ const ScrollLine =
       position: absolute;
 
       top: 0;
+
       left: 0;
 
       width: 1px;
@@ -1951,13 +2100,16 @@ const BottomNote =
 
     font-weight: 700;
 
-    letter-spacing: 0.18em;
+    letter-spacing:
+      0.18em;
 
     line-height: 1.4;
 
-    text-transform: uppercase;
+    text-transform:
+      uppercase;
 
-    white-space: nowrap;
+    white-space:
+      nowrap;
 
     pointer-events: none;
 
@@ -2002,7 +2154,8 @@ const BottomNote =
 
       font-size: 7px;
 
-      letter-spacing: 0.1em;
+      letter-spacing:
+        0.1em;
 
       span {
         width: 14px;
