@@ -629,11 +629,8 @@ const Join = () => {
             </TermsHeader>
 
             <TermsIntro>
-              Please read the following
-              temporary Terms &amp;
-              Conditions carefully. You
-              must scroll to the end before
-              you can accept them.
+              Please read these Terms &amp; Conditions carefully. You
+              must scroll to the end before you can accept them.
             </TermsIntro>
 
             <TermsBox
@@ -644,249 +641,393 @@ const Join = () => {
               tabIndex={0}
               aria-label="Regal Affluence Terms and Conditions"
             >
-              {/* =========================================
-                  TEMPORARY DOCUMENT
-              ========================================== */}
-
-              <DraftNotice>
-                TEMPORARY DOCUMENT — DRAFT
-              </DraftNotice>
-
               <TermsDocumentTitle>
-                REGAL AFFLUENCE
+                REGAL AFFLUENCE GROUP
                 <br />
-                COMMUNITY TERMS
-                &amp; CONDITIONS
+                REALTOR TERMS &amp; CONDITIONS
               </TermsDocumentTitle>
 
               <TermsMeta>
-                Working Draft
+                Effective upon acceptance
               </TermsMeta>
 
               <TermsRule />
 
-              <TermsHeading>
-                1. Purpose of the
-                Community
-              </TermsHeading>
-
               <TermsParagraph>
-                Regal Affluence is a
-                professional community
-                created to bring together
-                ambitious individuals
-                interested in learning,
-                building meaningful
-                relationships, discovering
-                opportunities, and pursuing
-                long-term personal and
-                professional growth.
+                Welcome to Regal Affluence Group.
               </TermsParagraph>
 
               <TermsParagraph>
-                Membership is intended for
-                individuals who are willing
-                to contribute positively to
-                the community and conduct
-                themselves with
-                professionalism, integrity,
-                and respect.
+                These Terms &amp; Conditions (“Terms”) govern your registration,
+                membership and activities as a Realtor operating through
+                Regal Affluence Group (“Regal Affluence Group”, “we”, “us” or
+                “the Group”).
+              </TermsParagraph>
+
+              <TermsParagraph>
+                By registering as a Realtor with Regal Affluence Group and
+                selecting “I Agree”, you confirm that you have read,
+                understood and agreed to be bound by these Terms.
               </TermsParagraph>
 
               <TermsHeading>
-                2. Application &
-                Membership
+                1. Professional Conduct
               </TermsHeading>
 
               <TermsParagraph>
-                Submission of an
-                application does not
-                automatically guarantee
-                membership. Regal Affluence
-                reserves the right to review
-                applications and determine
-                whether an applicant is a
-                suitable fit for the
-                community.
+                As a Realtor of Regal Affluence Group, you are expected to
+                conduct yourself professionally, honestly and respectfully
+                when dealing with clients, prospects, developers, property
+                owners, colleagues and the general public.
+              </TermsParagraph>
+
+              <TermsParagraph>You agree to:</TermsParagraph>
+
+              <TermsList>
+                <li>Provide accurate information about properties, prices, documentation, payment plans and other transaction details.</li>
+                <li>Avoid making false, misleading or unauthorised representations.</li>
+                <li>Treat clients and other Realtors professionally and respectfully.</li>
+                <li>Protect the reputation and integrity of Regal Affluence Group.</li>
+                <li>Comply with applicable laws and regulations relating to your activities.</li>
+              </TermsList>
+
+              <TermsHeading>
+                2. Transparency &amp; Deal Reporting
+              </TermsHeading>
+
+              <TermsParagraph>
+                Transparency is a fundamental requirement of membership. You
+                agree to keep Regal Affluence Group reasonably informed about
+                transactions you are handling through the Group, including
+                serious prospects, property inspections, offers, negotiations,
+                payments and completed transactions.
               </TermsParagraph>
 
               <TermsParagraph>
-                Applicants are expected to
-                provide truthful and
-                accurate information during
-                the application process.
-                Providing misleading,
-                fraudulent, or intentionally
-                false information may result
-                in rejection of an application
-                or removal from the community.
+                Where the Group has a lead or deal registration system, you
+                agree to use it appropriately. Failure to disclose or register
+                a transaction may affect the Group’s ability to recognise and
+                protect your involvement in that transaction.
               </TermsParagraph>
 
               <TermsHeading>
-                3. Professional Conduct
+                3. Clients &amp; Closing Support
               </TermsHeading>
 
               <TermsParagraph>
-                Members are expected to
-                communicate respectfully
-                with other members and
-                representatives of Regal
-                Affluence.
+                Regal Affluence Group may provide support to help Realtors
+                convert and close transactions. This may include client
+                follow-up, negotiations, property inspections, documentation
+                guidance, developer communication, sales strategy and closing
+                assistance.
               </TermsParagraph>
 
               <TermsParagraph>
-                Harassment, discrimination,
-                abusive communication,
-                deliberate disruption,
-                impersonation, scams,
-                fraudulent activity, and
-                other conduct that may
-                negatively affect the
-                community are not permitted.
+                Where you request or require assistance from the Group, you
+                agree to cooperate with the Group and, where reasonably
+                necessary, facilitate communication between the Group and your
+                client.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                Where a transaction has been properly registered, the Group
+                will make reasonable efforts to recognise and protect the
+                Realtor’s involvement in that transaction.
               </TermsParagraph>
 
               <TermsHeading>
-                4. Opportunities &amp;
-                Information
+                4. Commission
               </TermsHeading>
 
               <TermsParagraph>
-                Regal Affluence may share
-                information relating to
-                property, business,
-                networking, investment,
-                training, partnerships, and
-                other opportunities.
+                Realtor commissions shall be determined according to the
+                applicable Regal Affluence Group commission structure for the
+                relevant property or transaction.
               </TermsParagraph>
 
               <TermsParagraph>
-                Members are responsible for
-                conducting their own
-                research and due diligence
-                before making decisions
-                based on information or
-                opportunities shared within
-                the community.
+                Unless otherwise agreed in writing, commission becomes payable
+                after the relevant transaction has been successfully concluded
+                and the Group has received the corresponding commission.
               </TermsParagraph>
 
               <TermsParagraph>
-                Participation in the
-                community does not
-                constitute a guarantee of
-                financial returns, business
-                success, investment
-                performance, employment,
-                partnership, or any specific
-                outcome.
+                Where multiple Realtors contribute to a transaction, commission
+                may be shared based on their respective contributions and the
+                applicable Group policy.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                The Group reserves the right to review and determine disputed
+                commission claims based on available records and evidence.
               </TermsParagraph>
 
               <TermsHeading>
-                5. Confidentiality &amp;
-                Respect
+                5. Lead &amp; Client Protection
               </TermsHeading>
 
               <TermsParagraph>
-                Members should respect the
-                privacy of other members
-                and avoid sharing private
-                conversations, personal
-                information, or confidential
-                community materials without
-                appropriate permission.
+                A Realtor who introduces a client or prospect to a property or
+                transaction should register the lead in accordance with the
+                Group’s procedures.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                Lead registration helps establish the origin of a client and
+                protects the Realtor’s involvement in the transaction.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                You must not deliberately misrepresent the origin of a lead or
+                claim a client you did not introduce.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                Where a client is already registered or actively being handled
+                by another Realtor, the Group may determine how the transaction
+                should be managed.
               </TermsParagraph>
 
               <TermsHeading>
-                6. Community Access
+                6. No Bypassing or Circumvention
               </TermsHeading>
 
               <TermsParagraph>
-                Access to private community
-                channels, groups, events,
-                resources, or opportunities
-                may be subject to membership
-                approval and additional
-                requirements communicated
-                by Regal Affluence.
+                You agree not to deliberately bypass or circumvent Regal
+                Affluence Group for personal financial benefit in connection
+                with a client, developer, property owner, property, lead,
+                transaction or business opportunity introduced, developed or
+                facilitated through the Group.
               </TermsParagraph>
 
               <TermsParagraph>
-                Community access may be
-                suspended or withdrawn where
-                there is a reasonable basis
-                to believe that a member has
-                violated community standards
-                or otherwise acted against
-                the interests of the
-                community.
+                You must not take a transaction outside the Group simply to
+                avoid the Group’s involvement, agreed commission or business
+                relationship.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                This includes using confidential information, introductions,
+                negotiated terms, special pricing, contacts or opportunities
+                obtained through Regal Affluence Group for the purpose of
+                bypassing the Group.
               </TermsParagraph>
 
               <TermsHeading>
-                7. Content &amp;
-                Communication
+                7. Developer &amp; Property Partner Relationships
               </TermsHeading>
 
               <TermsParagraph>
-                Members are responsible for
-                the content they contribute
-                to community discussions,
-                events, and communication
-                channels.
+                Regal Affluence Group may establish relationships with
+                developers, property owners and other real estate partners and
+                provide Realtors with access to these relationships and
+                opportunities.
               </TermsParagraph>
 
               <TermsParagraph>
-                Members should not knowingly
-                publish misleading, illegal,
-                harmful, defamatory, or
-                inappropriate content within
-                the community.
+                You agree not to use information, contacts, pricing arrangements
+                or business opportunities obtained through the Group to secretly
+                circumvent or bypass the Group.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                If you already have an independent relationship with a developer
+                or property owner before joining Regal Affluence Group, you
+                should disclose this where it may affect the ownership, handling
+                or commission of a transaction.
               </TermsParagraph>
 
               <TermsHeading>
-                8. Changes to These Terms
+                8. Confidentiality
               </TermsHeading>
 
               <TermsParagraph>
-                Regal Affluence may update
-                these Terms &amp; Conditions
-                from time to time as the
-                community develops.
+                During your membership, you may receive confidential business
+                information belonging to Regal Affluence Group.
               </TermsParagraph>
 
+              <TermsParagraph>You agree not to disclose, copy, transfer or use confidential information for unauthorised personal or commercial purposes.</TermsParagraph>
+
+              <TermsList>
+                <li>Client information and databases;</li>
+                <li>Developer and property-owner contacts;</li>
+                <li>Commission arrangements;</li>
+                <li>Special pricing and discounts;</li>
+                <li>Internal sales strategies;</li>
+                <li>Lead information;</li>
+                <li>Training materials;</li>
+                <li>Business plans; and</li>
+                <li>Other non-public information.</li>
+              </TermsList>
+
               <TermsParagraph>
-                Updated terms may replace
-                this temporary draft and
-                members may be required to
-                review and accept the updated
-                version where appropriate.
+                These confidentiality obligations continue after your membership
+                ends for as long as the information remains confidential or
+                legally protected.
               </TermsParagraph>
 
               <TermsHeading>
-                9. Acceptance
+                9. Client Data &amp; Privacy
               </TermsHeading>
 
               <TermsParagraph>
-                By accepting these terms,
-                you confirm that you have
-                read the document and agree
-                to respect the standards,
-                principles, and expectations
-                described above.
+                You agree to handle client and prospect information responsibly
+                and only for legitimate business purposes.
               </TermsParagraph>
 
               <TermsParagraph>
-                This document is currently a
-                temporary working draft and
-                may be replaced by the final
-                Regal Affluence Terms &amp;
-                Conditions before or after
-                community launch.
+                Where client information is shared with Regal Affluence Group
+                for purposes such as follow-up, negotiation, documentation or
+                closing support, you acknowledge that the Group may process such
+                information for those purposes in accordance with applicable
+                data-protection requirements and its privacy policy.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                You must not sell, misuse or unlawfully disclose client
+                information.
+              </TermsParagraph>
+
+              <TermsHeading>
+                10. Branding &amp; Marketing
+              </TermsHeading>
+
+              <TermsParagraph>
+                As an authorised Realtor, you may use the Regal Affluence Group
+                name, logo and approved marketing materials for authorised
+                business activities.
+              </TermsParagraph>
+
+              <TermsParagraph>You agree not to:</TermsParagraph>
+
+              <TermsList>
+                <li>Misrepresent yourself as an authorised representative when you are not;</li>
+                <li>Alter official information in a misleading manner;</li>
+                <li>Publish false property information;</li>
+                <li>Make unauthorised promises or guarantees;</li>
+                <li>Misrepresent prices, discounts, returns, documentation or availability; or</li>
+                <li>Use the Group’s brand for unauthorised personal activities.</li>
+              </TermsList>
+
+              <TermsHeading>
+                11. Other Brokerages &amp; Conflicts of Interest
+              </TermsHeading>
+
+              <TermsParagraph>
+                While actively representing Regal Affluence Group, you agree to
+                disclose any other brokerage relationship or business arrangement
+                that may create a conflict of interest with your responsibilities
+                to the Group.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                You must not secretly represent competing interests in the same
+                transaction where doing so may prejudice the Group, its client or
+                another party.
+              </TermsParagraph>
+
+              <TermsHeading>
+                12. Leaving Regal Affluence Group
+              </TermsHeading>
+
+              <TermsParagraph>
+                You may voluntarily end your membership in accordance with the
+                Group’s applicable exit procedure.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                However, leaving the Group does not automatically release you
+                from obligations relating to:
+              </TermsParagraph>
+
+              <TermsList>
+                <li>Confidential information;</li>
+                <li>Active or pending transactions;</li>
+                <li>Outstanding commission matters;</li>
+                <li>Non-circumvention obligations;</li>
+                <li>Protected business opportunities; or</li>
+                <li>Proper use of the Regal Affluence Group brand.</li>
+              </TermsList>
+
+              <TermsParagraph>
+                Upon leaving, you must stop representing yourself as an active
+                Realtor of Regal Affluence Group and must return or delete
+                confidential Group information where required.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                Nothing in these Terms is intended to prevent you from lawfully
+                pursuing your career after leaving the Group, subject to your
+                continuing obligations under these Terms and applicable law.
+              </TermsParagraph>
+
+              <TermsHeading>
+                13. Suspension &amp; Termination
+              </TermsHeading>
+
+              <TermsParagraph>
+                Regal Affluence Group may suspend or terminate your Realtor
+                membership where you materially or repeatedly breach these Terms.
+              </TermsParagraph>
+
+              <TermsParagraph>This may include:</TermsParagraph>
+
+              <TermsList>
+                <li>Fraud or dishonesty;</li>
+                <li>Deliberate circumvention of the Group;</li>
+                <li>Misuse of client information;</li>
+                <li>Misrepresentation of properties or transactions;</li>
+                <li>Unauthorised use of the Group’s brand;</li>
+                <li>Serious professional misconduct; or</li>
+                <li>Conduct that materially damages the reputation or business interests of the Group.</li>
+              </TermsList>
+
+              <TermsParagraph>
+                Where appropriate, the Group may investigate a complaint or
+                alleged breach before taking action.
+              </TermsParagraph>
+
+              <TermsHeading>
+                14. Changes to These Terms
+              </TermsHeading>
+
+              <TermsParagraph>
+                Regal Affluence Group may update these Terms from time to time
+                to reflect changes in its business, policies, procedures or
+                applicable requirements.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                Where material changes are made, reasonable notice may be
+                provided through the Group’s website, communication channels or
+                other appropriate means.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                Your continued membership after the effective date of an updated
+                version may constitute acceptance of the revised Terms, subject
+                to applicable law.
+              </TermsParagraph>
+
+              <TermsHeading>
+                15. Governing Law
+              </TermsHeading>
+
+              <TermsParagraph>
+                These Terms shall be governed by the laws applicable in the
+                Federal Republic of Nigeria.
+              </TermsParagraph>
+
+              <TermsParagraph>
+                If any provision of these Terms is determined to be invalid or
+                unenforceable, the remaining provisions shall continue to apply
+                to the extent permitted by law.
               </TermsParagraph>
 
               <TermsRule />
 
               <TermsEnd>
-                END OF TEMPORARY TERMS
-                &amp; CONDITIONS
+                END OF REGAL AFFLUENCE GROUP REALTOR TERMS &amp; CONDITIONS
               </TermsEnd>
             </TermsBox>
 
@@ -963,11 +1104,9 @@ const Join = () => {
               <AgreementLabel
                 $enabled={termsRead}
               >
-                I have read the Terms
-                &amp; Conditions and agree
-                to abide by the standards
-                of the Regal Affluence
-                community.
+                I have read, understood and agree to the Regal Affluence Group
+                Realtor Terms &amp; Conditions. I confirm that the information I
+                have provided during registration is accurate and complete.
               </AgreementLabel>
             </AgreementRow>
           </TermsSection>
@@ -987,12 +1126,9 @@ const Join = () => {
           ================================================= */}
 
           <Note>
-            By submitting this
-            application, you agree to
-            provide accurate information
-            and uphold the professional
-            and ethical standards of the
-            Regal Affluence community.
+            By submitting this application, you confirm that you have provided
+            accurate information and agree to uphold the professional and ethical
+            standards of Regal Affluence Group.
           </Note>
 
           {/* =================================================
@@ -1079,7 +1215,7 @@ const Section =
           theme.colors.ivory}
           0%,
         ${({ theme }) =>
-          theme.colors.cream}
+          theme.colors.ivory}
           52%,
         #eee4f6
           100%
@@ -2032,7 +2168,7 @@ const TermsBox =
     border-radius:
       ${({ theme }) =>
         theme.radius.md ||
-        theme.radius.lg};
+        theme.radius.xl};
 
     background:
       linear-gradient(
@@ -2137,7 +2273,7 @@ const TermsBox =
    DRAFT NOTICE
 ===================================================== */
 
-const DraftNotice =
+export const DraftNotice =
   styled.div`
     display: inline-flex;
 
@@ -2320,6 +2456,44 @@ const TermsParagraph =
 
     line-height:
       1.78;
+  `;
+
+/* =====================================================
+   TERMS LIST
+===================================================== */
+
+const TermsList =
+  styled.ul`
+    margin:
+      0 0 18px;
+
+    padding-left:
+      22px;
+
+    color:
+      rgba(55, 42, 65, 0.78);
+
+    font-size:
+      13px;
+
+    line-height:
+      1.75;
+
+    li {
+      margin-bottom:
+        7px;
+
+      padding-left:
+        4px;
+    }
+
+    @media (max-width: 600px) {
+      font-size:
+        13px;
+
+      line-height:
+        1.7;
+    }
   `;
 
 /* =====================================================
@@ -2846,8 +3020,7 @@ const ErrorMessage =
       );
 
     color:
-      ${({ theme }) =>
-        theme.colors.error};
+      "#c0392b";
 
     font-size:
       13px;
