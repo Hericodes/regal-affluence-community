@@ -69,6 +69,12 @@ const homeHref =
 const joinHref =
   `${BASE_URL}join`;
 
+const loginHref =
+  `${BASE_URL}login`;
+
+const profileHref =
+  `${BASE_URL}profile`;
+
 const aboutHref =
   `${BASE_URL}about`;
 
@@ -87,6 +93,36 @@ const isHomePath = () => {
     pathname ===
       `${BASE_PATH}/`
   );
+};
+
+/* =====================================================
+   MEMBER SESSION CHECK
+===================================================== */
+
+const hasMemberSession = () => {
+  try {
+    const auth =
+      sessionStorage.getItem(
+        "regalMemberAuth"
+      );
+
+    if (!auth) {
+      return false;
+    }
+
+    const parsed =
+      JSON.parse(auth) as {
+        username?: string;
+        password?: string;
+      };
+
+    return Boolean(
+      parsed.username &&
+      parsed.password
+    );
+  } catch {
+    return false;
+  }
 };
 
 /* =====================================================
@@ -124,12 +160,14 @@ const shimmer = keyframes`
 const mobileItemReveal = keyframes`
   from {
     opacity: 0;
+
     transform:
       translateY(10px);
   }
 
   to {
     opacity: 1;
+
     transform:
       translateY(0);
   }
@@ -149,6 +187,9 @@ const Navbar = () => {
   const [activeSection, setActiveSection] =
     useState("");
 
+  const [isMemberLoggedIn, setIsMemberLoggedIn] =
+    useState(false);
+
   const menuButtonRef =
     useRef<HTMLButtonElement>(null);
 
@@ -157,6 +198,49 @@ const Navbar = () => {
 
   const previousBodyOverflow =
     useRef("");
+
+  /* ===================================================
+     MEMBER SESSION
+  =================================================== */
+
+  useEffect(() => {
+    const updateMemberState = () => {
+      setIsMemberLoggedIn(
+        hasMemberSession()
+      );
+    };
+
+    updateMemberState();
+
+    /*
+     * Storage events cover changes from
+     * other browser contexts. The custom
+     * event handles changes within the
+     * same application.
+     */
+
+    window.addEventListener(
+      "storage",
+      updateMemberState
+    );
+
+    window.addEventListener(
+      "regal-member-session",
+      updateMemberState
+    );
+
+    return () => {
+      window.removeEventListener(
+        "storage",
+        updateMemberState
+      );
+
+      window.removeEventListener(
+        "regal-member-session",
+        updateMemberState
+      );
+    };
+  }, []);
 
   /* ===================================================
      CLOSE MENU
@@ -185,9 +269,7 @@ const Navbar = () => {
        * Only track sections that
        * actually live on the homepage.
        *
-       * About is now its own page,
-       * so it is intentionally NOT
-       * included here.
+       * About is its own page.
        */
 
       if (!isHomePath()) {
@@ -203,7 +285,7 @@ const Navbar = () => {
           .filter(
             (item) =>
               item.type ===
-                "hash"
+              "hash"
           )
           .map((item) =>
             document.getElementById(
@@ -567,6 +649,20 @@ const Navbar = () => {
   };
 
   /* ===================================================
+     MEMBER ACTION
+  =================================================== */
+
+  const memberActionHref =
+    isMemberLoggedIn
+      ? profileHref
+      : loginHref;
+
+  const memberActionLabel =
+    isMemberLoggedIn
+      ? "My Profile"
+      : "Member Login";
+
+  /* ===================================================
      RENDER
   =================================================== */
 
@@ -661,12 +757,27 @@ const Navbar = () => {
           </DesktopNav>
 
           {/* =================================================
-              CTA
+              MEMBER LOGIN / PROFILE
+          ================================================= */}
+
+          <MemberButton
+            href={
+              memberActionHref
+            }
+            aria-label={
+              memberActionLabel
+            }
+          >
+            {memberActionLabel}
+          </MemberButton>
+
+          {/* =================================================
+              JOIN BUTTON
           ================================================= */}
 
           <JoinButton
             href={joinHref}
-            aria-label="Join the Regal Affluence community"
+            aria-label="Apply to join the Regal Affluence community"
           >
             <span
               className="button-shine"
@@ -692,7 +803,9 @@ const Navbar = () => {
           ================================================= */}
 
           <MenuButton
-            ref={menuButtonRef}
+            ref={
+              menuButtonRef
+            }
             type="button"
             $open={menuOpen}
             aria-label={
@@ -871,7 +984,31 @@ const Navbar = () => {
           </MobileNav>
 
           {/* =================================================
-              MOBILE CTA
+              MOBILE MEMBER ACCESS
+          ================================================= */}
+
+          <MobileMemberButton
+            href={
+              memberActionHref
+            }
+            onClick={
+              closeMenu
+            }
+          >
+            <span className="mobile-member-main">
+              {memberActionLabel}
+            </span>
+
+            <span
+              className="mobile-member-arrow"
+              aria-hidden="true"
+            >
+              ↗
+            </span>
+          </MobileMemberButton>
+
+          {/* =================================================
+              MOBILE JOIN CTA
           ================================================= */}
 
           <MobileJoinButton
@@ -919,27 +1056,46 @@ export default Navbar;
    HEADER
 ===================================================== */
 
-const Header = styled.header<{
-  $scrolled: boolean;
-  $menuOpen: boolean;
-}>`
+const Header =
+  styled.header<{
+    $scrolled: boolean;
+    $menuOpen: boolean;
+  }>`
   position: fixed;
 
   top: 0;
+
   left: 0;
 
   z-index: 1000;
 
   width: 100%;
 
-  padding: 13px 0;
+  padding:
+    13px
+    0;
 
   background:
     linear-gradient(
       110deg,
-      rgba(243, 237, 255, 0.96),
-      rgba(250, 248, 243, 0.97),
-      rgba(238, 231, 250, 0.96)
+      rgba(
+        243,
+        237,
+        255,
+        0.96
+      ),
+      rgba(
+        250,
+        248,
+        243,
+        0.97
+      ),
+      rgba(
+        238,
+        231,
+        250,
+        0.96
+      )
     );
 
   background-size:
@@ -973,14 +1129,31 @@ const Header = styled.header<{
     18s ease infinite;
 
   @media (max-width: 900px) {
-    padding: 10px 0;
+    padding:
+      10px
+      0;
 
     background:
       linear-gradient(
         120deg,
-        rgba(243, 237, 255, 0.98),
-        rgba(250, 248, 243, 0.98),
-        rgba(238, 231, 250, 0.98)
+        rgba(
+          243,
+          237,
+          255,
+          0.98
+        ),
+        rgba(
+          250,
+          248,
+          243,
+          0.98
+        ),
+        rgba(
+          238,
+          231,
+          250,
+          0.98
+        )
       );
   }
 
@@ -997,25 +1170,31 @@ const Header = styled.header<{
    HEADER INNER
 ===================================================== */
 
-const HeaderInner = styled.div`
+const HeaderInner =
+  styled.div`
   width:
     min(
       calc(100% - 64px),
       1360px
     );
 
-  min-height: 56px;
+  min-height:
+    56px;
 
-  margin: 0 auto;
+  margin:
+    0 auto;
 
-  display: flex;
+  display:
+    flex;
 
-  align-items: center;
+  align-items:
+    center;
 
   justify-content:
     space-between;
 
-  gap: 30px;
+  gap:
+    22px;
 
   @media (max-width: 1180px) {
     width:
@@ -1024,11 +1203,13 @@ const HeaderInner = styled.div`
         1360px
       );
 
-    gap: 20px;
+    gap:
+      14px;
   }
 
   @media (max-width: 900px) {
-    min-height: 52px;
+    min-height:
+      52px;
 
     width:
       min(
@@ -1038,7 +1219,8 @@ const HeaderInner = styled.div`
   }
 
   @media (max-width: 480px) {
-    min-height: 52px;
+    min-height:
+      52px;
 
     width:
       min(
@@ -1052,14 +1234,19 @@ const HeaderInner = styled.div`
    LOGO
 ===================================================== */
 
-const Logo = styled.a`
-  display: inline-flex;
+const Logo =
+  styled.a`
+  display:
+    inline-flex;
 
-  align-items: center;
+  align-items:
+    center;
 
-  flex-shrink: 0;
+  flex-shrink:
+    0;
 
-  text-decoration: none;
+  text-decoration:
+    none;
 
   transition:
     transform 0.3s ease,
@@ -1076,9 +1263,11 @@ const Logo = styled.a`
       ${({ theme }) =>
         theme.colors.purple};
 
-    outline-offset: 6px;
+    outline-offset:
+      6px;
 
-    border-radius: 6px;
+    border-radius:
+      6px;
   }
 
   @media (
@@ -1087,7 +1276,8 @@ const Logo = styled.a`
     transition: none;
 
     &:hover {
-      transform: none;
+      transform:
+        none;
     }
   }
 `;
@@ -1096,23 +1286,31 @@ const Logo = styled.a`
    LOGO IMAGE
 ===================================================== */
 
-const LogoImage = styled.img`
-  display: block;
+const LogoImage =
+  styled.img`
+  display:
+    block;
 
-  width: 175px;
+  width:
+    175px;
 
-  height: auto;
+  height:
+    auto;
 
-  object-fit: contain;
+  object-fit:
+    contain;
 
-  user-select: none;
+  user-select:
+    none;
 
   @media (max-width: 900px) {
-    width: 155px;
+    width:
+      155px;
   }
 
   @media (max-width: 480px) {
-    width: 140px;
+    width:
+      140px;
   }
 `;
 
@@ -1120,25 +1318,34 @@ const LogoImage = styled.img`
    DESKTOP NAV
 ===================================================== */
 
-const DesktopNav = styled.nav`
-  display: flex;
+const DesktopNav =
+  styled.nav`
+  display:
+    flex;
 
-  align-items: center;
+  align-items:
+    center;
 
-  gap: 4px;
+  gap:
+    4px;
 
-  margin-left: auto;
+  margin-left:
+    auto;
 
-  margin-right: 8px;
+  margin-right:
+    4px;
 
   @media (max-width: 1180px) {
-    gap: 0;
+    gap:
+      0;
 
-    margin-right: 4px;
+    margin-right:
+      0;
   }
 
   @media (max-width: 900px) {
-    display: none;
+    display:
+      none;
   }
 `;
 
@@ -1146,21 +1353,28 @@ const DesktopNav = styled.nav`
    NAV ITEM
 ===================================================== */
 
-const NavItem = styled.a<{
-  $active: boolean;
-}>`
-  position: relative;
+const NavItem =
+  styled.a<{
+    $active: boolean;
+  }>`
+  position:
+    relative;
 
-  display: inline-flex;
+  display:
+    inline-flex;
 
-  align-items: center;
+  align-items:
+    center;
 
-  justify-content: center;
+  justify-content:
+    center;
 
-  min-height: 42px;
+  min-height:
+    42px;
 
   padding:
-    0 15px;
+    0
+    14px;
 
   color:
     ${({ $active, theme }) =>
@@ -1168,38 +1382,51 @@ const NavItem = styled.a<{
         ? theme.colors.purple
         : theme.colors.text};
 
-  font-size: 11px;
+  font-size:
+    11px;
 
-  font-weight: 700;
+  font-weight:
+    700;
 
   letter-spacing:
     0.045em;
 
-  text-decoration: none;
+  text-decoration:
+    none;
 
-  white-space: nowrap;
+  white-space:
+    nowrap;
 
   transition:
     color 0.25s ease,
     transform 0.25s ease;
 
   .nav-text {
-    position: relative;
+    position:
+      relative;
 
-    z-index: 2;
+    z-index:
+      2;
   }
 
   .nav-indicator {
-    position: absolute;
+    position:
+      absolute;
 
-    left: 14px;
-    right: 14px;
+    left:
+      14px;
 
-    bottom: 5px;
+    right:
+      14px;
 
-    height: 2px;
+    bottom:
+      5px;
 
-    border-radius: 999px;
+    height:
+      2px;
+
+    border-radius:
+      999px;
 
     background:
       linear-gradient(
@@ -1241,7 +1468,8 @@ const NavItem = styled.a<{
     transform:
       scaleX(1);
 
-    opacity: 1;
+    opacity:
+      1;
   }
 
   &:focus-visible {
@@ -1250,19 +1478,139 @@ const NavItem = styled.a<{
       ${({ theme }) =>
         theme.colors.purple};
 
-    outline-offset: 4px;
+    outline-offset:
+      4px;
 
-    border-radius: 6px;
+    border-radius:
+      6px;
   }
 
   @media (
     prefers-reduced-motion: reduce
   ) {
-    transition: none;
+    transition:
+      none;
 
     &:hover {
-      transform: none;
+      transform:
+        none;
     }
+  }
+`;
+
+/* =====================================================
+   MEMBER BUTTON
+===================================================== */
+
+const MemberButton =
+  styled.a`
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-height:
+    42px;
+
+  padding:
+    0
+    14px;
+
+  border:
+    1px solid
+    rgba(
+      91,
+      33,
+      182,
+      0.17
+    );
+
+  border-radius:
+    ${({ theme }) =>
+      theme.radius.pill};
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.58
+    );
+
+  color:
+    ${({ theme }) =>
+      theme.colors.purpleDeep};
+
+  font-size:
+    10px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    0.065em;
+
+  text-decoration:
+    none;
+
+  text-transform:
+    uppercase;
+
+  white-space:
+    nowrap;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+
+  &:hover {
+    transform:
+      translateY(-1px);
+
+    border-color:
+      rgba(
+        91,
+        33,
+        182,
+        0.3
+      );
+
+    background:
+      rgba(
+        255,
+        255,
+        255,
+        0.82
+      );
+  }
+
+  &:focus-visible {
+    outline:
+      2px solid
+      ${({ theme }) =>
+        theme.colors.purple};
+
+    outline-offset:
+      5px;
+  }
+
+  @media (max-width: 1180px) {
+    padding:
+      0
+      11px;
+
+    font-size:
+      9px;
+  }
+
+  @media (max-width: 900px) {
+    display:
+      none;
   }
 `;
 
@@ -1270,23 +1618,32 @@ const NavItem = styled.a<{
    JOIN BUTTON
 ===================================================== */
 
-const JoinButton = styled.a`
-  position: relative;
+const JoinButton =
+  styled.a`
+  position:
+    relative;
 
-  display: inline-flex;
+  display:
+    inline-flex;
 
-  align-items: center;
+  align-items:
+    center;
 
-  justify-content: center;
+  justify-content:
+    center;
 
-  min-height: 46px;
+  min-height:
+    46px;
 
   padding:
-    0 21px;
+    0
+    21px;
 
-  overflow: hidden;
+  overflow:
+    hidden;
 
-  flex-shrink: 0;
+  flex-shrink:
+    0;
 
   border:
     1px solid
@@ -1313,14 +1670,17 @@ const JoinButton = styled.a`
     ${({ theme }) =>
       theme.colors.white};
 
-  font-size: 11px;
+  font-size:
+    11px;
 
-  font-weight: 800;
+  font-weight:
+    800;
 
   letter-spacing:
     0.07em;
 
-  text-decoration: none;
+  text-decoration:
+    none;
 
   text-transform:
     uppercase;
@@ -1341,15 +1701,20 @@ const JoinButton = styled.a`
     box-shadow 0.3s ease;
 
   .button-shine {
-    position: absolute;
+    position:
+      absolute;
 
-    top: -30%;
+    top:
+      -30%;
 
-    left: -110%;
+    left:
+      -110%;
 
-    width: 55%;
+    width:
+      55%;
 
-    height: 160%;
+    height:
+      160%;
 
     background:
       linear-gradient(
@@ -1367,25 +1732,33 @@ const JoinButton = styled.a`
     transform:
       skewX(-18deg);
 
-    pointer-events: none;
+    pointer-events:
+      none;
   }
 
   .button-content {
-    position: relative;
+    position:
+      relative;
 
-    z-index: 2;
+    z-index:
+      2;
 
-    display: inline-flex;
+    display:
+      inline-flex;
 
-    align-items: center;
+    align-items:
+      center;
 
-    gap: 10px;
+    gap:
+      10px;
   }
 
   .button-arrow {
-    font-size: 15px;
+    font-size:
+      15px;
 
-    line-height: 1;
+    line-height:
+      1;
 
     transition:
       transform 0.3s ease;
@@ -1435,29 +1808,35 @@ const JoinButton = styled.a`
       ${({ theme }) =>
         theme.colors.champagne};
 
-    outline-offset: 5px;
+    outline-offset:
+      5px;
   }
 
   @media (max-width: 900px) {
-    display: none;
+    display:
+      none;
   }
 
   @media (
     prefers-reduced-motion: reduce
   ) {
-    transition: none;
+    transition:
+      none;
 
     &:hover,
     &:active {
-      transform: none;
+      transform:
+        none;
     }
 
     &:hover .button-shine {
-      animation: none;
+      animation:
+        none;
     }
 
     &:hover .button-arrow {
-      transform: none;
+      transform:
+        none;
     }
   }
 `;
@@ -1466,22 +1845,30 @@ const JoinButton = styled.a`
    MOBILE MENU BUTTON
 ===================================================== */
 
-const MenuButton = styled.button<{
-  $open: boolean;
-}>`
-  display: none;
+const MenuButton =
+  styled.button<{
+    $open: boolean;
+  }>`
+  display:
+    none;
 
-  align-items: center;
+  align-items:
+    center;
 
-  justify-content: center;
+  justify-content:
+    center;
 
-  gap: 9px;
+  gap:
+    9px;
 
-  width: 82px;
+  width:
+    82px;
 
-  height: 42px;
+  height:
+    42px;
 
-  padding: 0;
+  padding:
+    0;
 
   border:
     1px solid
@@ -1508,7 +1895,8 @@ const MenuButton = styled.button<{
     ${({ theme }) =>
       theme.colors.purpleDeep};
 
-  cursor: pointer;
+  cursor:
+    pointer;
 
   backdrop-filter:
     blur(10px);
@@ -1521,9 +1909,11 @@ const MenuButton = styled.button<{
     background 0.25s ease;
 
   .menu-text {
-    font-size: 10px;
+    font-size:
+      10px;
 
-    font-weight: 800;
+    font-weight:
+      800;
 
     letter-spacing:
       0.12em;
@@ -1533,7 +1923,8 @@ const MenuButton = styled.button<{
   }
 
   .menu-icon {
-    display: flex;
+    display:
+      flex;
 
     flex-direction:
       column;
@@ -1541,15 +1932,19 @@ const MenuButton = styled.button<{
     justify-content:
       center;
 
-    gap: 4px;
+    gap:
+      4px;
   }
 
   .line {
-    display: block;
+    display:
+      block;
 
-    width: 16px;
+    width:
+      16px;
 
-    height: 1px;
+    height:
+      1px;
 
     background:
       currentColor;
@@ -1597,31 +1992,38 @@ const MenuButton = styled.button<{
       ${({ theme }) =>
         theme.colors.purple};
 
-    outline-offset: 4px;
+    outline-offset:
+      4px;
   }
 
   @media (max-width: 900px) {
-    display: flex;
+    display:
+      flex;
   }
 
   @media (max-width: 480px) {
-    width: 76px;
+    width:
+      76px;
 
-    height: 40px;
+    height:
+      40px;
   }
 
   @media (
     prefers-reduced-motion: reduce
   ) {
-    transition: none;
+    transition:
+      none;
 
     .line {
-      transition: none;
+      transition:
+        none;
     }
 
     &:hover,
     &:active {
-      transform: none;
+      transform:
+        none;
     }
   }
 `;
@@ -1630,14 +2032,18 @@ const MenuButton = styled.button<{
    MOBILE BACKDROP
 ===================================================== */
 
-const MobileBackdrop = styled.div<{
-  $open: boolean;
-}>`
-  position: fixed;
+const MobileBackdrop =
+  styled.div<{
+    $open: boolean;
+  }>`
+  position:
+    fixed;
 
-  inset: 0;
+  inset:
+    0;
 
-  z-index: 998;
+  z-index:
+    998;
 
   background:
     rgba(
@@ -1674,13 +2080,15 @@ const MobileBackdrop = styled.div<{
     visibility 0.35s ease;
 
   @media (min-width: 901px) {
-    display: none;
+    display:
+      none;
   }
 
   @media (
     prefers-reduced-motion: reduce
   ) {
-    transition: none;
+    transition:
+      none;
   }
 `;
 
@@ -1688,25 +2096,32 @@ const MobileBackdrop = styled.div<{
    MOBILE MENU
 ===================================================== */
 
-const MobileMenu = styled.div<{
-  $open: boolean;
-}>`
-  position: fixed;
+const MobileMenu =
+  styled.div<{
+    $open: boolean;
+  }>`
+  position:
+    fixed;
 
-  top: 84px;
+  top:
+    84px;
 
-  left: 12px;
+  left:
+    12px;
 
-  right: 12px;
+  right:
+    12px;
 
-  z-index: 999;
+  z-index:
+    999;
 
   max-height:
     calc(
       100vh - 98px
     );
 
-  overflow-y: auto;
+  overflow-y:
+    auto;
 
   border:
     1px solid
@@ -1717,7 +2132,8 @@ const MobileMenu = styled.div<{
       0.12
     );
 
-  border-radius: 24px;
+  border-radius:
+    24px;
 
   background:
     linear-gradient(
@@ -1787,17 +2203,23 @@ const MobileMenu = styled.div<{
     visibility 0.3s ease;
 
   .menu-glow {
-    position: absolute;
+    position:
+      absolute;
 
-    top: -90px;
+    top:
+      -90px;
 
-    right: -80px;
+    right:
+      -80px;
 
-    width: 230px;
+    width:
+      230px;
 
-    height: 230px;
+    height:
+      230px;
 
-    border-radius: 50%;
+    border-radius:
+      50%;
 
     background:
       radial-gradient(
@@ -1819,9 +2241,11 @@ const MobileMenu = styled.div<{
   }
 
   .menu-inner {
-    position: relative;
+    position:
+      relative;
 
-    z-index: 1;
+    z-index:
+      1;
 
     padding:
       28px
@@ -1830,11 +2254,14 @@ const MobileMenu = styled.div<{
   }
 
   .mobile-intro {
-    display: flex;
+    display:
+      flex;
 
-    align-items: center;
+    align-items:
+      center;
 
-    gap: 9px;
+    gap:
+      9px;
 
     margin-bottom:
       15px;
@@ -1843,18 +2270,22 @@ const MobileMenu = styled.div<{
       ${({ theme }) =>
         theme.colors.purple};
 
-    font-size: 9px;
+    font-size:
+      9px;
 
-    font-weight: 800;
+    font-weight:
+      800;
 
     letter-spacing:
       0.16em;
   }
 
   .intro-line {
-    width: 24px;
+    width:
+      24px;
 
-    height: 1px;
+    height:
+      1px;
 
     background:
       ${({ theme }) =>
@@ -1862,17 +2293,20 @@ const MobileMenu = styled.div<{
   }
 
   .intro-mark {
-    margin-left: auto;
+    margin-left:
+      auto;
 
     color:
       ${({ theme }) =>
         theme.colors.champagne};
 
-    font-size: 11px;
+    font-size:
+      11px;
   }
 
   .mobile-heading {
-    display: flex;
+    display:
+      flex;
 
     flex-direction:
       column;
@@ -1888,9 +2322,11 @@ const MobileMenu = styled.div<{
       ${({ theme }) =>
         theme.fonts.display};
 
-    font-size: 38px;
+    font-size:
+      38px;
 
-    font-weight: 500;
+    font-weight:
+      500;
 
     line-height:
       0.94;
@@ -1906,14 +2342,17 @@ const MobileMenu = styled.div<{
   }
 
   .mobile-footer {
-    display: flex;
+    display:
+      flex;
 
-    align-items: center;
+    align-items:
+      center;
 
     justify-content:
       space-between;
 
-    gap: 12px;
+    gap:
+      12px;
 
     margin-top:
       20px;
@@ -1930,24 +2369,30 @@ const MobileMenu = styled.div<{
       ${({ theme }) =>
         theme.colors.textMuted};
 
-    font-size: 8px;
+    font-size:
+      8px;
 
-    font-weight: 800;
+    font-weight:
+      800;
 
     letter-spacing:
       0.09em;
   }
 
   @media (max-width: 768px) {
-    top: 78px;
+    top:
+      78px;
   }
 
   @media (max-width: 480px) {
-    top: 76px;
+    top:
+      76px;
 
-    left: 8px;
+    left:
+      8px;
 
-    right: 8px;
+    right:
+      8px;
 
     max-height:
       calc(
@@ -1965,16 +2410,19 @@ const MobileMenu = styled.div<{
     }
 
     .mobile-heading {
-      font-size: 34px;
+      font-size:
+        34px;
     }
   }
 
   @media (
     prefers-reduced-motion: reduce
   ) {
-    transition: none;
+    transition:
+      none;
 
-    transform: none;
+    transform:
+      none;
   }
 `;
 
@@ -1982,8 +2430,10 @@ const MobileMenu = styled.div<{
    MOBILE NAV
 ===================================================== */
 
-const MobileNav = styled.nav`
-  display: flex;
+const MobileNav =
+  styled.nav`
+  display:
+    flex;
 
   flex-direction:
     column;
@@ -1998,25 +2448,33 @@ const MobileNav = styled.nav`
    MOBILE NAV ITEM
 ===================================================== */
 
-const MobileNavItem = styled.a<{
-  $active: boolean;
-}>`
-  position: relative;
+const MobileNavItem =
+  styled.a<{
+    $active: boolean;
+  }>`
+  position:
+    relative;
 
-  display: grid;
+  display:
+    grid;
 
   grid-template-columns:
     30px
     1fr
     24px;
 
-  align-items: center;
+  align-items:
+    center;
 
-  min-height: 66px;
+  min-height:
+    66px;
 
-  gap: 8px;
+  gap:
+    8px;
 
-  padding: 0 3px;
+  padding:
+    0
+    3px;
 
   border-bottom:
     1px solid
@@ -2029,7 +2487,8 @@ const MobileNavItem = styled.a<{
         ? theme.colors.purple
         : theme.colors.text};
 
-  text-decoration: none;
+  text-decoration:
+    none;
 
   animation:
     ${mobileItemReveal}
@@ -2044,9 +2503,11 @@ const MobileNavItem = styled.a<{
           ? theme.colors.champagne
           : theme.colors.textMuted};
 
-    font-size: 9px;
+    font-size:
+      9px;
 
-    font-weight: 800;
+    font-weight:
+      800;
 
     letter-spacing:
       0.08em;
@@ -2057,9 +2518,11 @@ const MobileNavItem = styled.a<{
       ${({ theme }) =>
         theme.fonts.display};
 
-    font-size: 23px;
+    font-size:
+      23px;
 
-    font-weight: 500;
+    font-weight:
+      500;
 
     letter-spacing:
       -0.025em;
@@ -2069,13 +2532,15 @@ const MobileNavItem = styled.a<{
   }
 
   .arrow {
-    justify-self: end;
+    justify-self:
+      end;
 
     color:
       ${({ theme }) =>
         theme.colors.champagne};
 
-    font-size: 16px;
+    font-size:
+      16px;
 
     opacity:
       ${({ $active }) =>
@@ -2087,19 +2552,26 @@ const MobileNavItem = styled.a<{
   }
 
   &::before {
-    content: "";
+    content:
+      "";
 
-    position: absolute;
+    position:
+      absolute;
 
-    left: -12px;
+    left:
+      -12px;
 
-    top: 50%;
+    top:
+      50%;
 
-    width: 3px;
+    width:
+      3px;
 
-    height: 0;
+    height:
+      0;
 
-    border-radius: 999px;
+    border-radius:
+      999px;
 
     background:
       ${({ theme }) =>
@@ -2123,7 +2595,8 @@ const MobileNavItem = styled.a<{
     }
 
     .arrow {
-      opacity: 1;
+      opacity:
+        1;
 
       transform:
         translate(
@@ -2133,7 +2606,8 @@ const MobileNavItem = styled.a<{
     }
 
     &::before {
-      height: 28px;
+      height:
+        28px;
     }
   }
 
@@ -2143,35 +2617,185 @@ const MobileNavItem = styled.a<{
       ${({ theme }) =>
         theme.colors.purple};
 
-    outline-offset: 3px;
+    outline-offset:
+      3px;
 
-    border-radius: 5px;
+    border-radius:
+      5px;
   }
 
   @media (max-width: 480px) {
-    min-height: 62px;
+    min-height:
+      62px;
 
     .label {
-      font-size: 21px;
+      font-size:
+        21px;
     }
   }
 
   @media (
     prefers-reduced-motion: reduce
   ) {
-    animation: none;
+    animation:
+      none;
 
     .label,
     .arrow {
-      transition: none;
+      transition:
+        none;
     }
 
     &:hover .label {
-      transform: none;
+      transform:
+        none;
     }
 
     &::before {
-      transition: none;
+      transition:
+        none;
+    }
+  }
+`;
+
+/* =====================================================
+   MOBILE MEMBER BUTTON
+===================================================== */
+
+const MobileMemberButton =
+  styled.a`
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    16px;
+
+  min-height:
+    58px;
+
+  margin-top:
+    18px;
+
+  padding:
+    0
+    20px;
+
+  border:
+    1px solid
+    rgba(
+      91,
+      33,
+      182,
+      0.16
+    );
+
+  border-radius:
+    ${({ theme }) =>
+      theme.radius.pill};
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.62
+    );
+
+  color:
+    ${({ theme }) =>
+      theme.colors.purpleDeep};
+
+  text-decoration:
+    none;
+
+  box-shadow:
+    0
+    8px
+    24px
+    rgba(
+      60,
+      35,
+      82,
+      0.06
+    );
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+
+  .mobile-member-main {
+    font-size:
+      10px;
+
+    font-weight:
+      800;
+
+    letter-spacing:
+      0.07em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .mobile-member-arrow {
+    color:
+      ${({ theme }) =>
+        theme.colors.champagne};
+
+    font-size:
+      16px;
+
+    line-height:
+      1;
+  }
+
+  &:hover {
+    transform:
+      translateY(-2px);
+
+    border-color:
+      rgba(
+        91,
+        33,
+        182,
+        0.28
+      );
+
+    background:
+      rgba(
+        255,
+        255,
+        255,
+        0.82
+      );
+  }
+
+  &:focus-visible {
+    outline:
+      2px solid
+      ${({ theme }) =>
+        theme.colors.purple};
+
+    outline-offset:
+      5px;
+  }
+
+  @media (
+    prefers-reduced-motion: reduce
+  ) {
+    transition:
+      none;
+
+    &:hover {
+      transform:
+        none;
     }
   }
 `;
@@ -2182,118 +2806,135 @@ const MobileNavItem = styled.a<{
 
 const MobileJoinButton =
   styled.a`
-    display: flex;
+  display:
+    flex;
 
-    align-items: center;
+  align-items:
+    center;
 
-    justify-content:
-      space-between;
+  justify-content:
+    space-between;
 
-    gap: 16px;
+  gap:
+    16px;
 
-    min-height: 62px;
+  min-height:
+    62px;
 
-    margin-top: 20px;
+  margin-top:
+    12px;
 
-    padding:
-      0 20px;
+  padding:
+    0
+    20px;
 
-    border-radius:
+  border-radius:
+    ${({ theme }) =>
+      theme.radius.pill};
+
+  background:
+    linear-gradient(
+      135deg,
       ${({ theme }) =>
-        theme.radius.pill};
+        theme.colors.purple},
+      #7551a7
+    );
 
-    background:
-      linear-gradient(
-        135deg,
-        ${({ theme }) =>
-          theme.colors.purple},
-        #7551a7
-      );
+  color:
+    ${({ theme }) =>
+      theme.colors.white};
+
+  text-decoration:
+    none;
+
+  box-shadow:
+    0
+    14px
+    32px
+    rgba(
+      91,
+      33,
+      182,
+      0.19
+    );
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+
+  .mobile-cta-main {
+    font-size:
+      11px;
+
+    font-weight:
+      800;
+
+    letter-spacing:
+      0.065em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .mobile-cta-meta {
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    gap:
+      6px;
 
     color:
       ${({ theme }) =>
-        theme.colors.white};
+        theme.colors.champagneLight};
 
-    text-decoration: none;
+    font-size:
+      10px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      0.05em;
+  }
+
+  &:hover {
+    transform:
+      translateY(-2px);
 
     box-shadow:
       0
-      14px
-      32px
+      18px
+      36px
       rgba(
         91,
         33,
         182,
-        0.19
+        0.26
       );
+  }
 
+  &:focus-visible {
+    outline:
+      2px solid
+      ${({ theme }) =>
+        theme.colors.champagne};
+
+    outline-offset:
+      5px;
+  }
+
+  @media (
+    prefers-reduced-motion: reduce
+  ) {
     transition:
-      transform 0.25s ease,
-      box-shadow 0.25s ease;
-
-    .mobile-cta-main {
-      font-size: 11px;
-
-      font-weight: 800;
-
-      letter-spacing:
-        0.065em;
-
-      text-transform:
-        uppercase;
-    }
-
-    .mobile-cta-meta {
-      display: inline-flex;
-
-      align-items: center;
-
-      gap: 6px;
-
-      color:
-        ${({ theme }) =>
-          theme.colors.champagneLight};
-
-      font-size: 10px;
-
-      font-weight: 700;
-
-      letter-spacing:
-        0.05em;
-    }
+      none;
 
     &:hover {
       transform:
-        translateY(-2px);
-
-      box-shadow:
-        0
-        18px
-        36px
-        rgba(
-          91,
-          33,
-          182,
-          0.26
-        );
+        none;
     }
-
-    &:focus-visible {
-      outline:
-        2px solid
-        ${({ theme }) =>
-          theme.colors.champagne};
-
-      outline-offset: 5px;
-    }
-
-    @media (
-      prefers-reduced-motion: reduce
-    ) {
-      transition: none;
-
-      &:hover {
-        transform: none;
-      }
-    }
-  `;
+  }
+`;

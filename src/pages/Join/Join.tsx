@@ -4,6 +4,8 @@ import {
   useState,
 } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import type {
   SubmitEvent,
 } from "react";
@@ -27,14 +29,10 @@ const GOOGLE_SHEETS_API =
    application submission.
 ===================================================== */
 
-const COMMUNITY_LINK =
-  "https://chat.whatsapp.com/LXNSKWf1E8JCxECrBxpm6f?mode=gi_t";
-
-/* =====================================================
-   COMPONENT
-===================================================== */
 
 const Join = () => {
+  const navigate = useNavigate();
+
   const [isSubmitting, setIsSubmitting] =
     useState(false);
 
@@ -169,8 +167,29 @@ const Join = () => {
         formData.get("skills") || ""
       ).trim(),
 
+      username: String(
+        formData.get("username") || ""
+      ).trim().toLowerCase(),
+
+      password: String(
+        formData.get("password") || ""
+      ),
+
       termsAccepted: true,
     };
+
+    const confirmPassword = String(
+      formData.get("confirmPassword") || ""
+    );
+
+    if (application.password !== confirmPassword) {
+      setError(
+        "Your passwords do not match. Please check them and try again."
+      );
+
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const response =
@@ -261,25 +280,25 @@ const Join = () => {
             </Heading>
 
             <Description>
-              Your application has
-              been submitted
-              successfully.
+              Your application has been
+              submitted successfully and
+              your member account is ready.
 
               <br />
               <br />
 
-              You can now join the
-              Regal Affluence
-              community on WhatsApp.
+              The next step is to complete
+              your member profile. After
+              completing your profile, you
+              will be able to join the official
+              Regal Affluence community.
             </Description>
 
             <SubmitButton
-              as="a"
-              href={COMMUNITY_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
+              type="button"
+              onClick={() => navigate("/login")}
             >
-              Join the community
+              Complete my profile
 
               <SubmitArrow
                 aria-hidden="true"
@@ -595,6 +614,101 @@ const Join = () => {
                 />
               </FieldGroup>
             </FullWidth>
+
+            {/* =============================================
+                MEMBER ACCOUNT
+            ============================================== */}
+
+            <FullWidth>
+              <AccountSection>
+                <AccountEyebrow>
+                  Create Your Member Account
+                </AccountEyebrow>
+
+                <AccountTitle>
+                  Choose your username
+                  and password.
+                </AccountTitle>
+
+                <AccountDescription>
+                  You will use these details to
+                  access your private Regal
+                  Affluence member profile.
+                  Please keep them safe.
+                </AccountDescription>
+              </AccountSection>
+            </FullWidth>
+
+            <FieldGroup>
+              <Label htmlFor="username">
+                Username{" "}
+                <Required>
+                  *
+                </Required>
+              </Label>
+
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="e.g. heritageolayimika"
+                required
+                minLength={3}
+                maxLength={30}
+                pattern="[A-Za-z0-9_.]{3,30}"
+                autoComplete="username"
+                spellCheck={false}
+              />
+
+              <FieldHint>
+                3–30 characters. Use letters, numbers,
+                underscores, or periods only.
+              </FieldHint>
+            </FieldGroup>
+
+            <FieldGroup>
+              <Label htmlFor="password">
+                Password{" "}
+                <Required>
+                  *
+                </Required>
+              </Label>
+
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Create a secure password"
+                required
+                minLength={8}
+                maxLength={128}
+                autoComplete="new-password"
+              />
+
+              <FieldHint>
+                Minimum 8 characters.
+              </FieldHint>
+            </FieldGroup>
+
+            <FieldGroup>
+              <Label htmlFor="confirmPassword">
+                Confirm Password{" "}
+                <Required>
+                  *
+                </Required>
+              </Label>
+
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                placeholder="Repeat your password"
+                required
+                minLength={8}
+                maxLength={128}
+                autoComplete="new-password"
+              />
+            </FieldGroup>
 
           </FormGrid>
 
@@ -1911,6 +2025,101 @@ const Textarea =
         );
     }
   `;
+
+/* =====================================================
+   ACCOUNT SECTION
+===================================================== */
+
+const AccountSection = styled.div`
+  padding:
+    26px 28px;
+
+  border:
+    1px solid
+    rgba(201, 169, 110, 0.2);
+
+  border-radius:
+    ${({ theme }) =>
+      theme.radius.md ||
+      theme.radius.lg};
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(201, 169, 110, 0.08),
+      rgba(91, 33, 182, 0.035)
+    );
+
+  @media (max-width: 600px) {
+    padding:
+      22px 20px;
+  }
+`;
+
+const AccountEyebrow = styled.p`
+  margin:
+    0 0 8px;
+
+  color:
+    ${({ theme }) =>
+      theme.colors.champagne};
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.18em;
+
+  text-transform: uppercase;
+`;
+
+const AccountTitle = styled.h3`
+  margin: 0;
+
+  color:
+    ${({ theme }) =>
+      theme.colors.purpleDeep};
+
+  font-family:
+    ${({ theme }) =>
+      theme.fonts.display};
+
+  font-size:
+    clamp(1.55rem, 3vw, 2.15rem);
+
+  font-weight: 600;
+
+  line-height: 1.06;
+
+  letter-spacing:
+    -0.03em;
+`;
+
+const AccountDescription = styled.p`
+  max-width: 620px;
+
+  margin:
+    10px 0 0;
+
+  color:
+    ${({ theme }) =>
+      theme.colors.textMuted};
+
+  font-size: 13px;
+
+  line-height: 1.7;
+`;
+
+const FieldHint = styled.span`
+  color:
+    ${({ theme }) =>
+      theme.colors.textMuted};
+
+  font-size: 11px;
+
+  line-height: 1.5;
+`;
 
 /* =====================================================
    TERMS SECTION
