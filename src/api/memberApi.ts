@@ -166,3 +166,113 @@ export const updateMemberProfile = async (
 
   return result.profile;
 };
+
+/* =========================================================
+   REQUEST USERNAME RECOVERY
+========================================================= */
+
+export const requestUsernameRecovery = async (
+  email: string
+): Promise<string> => {
+  const result =
+    await postToMemberApi({
+      action:
+        "requestUsernameRecovery",
+
+      email:
+        email.trim().toLowerCase(),
+    });
+
+  return (
+    result.message ||
+    "If an account exists with that email address, a verification code has been sent."
+  );
+};
+
+/* =========================================================
+   VERIFY USERNAME RECOVERY
+========================================================= */
+
+export const verifyUsernameRecovery = async (
+  email: string,
+  code: string
+): Promise<string> => {
+  const result =
+    await postToMemberApi({
+      action:
+        "verifyUsernameRecovery",
+
+      email:
+        email.trim().toLowerCase(),
+
+      code:
+        code.trim(),
+    });
+
+  if (!result.username) {
+    throw new Error(
+      "Username was not returned."
+    );
+  }
+
+  return result.username;
+};
+
+/* =========================================================
+   REQUEST PASSWORD RESET
+========================================================= */
+
+export const requestPasswordReset = async (
+  username: string,
+  email: string
+): Promise<string> => {
+  const result =
+    await postToMemberApi({
+      action:
+        "requestPasswordReset",
+
+      username:
+        username.trim().toLowerCase(),
+
+      email:
+        email.trim().toLowerCase(),
+    });
+
+  return (
+    result.message ||
+    "If the username and email match an account, a verification code has been sent."
+  );
+};
+
+/* =========================================================
+   RESET PASSWORD
+========================================================= */
+
+export const resetPassword = async (
+  username: string,
+  email: string,
+  code: string,
+  newPassword: string
+): Promise<string> => {
+  const result =
+    await postToMemberApi({
+      action:
+        "resetPassword",
+
+      username:
+        username.trim().toLowerCase(),
+
+      email:
+        email.trim().toLowerCase(),
+
+      code:
+        code.trim(),
+
+      newPassword,
+    });
+
+  return (
+    result.message ||
+    "Your password has been reset successfully."
+  );
+};

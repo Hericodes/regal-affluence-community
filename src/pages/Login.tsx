@@ -1,9 +1,23 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 import { loginMember } from "../api/memberApi";
+
+const fadeUp = keyframes`
+  from {
+    opacity: 0;
+    transform:
+      translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0);
+  }
+`;
 
 const Login = () => {
   const navigate = useNavigate();
@@ -49,9 +63,6 @@ const Login = () => {
       /*
        * Store only the information needed
        * for the current member session.
-       *
-       * The password is intentionally not
-       * stored in localStorage.
        */
       sessionStorage.setItem(
         "regalMember",
@@ -64,15 +75,9 @@ const Login = () => {
       );
 
       /*
-       * Store the credentials in memory
-       * for the current page flow.
-       *
-       * The Profile page will request the
-       * password again from session state
-       * only if required by the current API
-       * design.
+       * Store the current credentials for
+       * the existing Profile API design.
        */
-
       sessionStorage.setItem(
         "regalMemberAuth",
         JSON.stringify({
@@ -80,6 +85,14 @@ const Login = () => {
             cleanUsername,
           password,
         })
+      );
+
+      /*
+       * Let the Navbar know immediately
+       * that a member session exists.
+       */
+      window.dispatchEvent(
+        new Event("regal-member-session")
       );
 
       navigate("/profile");
@@ -102,9 +115,12 @@ const Login = () => {
   return (
     <Page>
       <Glow />
+      <GlowSecondary />
 
       <Container>
         <LoginCard>
+          <CardTopGlow />
+
           <Eyebrow>
             REGAL AFFLUENCE GROUP
           </Eyebrow>
@@ -184,7 +200,13 @@ const Login = () => {
               <ErrorMessage
                 role="alert"
               >
-                {error}
+                <ErrorIcon>
+                  !
+                </ErrorIcon>
+
+                <span>
+                  {error}
+                </span>
               </ErrorMessage>
             )}
 
@@ -209,6 +231,53 @@ const Login = () => {
               )}
             </SubmitButton>
           </Form>
+
+          {/* =========================================
+              ACCOUNT RECOVERY
+          ========================================== */}
+
+          <RecoveryArea>
+            <RecoveryDivider>
+              <span />
+              <RecoveryDividerText>
+                ACCOUNT RECOVERY
+              </RecoveryDividerText>
+              <span />
+            </RecoveryDivider>
+
+            <RecoveryText>
+              Having trouble accessing your
+              account?
+            </RecoveryText>
+
+            <RecoveryLinks>
+              <RecoveryLink
+                type="button"
+                onClick={() =>
+                  navigate(
+                    "/recover-username"
+                  )
+                }
+              >
+                Forgot username?
+              </RecoveryLink>
+
+              <RecoverySeparator>
+                •
+              </RecoverySeparator>
+
+              <RecoveryLink
+                type="button"
+                onClick={() =>
+                  navigate(
+                    "/reset-password"
+                  )
+                }
+              >
+                Forgot password?
+              </RecoveryLink>
+            </RecoveryLinks>
+          </RecoveryArea>
 
           <HelpText>
             Use the username and password
@@ -274,6 +343,34 @@ const Page = styled.main`
    BACKGROUND GLOW
 ========================================================= */
 
+const floatGlow = keyframes`
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-18px, 14px, 0) scale(1.05);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+`;
+
+const floatGlowReverse = keyframes`
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(16px, -12px, 0) scale(1.06);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+`;
+
 const Glow = styled.div`
   position: absolute;
 
@@ -304,6 +401,47 @@ const Glow = styled.div`
 
   pointer-events:
     none;
+
+  animation:
+    ${floatGlow} 9s ease-in-out
+      infinite;
+`;
+
+const GlowSecondary = styled.div`
+  position: absolute;
+
+  width: 430px;
+
+  height: 430px;
+
+  bottom: -180px;
+
+  left: -160px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(
+        201,
+        169,
+        110,
+        0.1
+      ),
+      transparent 68%
+    );
+
+  filter:
+    blur(26px);
+
+  pointer-events:
+    none;
+
+  animation:
+    ${floatGlowReverse}
+      11s ease-in-out
+      infinite;
 `;
 
 /* =========================================================
@@ -326,17 +464,37 @@ const Container = styled.div`
    LOGIN CARD
 ========================================================= */
 
+const cardEnter = keyframes`
+  from {
+    opacity: 0;
+    transform:
+      translateY(28px)
+      scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+`;
+
 const LoginCard = styled.section`
+  position: relative;
+
   width: 100%;
 
   padding: 54px;
+
+  overflow: hidden;
 
   background:
     rgba(
       255,
       255,
       255,
-      0.86
+      0.88
     );
 
   border:
@@ -369,6 +527,17 @@ const LoginCard = styled.section`
   -webkit-backdrop-filter:
     blur(14px);
 
+  animation:
+    ${cardEnter}
+      0.7s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      )
+      both;
+
   @media (max-width: 600px) {
     padding:
       36px
@@ -380,6 +549,35 @@ const LoginCard = styled.section`
       28px
       20px;
   }
+`;
+
+const CardTopGlow = styled.div`
+  position: absolute;
+
+  top: -90px;
+
+  right: -80px;
+
+  width: 220px;
+
+  height: 220px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(
+        91,
+        33,
+        182,
+        0.07
+      ),
+      transparent 70%
+    );
+
+  pointer-events:
+    none;
 `;
 
 /* =========================================================
@@ -413,6 +611,12 @@ const Eyebrow = styled.p`
 
   text-transform:
     uppercase;
+
+  animation:
+    ${fadeUp}
+      0.6s
+      0.1s
+      both;
 
   &::before {
     content: "";
@@ -459,6 +663,12 @@ const Heading = styled.h1`
 
   letter-spacing:
     -0.045em;
+
+  animation:
+    ${fadeUp}
+      0.7s
+      0.16s
+      both;
 `;
 
 const Accent = styled.span`
@@ -492,6 +702,12 @@ const Description = styled.p`
 
   line-height:
     1.75;
+
+  animation:
+    ${fadeUp}
+      0.7s
+      0.22s
+      both;
 `;
 
 /* =========================================================
@@ -522,6 +738,17 @@ const FieldGroup = styled.div`
 
   gap:
     9px;
+
+  animation:
+    ${fadeUp}
+      0.6s
+      0.28s
+      both;
+
+  &:nth-child(2) {
+    animation-delay:
+      0.34s;
+  }
 `;
 
 /* =========================================================
@@ -587,11 +814,13 @@ const Input = styled.input`
 
   transition:
     border-color
-      0.2s ease,
+      0.25s ease,
     background
-      0.2s ease,
+      0.25s ease,
     box-shadow
-      0.2s ease;
+      0.25s ease,
+    transform
+      0.25s ease;
 
   &::placeholder {
     color:
@@ -624,13 +853,16 @@ const Input = styled.input`
     box-shadow:
       0
       0
-      0 3px
+      0 4px
       rgba(
         91,
         33,
         182,
         0.08
       );
+
+    transform:
+      translateY(-1px);
   }
 `;
 
@@ -638,7 +870,40 @@ const Input = styled.input`
    ERROR
 ========================================================= */
 
-const ErrorMessage = styled.p`
+const shakeIn = keyframes`
+  0% {
+    opacity: 0;
+    transform:
+      translateX(-6px);
+  }
+
+  40% {
+    transform:
+      translateX(5px);
+  }
+
+  70% {
+    transform:
+      translateX(-3px);
+  }
+
+  100% {
+    opacity: 1;
+    transform:
+      translateX(0);
+  }
+`;
+
+const ErrorMessage = styled.div`
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  gap:
+    10px;
+
   margin:
     -2px
     0
@@ -677,6 +942,48 @@ const ErrorMessage = styled.p`
 
   line-height:
     1.5;
+
+  animation:
+    ${shakeIn}
+      0.45s
+      ease both;
+`;
+
+const ErrorIcon = styled.span`
+  width:
+    20px;
+
+  height:
+    20px;
+
+  flex:
+    0 0 20px;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  border-radius:
+    50%;
+
+  background:
+    rgba(
+      192,
+      57,
+      43,
+      0.12
+    );
+
+  font-size:
+    11px;
+
+  font-weight:
+    900;
 `;
 
 /* =========================================================
@@ -749,11 +1056,17 @@ const SubmitButton = styled.button`
 
   transition:
     transform
-      0.2s ease,
+      0.25s ease,
     box-shadow
-      0.2s ease,
+      0.25s ease,
     opacity
-      0.2s ease;
+      0.25s ease;
+
+  animation:
+    ${fadeUp}
+      0.65s
+      0.4s
+      both;
 
   &:hover:not(:disabled) {
     transform:
@@ -762,13 +1075,18 @@ const SubmitButton = styled.button`
     box-shadow:
       0
       16px
-      36px
+      38px
       rgba(
         91,
         33,
         182,
-        0.22
+        0.24
       );
+  }
+
+  &:active:not(:disabled) {
+    transform:
+      translateY(0);
   }
 
   &:disabled {
@@ -803,6 +1121,191 @@ const Arrow = styled.span`
 
   line-height:
     1;
+
+  transition:
+    transform
+      0.25s ease;
+
+  ${SubmitButton}:hover & {
+    transform:
+      translateX(3px);
+  }
+`;
+
+/* =========================================================
+   ACCOUNT RECOVERY
+========================================================= */
+
+const RecoveryArea = styled.div`
+  margin-top:
+    30px;
+
+  padding-top:
+    24px;
+
+  border-top:
+    1px solid
+    rgba(
+      69,
+      35,
+      105,
+      0.09
+    );
+
+  animation:
+    ${fadeUp}
+      0.7s
+      0.48s
+      both;
+`;
+
+const RecoveryDivider = styled.div`
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    10px;
+
+  margin-bottom:
+    13px;
+
+  span {
+    flex:
+      1;
+
+    height:
+      1px;
+
+    background:
+      rgba(
+        69,
+        35,
+        105,
+        0.07
+      );
+  }
+`;
+
+const RecoveryDividerText = styled.span`
+  color:
+    ${({ theme }) =>
+      theme.colors.textMuted};
+
+  font-size:
+    8px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    0.16em;
+
+  white-space:
+    nowrap;
+`;
+
+const RecoveryText = styled.p`
+  margin:
+    0
+    0
+    11px;
+
+  color:
+    ${({ theme }) =>
+      theme.colors.textMuted};
+
+  font-size:
+    12px;
+
+  line-height:
+    1.6;
+
+  text-align:
+    center;
+`;
+
+const RecoveryLinks = styled.div`
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    9px;
+
+  flex-wrap:
+    wrap;
+`;
+
+const RecoveryLink = styled.button`
+  padding:
+    0;
+
+  border:
+    none;
+
+  background:
+    transparent;
+
+  color:
+    ${({ theme }) =>
+      theme.colors.purple};
+
+  font-family:
+    inherit;
+
+  font-size:
+    12px;
+
+  font-weight:
+    800;
+
+  cursor:
+    pointer;
+
+  transition:
+    color
+      0.2s ease,
+    transform
+      0.2s ease;
+
+  &:hover {
+    color:
+      ${({ theme }) =>
+        theme.colors.purpleDeep};
+
+    transform:
+      translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline:
+      2px solid
+      ${({ theme }) =>
+        theme.colors.champagne};
+
+    outline-offset:
+      3px;
+
+    border-radius:
+      3px;
+  }
+`;
+
+const RecoverySeparator = styled.span`
+  color:
+    ${({ theme }) =>
+      theme.colors.champagne};
+
+  font-size:
+    11px;
 `;
 
 /* =========================================================
@@ -828,3 +1331,4 @@ const HelpText = styled.p`
   text-align:
     center;
 `;
+

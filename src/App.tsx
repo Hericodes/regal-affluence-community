@@ -37,6 +37,8 @@ import Terms from "./pages/Terms/Terms";
 
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import RecoverUsername from "./pages/RecoverUsername";
+import ResetPassword from "./pages/ResetPassword";
 
 /* =====================================================
    ROUTER BASE
@@ -236,6 +238,22 @@ function ProfilePage() {
 }
 
 /* =====================================================
+   RECOVER USERNAME PAGE
+===================================================== */
+
+function RecoverUsernamePage() {
+  return <RecoverUsername />;
+}
+
+/* =====================================================
+   RESET PASSWORD PAGE
+===================================================== */
+
+function ResetPasswordPage() {
+  return <ResetPassword />;
+}
+
+/* =====================================================
    APP
 ===================================================== */
 
@@ -346,6 +364,24 @@ function App() {
           <Route
             path="/profile"
             element={<ProfilePage />}
+          />
+
+          {/* =================================================
+              RECOVER USERNAME
+          ================================================= */}
+
+          <Route
+            path="/recover-username"
+            element={<RecoverUsernamePage />}
+          />
+
+          {/* =================================================
+              RESET PASSWORD
+          ================================================= */}
+
+          <Route
+            path="/reset-password"
+            element={<ResetPasswordPage />}
           />
 
         </Routes>

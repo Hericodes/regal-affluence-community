@@ -22,13 +22,8 @@ const GOOGLE_SHEETS_API =
   "https://script.google.com/macros/s/AKfycbzNHL0mcmPqJ15NAiRM1io3ilwUXlulo8vrV7qdSgy9qYxyjkzk5O5VjNgpvxaeeCSh/exec";
 
 /* =====================================================
-   WHATSAPP COMMUNITY LINK
-
-   IMPORTANT:
-   This is only shown AFTER a successful
-   application submission.
+   COMPONENT
 ===================================================== */
-
 
 const Join = () => {
   const navigate = useNavigate();
@@ -516,55 +511,24 @@ const Join = () => {
             </FieldGroup>
 
             {/* =============================================
-                REFERRAL SOURCE
+                REFERRAL
             ============================================== */}
 
             <FieldGroup>
               <Label htmlFor="referralSource">
-                How did you hear
-                about us?{" "}
-                <Required>
-                  *
-                </Required>
+                Referral{" "}
+                <Optional>
+                  (Optional)
+                </Optional>
               </Label>
 
-              <Select
+              <Input
                 id="referralSource"
                 name="referralSource"
-                defaultValue=""
-                required
-              >
-                <option
-                  value=""
-                  disabled
-                >
-                  Select an option
-                </option>
-
-                <option value="instagram">
-                  Instagram
-                </option>
-
-                <option value="whatsapp">
-                  WhatsApp
-                </option>
-
-                <option value="referral">
-                  Friend / Referral
-                </option>
-
-                <option value="event">
-                  Event
-                </option>
-
-                <option value="google">
-                  Google / Search
-                </option>
-
-                <option value="other">
-                  Other
-                </option>
-              </Select>
+                type="text"
+                placeholder="Enter the name of the person who referred you"
+                autoComplete="name"
+              />
             </FieldGroup>
 
             {/* =============================================
@@ -1825,84 +1789,6 @@ const Input =
       opacity:
         0.65;
     }
-
-    &:hover {
-      border-color:
-        rgba(
-          91,
-          33,
-          182,
-          0.3
-        );
-    }
-
-    &:focus {
-      border-color:
-        ${({ theme }) =>
-          theme.colors.purple};
-
-      background:
-        ${({ theme }) =>
-          theme.colors.white};
-
-      box-shadow:
-        0
-        0
-        0 3px
-        rgba(
-          91,
-          33,
-          182,
-          0.08
-        );
-    }
-  `;
-
-/* =====================================================
-   SELECT
-===================================================== */
-
-const Select =
-  styled.select`
-    width: 100%;
-
-    min-height: 52px;
-
-    padding:
-      0 16px;
-
-    border:
-      1px solid
-      ${({ theme }) =>
-        theme.colors.border};
-
-    border-radius:
-      ${({ theme }) =>
-        theme.radius.sm};
-
-    background:
-      rgba(
-        250,
-        248,
-        243,
-        0.9
-      );
-
-    color:
-      ${({ theme }) =>
-        theme.colors.text};
-
-    font-size: 15px;
-
-    outline: none;
-
-    cursor:
-      pointer;
-
-    transition:
-      border-color 0.2s ease,
-      background 0.2s ease,
-      box-shadow 0.2s ease;
 
     &:hover {
       border-color:

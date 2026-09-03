@@ -4,7 +4,7 @@ import {
 } from "react";
 import type { FormEvent } from "react";
 
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -72,6 +72,9 @@ const Profile = () => {
 
   const [successMessage, setSuccessMessage] =
     useState("");
+
+  const [communityPromptOpen, setCommunityPromptOpen] =
+    useState(false);
 
   const [profilePhoto, setProfilePhoto] =
     useState("");
@@ -218,6 +221,23 @@ const Profile = () => {
     navigate("/login", {
       replace: true,
     });
+  };
+
+  /* =======================================================
+     COMMUNITY ACCESS
+  ======================================================= */
+
+  const handleCommunityClick = () => {
+    if (!isAccountDetailsComplete) {
+      setCommunityPromptOpen(true);
+      return;
+    }
+
+    window.open(
+      COMMUNITY_LINK,
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   /* =======================================================
@@ -462,6 +482,9 @@ const Profile = () => {
   return (
     <Page>
       <Glow />
+      <AmbientOrb $position="left" />
+      <AmbientOrb $position="right" />
+      <GridOverlay aria-hidden="true" />
 
       <Container>
         {/* =================================================
@@ -828,7 +851,7 @@ const Profile = () => {
               ADDITIONAL INFORMATION
           ================================================ */}
 
-          <SectionCard $featured>
+          <SectionCard id="additional-information" $featured>
             <SectionHeader>
               <SectionEyebrow>
                 04
@@ -853,7 +876,7 @@ const Profile = () => {
               <FullWidth>
                 <FieldGroup>
                   <Label htmlFor="profilePhoto">
-                    Profile Photo
+                    Profile Photo <Optional>(Optional)</Optional>
                   </Label>
 
                   <Input
@@ -1043,34 +1066,78 @@ const Profile = () => {
             )}
           </CommunityContent>
 
-          {isAccountDetailsComplete ? (
-            <CommunityButton
-              as="a"
-              href={COMMUNITY_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Join the community
+          <CommunityButton
+            type="button"
+            onClick={handleCommunityClick}
+            $complete={isAccountDetailsComplete}
+            aria-label={
+              isAccountDetailsComplete
+                ? "Join the Regal Affluence community"
+                : "Complete and save your bank details before joining the community"
+            }
+          >
+            {isAccountDetailsComplete
+              ? "Join the community"
+              : "Complete account details"}
 
+            {isAccountDetailsComplete ? (
               <Arrow aria-hidden="true">
                 →
               </Arrow>
-            </CommunityButton>
-          ) : (
-            <CommunityButton
-              type="button"
-              disabled
-              aria-disabled="true"
-              title="Complete and save your account details first"
-            >
-              Complete account details
-
-              <LockIcon>
+            ) : (
+              <LockIcon aria-hidden="true">
                 🔒
               </LockIcon>
-            </CommunityButton>
-          )}
+            )}
+          </CommunityButton>
         </CommunityCard>
+
+        {communityPromptOpen && (
+          <PromptOverlay
+            role="presentation"
+            onClick={() => setCommunityPromptOpen(false)}
+          >
+            <PromptCard
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="community-prompt-title"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <PromptIcon aria-hidden="true">!</PromptIcon>
+              <PromptEyebrow>Account action required</PromptEyebrow>
+              <PromptTitle id="community-prompt-title">
+                Finish your payment details first.
+              </PromptTitle>
+              <PromptText>
+                Add your bank name, account name, and 10-digit account number, then save your profile.
+                Your community access will unlock immediately after that.
+              </PromptText>
+              <PromptActions>
+                <SecondaryPromptButton
+                  type="button"
+                  onClick={() => setCommunityPromptOpen(false)}
+                >
+                  Close
+                </SecondaryPromptButton>
+                <PrimaryPromptButton
+                  type="button"
+                  onClick={() => {
+                    setCommunityPromptOpen(false);
+                    document
+                      .getElementById("additional-information")
+                      ?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                  }}
+                >
+                  Complete details
+                  <Arrow aria-hidden="true">→</Arrow>
+                </PrimaryPromptButton>
+              </PromptActions>
+            </PromptCard>
+          </PromptOverlay>
+        )}
 
         {/* =================================================
             FOOTER
@@ -1098,38 +1165,31 @@ export default Profile;
 
 const Page = styled.main`
   position: relative;
-
   min-height: 100svh;
-
-  padding:
-    140px
-    0
-    80px;
-
+  padding: 140px 0 80px;
   overflow: hidden;
-
+  isolation: isolate;
   background:
-    linear-gradient(
-      135deg,
-      ${({ theme }) =>
-        theme.colors.ivory}
-        0%,
-      ${({ theme }) =>
-        theme.colors.ivory}
-        52%,
-      #eee4f6
-        100%
+    linear-gradient(135deg,
+      ${({ theme }) => theme.colors.ivory} 0%,
+      ${({ theme }) => theme.colors.ivory} 48%,
+      #eee4f6 100%
     );
+  color: ${({ theme }) => theme.colors.text};
 
-  color:
-    ${({ theme }) =>
-      theme.colors.text};
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 16% 18%, rgba(91, 33, 182, 0.06), transparent 28%),
+      radial-gradient(circle at 84% 34%, rgba(201, 169, 110, 0.06), transparent 25%);
+    z-index: -4;
+  }
 
   @media (max-width: 768px) {
-    padding:
-      115px
-      0
-      60px;
+    padding: 115px 0 60px;
   }
 `;
 
@@ -1167,6 +1227,178 @@ const Glow = styled.div`
 
   pointer-events:
     none;
+`;
+/* =========================================================
+   COMMUNITY PROMPT
+========================================================= */
+
+const PromptOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(32, 19, 41, 0.38);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: overlayIn 0.22s ease both;
+
+  @keyframes overlayIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+`;
+
+const PromptCard = styled.div`
+  position: relative;
+  width: min(100%, 470px);
+  padding: 32px;
+  border: 1px solid rgba(192,57,43,0.18);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(255,252,250,0.98), rgba(248,241,239,0.97));
+  box-shadow: 0 30px 90px rgba(35, 18, 27, 0.24);
+  animation: promptIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @keyframes promptIn {
+    from { opacity: 0; transform: translateY(18px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+`;
+
+const PromptIcon = styled.div`
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  border-radius: 14px;
+  background: rgba(192,57,43,0.11);
+  color: #c0392b;
+  font-weight: 900;
+  box-shadow: 0 0 0 7px rgba(192,57,43,0.035);
+`;
+
+const PromptEyebrow = styled.p`
+  margin: 0 0 7px;
+  color: #c0392b;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+`;
+
+const PromptTitle = styled.h3`
+  margin: 0;
+  color: ${({ theme }) => theme.colors.purpleDeep};
+  font-family: ${({ theme }) => theme.fonts.display};
+  font-size: clamp(1.8rem, 4vw, 2.35rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+`;
+
+const PromptText = styled.p`
+  margin: 12px 0 0;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 13px;
+  line-height: 1.7;
+`;
+
+const PromptActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+
+  @media (max-width: 520px) {
+    flex-direction: column-reverse;
+  }
+`;
+
+const SecondaryPromptButton = styled.button`
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radius.sm};
+  background: rgba(255,255,255,0.72);
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: ${({ theme }) => theme.colors.white};
+  }
+`;
+
+const PrimaryPromptButton = styled.button`
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 18px;
+  border: none;
+  border-radius: ${({ theme }) => theme.radius.sm};
+  background: ${({ theme }) => theme.colors.purple};
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(91,33,182,0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(91,33,182,0.23);
+  }
+`;
+
+
+/* =========================================================
+   AMBIENT ORBS
+========================================================= */
+
+const floatOrb = keyframes`
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, 22px, 0) scale(1.04);
+  }
+`;
+
+const AmbientOrb = styled.div<{
+  $position: "left" | "right";
+}>`
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -2;
+  filter: blur(8px);
+  opacity: 0.72;
+  animation: ${floatOrb} 8s ease-in-out infinite;
+  ${({ $position }) =>
+    $position === "left"
+      ? `left: -190px; top: 42%; background: radial-gradient(circle, rgba(201,169,110,0.13), transparent 68%);`
+      : `right: -170px; top: 11%; background: radial-gradient(circle, rgba(91,33,182,0.11), transparent 68%); animation-delay: -3s;`}
+`;
+
+const GridOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -3;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(rgba(69,35,105,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69,35,105,0.035) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 76%);
 `;
 
 /* =========================================================
@@ -1455,12 +1687,18 @@ const MembershipCard = styled.section`
     0
     20px
     55px
-    rgba(
-      60,
-      35,
-      82,
-      0.07
-    );
+    rgba(60, 35, 82, 0.07);
+
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 70px rgba(60,35,82,0.1);
+    border-color: rgba(201,169,110,0.28);
+  }
 
   backdrop-filter:
     blur(12px);
@@ -1529,21 +1767,14 @@ const ProfileAvatar = styled.div`
     50%;
 
   background:
-    linear-gradient(
-      145deg,
-      rgba(
-        91,
-        33,
-        182,
-        0.09
-      ),
-      rgba(
-        201,
-        169,
-        110,
-        0.12
-      )
-    );
+    linear-gradient(145deg, rgba(91,33,182,0.10), rgba(201,169,110,0.16));
+  box-shadow: 0 0 0 6px rgba(201,169,110,0.045);
+  animation: avatarPulse 4s ease-in-out infinite;
+
+  @keyframes avatarPulse {
+    0%, 100% { box-shadow: 0 0 0 6px rgba(201,169,110,0.045); }
+    50% { box-shadow: 0 0 0 10px rgba(91,33,182,0.035); }
+  }
 `;
 
 const AvatarImage = styled.img`
@@ -1868,48 +2099,75 @@ const Form = styled.form`
    SECTION CARD
 ========================================================= */
 
+const cardReveal = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
 const SectionCard = styled.section<{
   $featured?: boolean;
 }>`
-  padding:
-    36px;
-
-  border:
-    1px solid
+  position: relative;
+  overflow: hidden;
+  padding: 36px;
+  border: 1px solid
     ${({ $featured }) =>
       $featured
-        ? "rgba(201, 169, 110, 0.24)"
+        ? "rgba(201, 169, 110, 0.28)"
         : "rgba(69, 35, 105, 0.12)"};
-
-  border-radius:
-    ${({ theme }) =>
-      theme.radius.lg};
-
+  border-radius: ${({ theme }) => theme.radius.lg};
   background:
     ${({ $featured }) =>
       $featured
-        ? "rgba(255, 252, 247, 0.92)"
-        : "rgba(255, 255, 255, 0.78)"};
+        ? "linear-gradient(145deg, rgba(255,252,247,0.96), rgba(247,241,235,0.9))"
+        : "rgba(255,255,255,0.82)"};
+  box-shadow: 0 18px 45px rgba(60, 35, 82, 0.055);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  animation: ${cardReveal} 0.65s ease both;
+  transition:
+    transform 0.32s ease,
+    box-shadow 0.32s ease,
+    border-color 0.32s ease;
 
-  box-shadow:
-    0
-    18px
-    45px
-    rgba(
-      60,
-      35,
-      82,
-      0.055
-    );
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -40%;
+    width: 40%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,169,110,0.9), transparent);
+    animation: cardSweep 7s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes cardSweep {
+    0% { transform: translateX(0); opacity: 0; }
+    15% { opacity: 1; }
+    45% { opacity: 1; }
+    60%, 100% { transform: translateX(350%); opacity: 0; }
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 60px rgba(60,35,82,0.09);
+    border-color: ${({ $featured }) =>
+      $featured ? "rgba(201,169,110,0.4)" : "rgba(91,33,182,0.18)"};
+  }
 
   @media (max-width: 768px) {
-    padding:
-      28px;
+    padding: 28px;
   }
 
   @media (max-width: 520px) {
-    padding:
-      22px;
+    padding: 22px;
   }
 `;
 
@@ -2271,6 +2529,15 @@ const Label = styled.label`
 `;
 
 /* =========================================================
+   OPTIONAL LABEL
+========================================================= */
+
+const Optional = styled.span`
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-weight: 500;
+`;
+
+/* =========================================================
    INPUT
 ========================================================= */
 
@@ -2330,13 +2597,8 @@ const Input = styled.input`
   }
 
   &:hover {
-    border-color:
-      rgba(
-        91,
-        33,
-        182,
-        0.3
-      );
+    border-color: rgba(91, 33, 182, 0.24);
+    transform: translateY(-1px);
   }
 
   &:focus {
@@ -2709,66 +2971,61 @@ const Arrow = styled.span`
 const CommunityCard = styled.section<{
   $complete: boolean;
 }>`
-  display:
-    flex;
-
-  align-items:
-    center;
-
-  justify-content:
-    space-between;
-
-  gap:
-    30px;
-
-  margin-top:
-    24px;
-
-  padding:
-    32px;
-
-  border:
-    1px solid
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 24px;
+  padding: 34px;
+  border: 1px solid
     ${({ $complete }) =>
       $complete
-        ? "rgba(201, 169, 110, 0.28)"
-        : "rgba(69, 35, 105, 0.12)"};
-
-  border-radius:
-    ${({ theme }) =>
-      theme.radius.lg};
-
+        ? "rgba(201,169,110,0.32)"
+        : "rgba(192,57,43,0.22)"};
+  border-radius: ${({ theme }) => theme.radius.lg};
   background:
     ${({ $complete }) =>
       $complete
-        ? "rgba(255, 252, 247, 0.94)"
-        : "rgba(255, 255, 255, 0.7)"};
-
+        ? "linear-gradient(135deg, rgba(255,252,247,0.97), rgba(247,241,235,0.92))"
+        : "linear-gradient(135deg, rgba(255,249,247,0.96), rgba(255,255,255,0.86))"};
   box-shadow:
-    0
-    18px
-    45px
-    rgba(
-      60,
-      35,
-      82,
-      0.055
-    );
+    0 18px 45px rgba(60,35,82,0.055),
+    inset 0 1px 0 rgba(255,255,255,0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    right: -60px;
+    top: -70px;
+    border-radius: 50%;
+    background:
+      ${({ $complete }) =>
+        $complete
+          ? "radial-gradient(circle, rgba(201,169,110,0.16), transparent 70%)"
+          : "radial-gradient(circle, rgba(192,57,43,0.10), transparent 70%)"};
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 26px 62px rgba(60,35,82,0.09);
+  }
 
   @media (max-width: 760px) {
-    align-items:
-      flex-start;
-
-    flex-direction:
-      column;
-
-    padding:
-      28px;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 28px;
   }
 
   @media (max-width: 520px) {
-    padding:
-      22px;
+    padding: 22px;
   }
 `;
 
@@ -2871,219 +3128,98 @@ const CommunityDescription = styled.p`
 ========================================================= */
 
 const CommunityNotice = styled.div`
-  display:
-    flex;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 650px;
+  margin-top: 18px;
+  padding: 13px 14px;
+  border: 1px solid rgba(192, 57, 43, 0.24);
+  border-radius: ${({ theme }) => theme.radius.sm};
+  background: rgba(192, 57, 43, 0.075);
+  box-shadow: 0 8px 26px rgba(192,57,43,0.055);
+  animation: noticePulse 2.8s ease-in-out infinite;
 
-  align-items:
-    flex-start;
-
-  gap:
-    10px;
-
-  max-width:
-    650px;
-
-  margin-top:
-    18px;
-
-  padding:
-    12px
-    14px;
-
-  border:
-    1px solid
-    rgba(
-      201,
-      169,
-      110,
-      0.22
-    );
-
-  border-radius:
-    ${({ theme }) =>
-      theme.radius.sm};
-
-  background:
-    rgba(
-      201,
-      169,
-      110,
-      0.06
-    );
+  @keyframes noticePulse {
+    0%, 100% { box-shadow: 0 8px 26px rgba(192,57,43,0.05); }
+    50% { box-shadow: 0 10px 30px rgba(192,57,43,0.11); }
+  }
 `;
 
 const NoticeIcon = styled.span`
-  width:
-    22px;
-
-  height:
-    22px;
-
-  flex-shrink:
-    0;
-
-  display:
-    inline-flex;
-
-  align-items:
-    center;
-
-  justify-content:
-    center;
-
-  border-radius:
-    50%;
-
-  background:
-    rgba(
-      201,
-      169,
-      110,
-      0.16
-    );
-
-  color:
-    ${({ theme }) =>
-      theme.colors.purple};
-
-  font-size:
-    11px;
-
-  font-weight:
-    900;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(192,57,43,0.14);
+  color: #c0392b;
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: 0 0 0 4px rgba(192,57,43,0.05);
 `;
 
 const NoticeText = styled.span`
-  color:
-    ${({ theme }) =>
-      theme.colors.textMuted};
-
-  font-size:
-    11px;
-
-  line-height:
-    1.6;
+  color: #b33224;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
 `;
 
 /* =========================================================
    COMMUNITY BUTTON
 ========================================================= */
 
-const CommunityButton = styled.button`
-  min-height:
-    54px;
-
-  flex-shrink:
-    0;
-
-  display:
-    inline-flex;
-
-  align-items:
-    center;
-
-  justify-content:
-    center;
-
-  gap:
-    12px;
-
-  padding:
-    0
-    22px;
-
-  border:
-    none;
-
-  border-radius:
-    ${({ theme }) =>
-      theme.radius.sm};
-
-  background:
-    ${({ theme }) =>
-      theme.colors.purple};
-
-  color:
-    ${({ theme }) =>
-      theme.colors.white};
-
-  text-decoration:
-    none;
-
-  font-size:
-    12px;
-
-  font-weight:
-    800;
-
-  letter-spacing:
-    0.03em;
-
-  cursor:
-    pointer;
-
-  box-shadow:
-    0
-    12px
-    30px
-    rgba(
-      91,
-      33,
-      182,
-      0.16
-    );
-
+const CommunityButton = styled.button<{
+  $complete: boolean;
+}>`
+  min-height: 54px;
+  min-width: 190px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 22px;
+  border: none;
+  border-radius: ${({ theme }) => theme.radius.sm};
+  background: ${({ $complete, theme }) =>
+    $complete ? theme.colors.purple : "#d7a198"};
+  color: ${({ theme }) => theme.colors.white};
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  box-shadow: ${({ $complete }) =>
+    $complete
+      ? "0 12px 30px rgba(91,33,182,0.16)"
+      : "0 10px 25px rgba(192,57,43,0.12)"};
   transition:
-    transform
-      0.2s ease,
-    box-shadow
-      0.2s ease,
-    opacity
-      0.2s ease;
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
 
-  &:hover:not(:disabled) {
-    transform:
-      translateY(-2px);
-
-    box-shadow:
-      0
-      16px
-      36px
-      rgba(
-        91,
-        33,
-        182,
-        0.21
-      );
-  }
-
-  &:disabled {
-    opacity:
-      0.45;
-
-    cursor:
-      not-allowed;
-
-    background:
-      #8c8298;
-
-    box-shadow:
-      none;
+  &:hover {
+    transform: translateY(-2px);
+    background: ${({ $complete }) =>
+      $complete ? "#5b21b6" : "#c97f73"};
+    box-shadow: ${({ $complete }) =>
+      $complete
+        ? "0 17px 38px rgba(91,33,182,0.23)"
+        : "0 15px 34px rgba(192,57,43,0.18)"};
   }
 
   &:focus-visible {
-    outline:
-      2px solid
-      ${({ theme }) =>
-        theme.colors.champagne};
-
-    outline-offset:
-      4px;
+    outline: 2px solid ${({ theme }) => theme.colors.champagne};
+    outline-offset: 4px;
   }
 
   @media (max-width: 760px) {
-    width:
-      100%;
+    width: 100%;
   }
 `;
 
