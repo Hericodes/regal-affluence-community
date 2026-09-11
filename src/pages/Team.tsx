@@ -50,6 +50,15 @@ const members = [
     bio:
       "Leading the technology and digital direction of Regal Affluence, including digital platforms, systems, creative technology, and technical support.",
   },
+
+  {
+    id: "05",
+    name: "Peter Ifedayo Adesanya",
+    role: "Social Media, Content Strategy & Visibility Lead",
+    image: `${BASE_URL}images/members/member-05.png`,
+    bio:
+      "Leading social media platforms, content strategy, and digital visibility to strengthen Regal Affluence's presence, reach, and engagement.",
+  },
 ];
 
 /* =========================================================
