@@ -271,9 +271,20 @@ const Join = () => {
         await response.json();
 
       if (!result.success) {
+        const backendMessage = String(
+          result.message || ""
+        );
+
+        const usernameUnavailable =
+          /username|user name|already exists|already taken|taken|duplicate/i.test(
+            backendMessage
+          );
+
         throw new Error(
-          result.message ||
-            "Application submission failed."
+          usernameUnavailable
+            ? "That username is not available. Please choose another username and try again."
+            : backendMessage ||
+              "Application submission failed."
         );
       }
 
@@ -305,8 +316,14 @@ const Join = () => {
         submissionError
       );
 
+      const message =
+        submissionError instanceof Error
+          ? submissionError.message
+          : "";
+
       setError(
-        "Something went wrong while submitting your application. Please try again."
+        message ||
+          "We couldn't submit your application right now. Please check your connection and try again."
       );
     } finally {
       setIsSubmitting(false);
@@ -1753,7 +1770,7 @@ const Description =
       ${({ theme }) =>
         theme.colors.textMuted};
 
-    font-size: 16px;
+    font-size: 18px;
 
     line-height:
       1.85;
@@ -1855,7 +1872,7 @@ const JourneyNumber =
       ${({ theme }) =>
         theme.colors.purple};
 
-    font-size: 9px;
+    font-size: 12px;
 
     font-weight: 800;
 
@@ -1870,7 +1887,7 @@ const JourneyTitle =
       ${({ theme }) =>
         theme.colors.text};
 
-    font-size: 11px;
+    font-size: 13px;
 
     font-weight: 800;
 
@@ -1887,9 +1904,9 @@ const JourneyText =
       ${({ theme }) =>
         theme.colors.textMuted};
 
-    font-size: 10px;
+    font-size: 13px;
 
-    line-height: 1.4;
+    line-height: 1.5;
   `;
 
 const JourneyLine =
@@ -1994,7 +2011,7 @@ const Form =
 
     @media (max-width: 480px) {
       padding:
-        28px 18px;
+        30px 18px;
 
       border-radius:
         22px;
@@ -2063,7 +2080,7 @@ const Label =
       ${({ theme }) =>
         theme.colors.text};
 
-    font-size: 12px;
+    font-size: 15px;
 
     font-weight: 700;
 
@@ -2103,7 +2120,7 @@ const Input =
   styled.input`
     width: 100%;
 
-    min-height: 54px;
+    min-height: 58px;
 
     padding:
       0 16px;
@@ -2131,7 +2148,7 @@ const Input =
       ${({ theme }) =>
         theme.colors.text};
 
-    font-size: 15px;
+    font-size: 17px;
 
     outline: none;
 
@@ -2217,10 +2234,10 @@ const Textarea =
       ${({ theme }) =>
         theme.colors.text};
 
-    font-size: 15px;
+    font-size: 17px;
 
     line-height:
-      1.65;
+      1.7;
 
     outline: none;
 
@@ -2368,7 +2385,7 @@ const AccountBadge =
       ${({ theme }) =>
         theme.colors.purpleDeep};
 
-    font-size: 9px;
+    font-size: 12px;
 
     font-weight: 800;
 
@@ -2451,9 +2468,9 @@ const AccountDescription = styled.p`
     ${({ theme }) =>
       theme.colors.textMuted};
 
-  font-size: 13px;
+  font-size: 16px;
 
-  line-height: 1.75;
+  line-height: 1.8;
 
   strong {
     color:
@@ -2533,7 +2550,7 @@ const CredentialNoticeTitle =
       ${({ theme }) =>
         theme.colors.text};
 
-    font-size: 11px;
+    font-size: 13px;
 
     font-weight: 800;
 
@@ -2548,9 +2565,9 @@ const CredentialNoticeText =
       ${({ theme }) =>
         theme.colors.textMuted};
 
-    font-size: 11px;
+    font-size: 15px;
 
-    line-height: 1.6;
+    line-height: 1.7;
   `;
 
 const FieldHint = styled.span`
@@ -2558,9 +2575,9 @@ const FieldHint = styled.span`
     ${({ theme }) =>
       theme.colors.textMuted};
 
-  font-size: 11px;
+  font-size: 13px;
 
-  line-height: 1.5;
+  line-height: 1.6;
 `;
 
 const InputShell =
@@ -2623,7 +2640,7 @@ const PasswordToggle =
       ${({ theme }) =>
         theme.colors.purple};
 
-    font-size: 10px;
+    font-size: 13px;
 
     font-weight: 800;
 
@@ -2812,7 +2829,7 @@ const TermsEyebrow =
       ${({ theme }) =>
         theme.colors.champagne};
 
-    font-size: 9px;
+    font-size: 12px;
 
     font-weight: 800;
 
@@ -2894,7 +2911,7 @@ const TermsStatus =
           ? "#39734b"
           : theme.colors.textMuted};
 
-    font-size: 9px;
+    font-size: 12px;
 
     font-weight: 800;
 
@@ -2951,10 +2968,10 @@ const TermsIntro =
       ${({ theme }) =>
         theme.colors.textMuted};
 
-    font-size: 13px;
+    font-size: 16px;
 
     line-height:
-      1.7;
+      1.75;
   `;
 
 /* =====================================================
@@ -2969,9 +2986,9 @@ const TermsBox =
 
     height:
       clamp(
-        360px,
-        50vw,
-        500px
+        420px,
+        52vw,
+        560px
       );
 
     padding:
@@ -3279,10 +3296,10 @@ const TermsParagraph =
       );
 
     font-size:
-      13px;
+      16px;
 
     line-height:
-      1.78;
+      1.85;
   `;
 
 /* =====================================================
@@ -3301,10 +3318,10 @@ const TermsList =
       rgba(55, 42, 65, 0.78);
 
     font-size:
-      13px;
+      16px;
 
     line-height:
-      1.75;
+      1.8;
 
     li {
       margin-bottom:
@@ -3316,10 +3333,10 @@ const TermsList =
 
     @media (max-width: 600px) {
       font-size:
-        13px;
+        15px;
 
       line-height:
-        1.7;
+        1.75;
     }
   `;
 
@@ -3337,13 +3354,13 @@ const TermsEnd =
         theme.colors.champagne};
 
     font-size:
-      9px;
+      11px;
 
     font-weight:
       800;
 
     letter-spacing:
-      0.16em;
+      0.14em;
 
     text-transform:
       uppercase;
@@ -3625,10 +3642,10 @@ const AgreementLabel =
           : theme.colors.textMuted};
 
     font-size:
-      12px;
+      16px;
 
     line-height:
-      1.65;
+      1.75;
 
     cursor:
       ${({ $enabled }) =>
@@ -3657,10 +3674,10 @@ const Note =
         theme.colors.textMuted};
 
     font-size:
-      12px;
+      15px;
 
     line-height:
-      1.7;
+      1.8;
 
     strong {
       color:
@@ -3723,7 +3740,7 @@ const SubmitButton =
         theme.colors.white};
 
     font-size:
-      12px;
+      14px;
 
     font-weight:
       800;
@@ -3858,10 +3875,10 @@ const ErrorMessage =
       "#c0392b";
 
     font-size:
-      13px;
+      16px;
 
     line-height:
-      1.5;
+      1.65;
   `;
 
 /* =====================================================
