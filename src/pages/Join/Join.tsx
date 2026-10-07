@@ -22,6 +22,47 @@ const GOOGLE_SHEETS_API =
   "https://script.google.com/macros/s/AKfycbzNHL0mcmPqJ15NAiRM1io3ilwUXlulo8vrV7qdSgy9qYxyjkzk5O5VjNgpvxaeeCSh/exec";
 
 /* =====================================================
+   PASSWORD STRENGTH
+===================================================== */
+
+const getPasswordStrength = (value: string) => {
+  if (!value) {
+    return {
+      score: 0,
+      label: "Use 8+ characters",
+    };
+  }
+
+  let score = 0;
+
+  if (value.length >= 8) score += 1;
+  if (value.length >= 12) score += 1;
+  if (/[a-z]/.test(value)) score += 1;
+  if (/[A-Z]/.test(value)) score += 1;
+  if (/\d/.test(value)) score += 1;
+  if (/[^A-Za-z0-9]/.test(value)) score += 1;
+
+  if (score <= 2) {
+    return {
+      score,
+      label: "Weak password",
+    };
+  }
+
+  if (score <= 4) {
+    return {
+      score,
+      label: "Good password",
+    };
+  }
+
+  return {
+    score,
+    label: "Strong password",
+  };
+};
+
+/* =====================================================
    COMPONENT
 ===================================================== */
 
@@ -43,8 +84,23 @@ const Join = () => {
   const [termsAccepted, setTermsAccepted] =
     useState(false);
 
+  const [password, setPassword] =
+    useState("");
+
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
+
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
   const termsRef =
     useRef<HTMLDivElement>(null);
+
+  const passwordStrength =
+    getPasswordStrength(password);
 
   /* ===================================================
      TERMS SCROLL DETECTION
@@ -239,6 +295,10 @@ const Join = () => {
 
       setTermsAccepted(false);
       setTermsRead(false);
+      setPassword("");
+      setConfirmPassword("");
+      setShowPassword(false);
+      setShowConfirmPassword(false);
     } catch (submissionError) {
       console.error(
         "Application submission error:",
@@ -350,6 +410,36 @@ const Join = () => {
             wealth.
           </Description>
         </Header>
+
+        <JourneyStrip aria-label="Application steps">
+          <JourneyStep>
+            <JourneyNumber>01</JourneyNumber>
+            <div>
+              <JourneyTitle>Your details</JourneyTitle>
+              <JourneyText>Tell us who you are.</JourneyText>
+            </div>
+          </JourneyStep>
+
+          <JourneyLine />
+
+          <JourneyStep>
+            <JourneyNumber>02</JourneyNumber>
+            <div>
+              <JourneyTitle>Your account</JourneyTitle>
+              <JourneyText>Create your private login.</JourneyText>
+            </div>
+          </JourneyStep>
+
+          <JourneyLine />
+
+          <JourneyStep>
+            <JourneyNumber>03</JourneyNumber>
+            <div>
+              <JourneyTitle>Agreement</JourneyTitle>
+              <JourneyText>Read, accept and submit.</JourneyText>
+            </div>
+          </JourneyStep>
+        </JourneyStrip>
 
         {/* =================================================
             FORM
@@ -585,21 +675,46 @@ const Join = () => {
 
             <FullWidth>
               <AccountSection>
-                <AccountEyebrow>
-                  Create Your Member Account
-                </AccountEyebrow>
+                <AccountTopRow>
+                  <div>
+                    <AccountEyebrow>
+                      Create Your Member Account
+                    </AccountEyebrow>
 
-                <AccountTitle>
-                  Choose your username
-                  and password.
-                </AccountTitle>
+                    <AccountTitle>
+                      Your login details
+                      <br />
+                      start here.
+                    </AccountTitle>
 
-                <AccountDescription>
-                  You will use these details to
-                  access your private Regal
-                  Affluence member profile.
-                  Please keep them safe.
-                </AccountDescription>
+                    <AccountDescription>
+                      The <strong>username and password</strong> you
+                      create below will be used to log in to your
+                      Regal Affluence account and access your
+                      personal member page.
+                    </AccountDescription>
+                  </div>
+
+                  <AccountBadge>
+                    <AccountBadgeIcon>✓</AccountBadgeIcon>
+                    <span>Private access</span>
+                  </AccountBadge>
+                </AccountTopRow>
+
+                <CredentialNotice>
+                  <CredentialNoticeIcon>!</CredentialNoticeIcon>
+                  <div>
+                    <CredentialNoticeTitle>
+                      Fill these details wisely.
+                    </CredentialNoticeTitle>
+                    <CredentialNoticeText>
+                      Choose a username you can remember and a strong
+                      password you will not forget. Keep your login
+                      details private and do not use a password you
+                      already use for another important account.
+                    </CredentialNoticeText>
+                  </div>
+                </CredentialNotice>
               </AccountSection>
             </FullWidth>
 
@@ -611,18 +726,22 @@ const Join = () => {
                 </Required>
               </Label>
 
-              <Input
-                id="username"
-                name="username"
-                type="text"
-                placeholder="e.g. heritageolayimika"
-                required
-                minLength={3}
-                maxLength={30}
-                pattern="[A-Za-z0-9_.]{3,30}"
-                autoComplete="username"
-                spellCheck={false}
-              />
+              <InputShell>
+                <Input
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="e.g. heritageolayimika"
+                  required
+                  minLength={3}
+                  maxLength={30}
+                  pattern="[A-Za-z0-9_.]{3,30}"
+                  autoComplete="username"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                />
+                <InputAffix aria-hidden="true">@</InputAffix>
+              </InputShell>
 
               <FieldHint>
                 3–30 characters. Use letters, numbers,
@@ -638,20 +757,56 @@ const Join = () => {
                 </Required>
               </Label>
 
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Create a secure password"
-                required
-                minLength={8}
-                maxLength={128}
-                autoComplete="new-password"
-              />
+              <InputShell>
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create a secure password"
+                  required
+                  minLength={8}
+                  maxLength={128}
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(event) =>
+                    setPassword(event.target.value)
+                  }
+                />
 
-              <FieldHint>
-                Minimum 8 characters.
-              </FieldHint>
+                <PasswordToggle
+                  type="button"
+                  onClick={() =>
+                    setShowPassword((current) => !current)
+                  }
+                  aria-label={
+                    showPassword
+                      ? "Hide password"
+                      : "Show password"
+                  }
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </PasswordToggle>
+              </InputShell>
+
+              <PasswordStrength>
+                <PasswordStrengthTrack>
+                  <PasswordStrengthFill
+                    $strength={passwordStrength.score}
+                  />
+                </PasswordStrengthTrack>
+
+                <PasswordStrengthMeta>
+                  <span>
+                    {password
+                      ? passwordStrength.label
+                      : "Use 8+ characters"}
+                  </span>
+
+                  <span>
+                    {password.length}/128
+                  </span>
+                </PasswordStrengthMeta>
+              </PasswordStrength>
             </FieldGroup>
 
             <FieldGroup>
@@ -662,16 +817,58 @@ const Join = () => {
                 </Required>
               </Label>
 
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                placeholder="Repeat your password"
-                required
-                minLength={8}
-                maxLength={128}
-                autoComplete="new-password"
-              />
+              <InputShell>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={
+                    showConfirmPassword
+                      ? "text"
+                      : "password"
+                  }
+                  placeholder="Repeat your password"
+                  required
+                  minLength={8}
+                  maxLength={128}
+                  autoComplete="new-password"
+                  value={confirmPassword}
+                  onChange={(event) =>
+                    setConfirmPassword(
+                      event.target.value
+                    )
+                  }
+                />
+
+                <PasswordToggle
+                  type="button"
+                  onClick={() =>
+                    setShowConfirmPassword(
+                      (current) => !current
+                    )
+                  }
+                  aria-label={
+                    showConfirmPassword
+                      ? "Hide confirmation password"
+                      : "Show confirmation password"
+                  }
+                >
+                  {showConfirmPassword ? "Hide" : "Show"}
+                </PasswordToggle>
+              </InputShell>
+
+              <PasswordMatch
+                $visible={confirmPassword.length > 0}
+                $match={
+                  confirmPassword.length > 0 &&
+                  password === confirmPassword
+                }
+              >
+                {confirmPassword.length > 0
+                  ? password === confirmPassword
+                    ? "Passwords match."
+                    : "Passwords do not match yet."
+                  : ""}
+              </PasswordMatch>
             </FieldGroup>
 
           </FormGrid>
@@ -1194,7 +1391,10 @@ const Join = () => {
           ================================================= */}
 
           {error && (
-            <ErrorMessage>
+            <ErrorMessage
+              role="alert"
+              aria-live="polite"
+            >
               {error}
             </ErrorMessage>
           )}
@@ -1207,6 +1407,12 @@ const Join = () => {
             By submitting this application, you confirm that you have provided
             accurate information and agree to uphold the professional and ethical
             standards of Regal Affluence Group.
+            <br />
+            <br />
+            <strong>
+              Remember: your username and password are your member login
+              credentials. Keep them private and make sure you can remember them.
+            </strong>
           </Note>
 
           {/* =================================================
@@ -1282,21 +1488,26 @@ const Section =
     min-height: 100svh;
 
     padding:
-      150px 0 100px;
+      138px 0 110px;
 
     overflow: hidden;
 
     background:
+      radial-gradient(
+        circle at 82% 7%,
+        rgba(91, 33, 182, 0.075),
+        transparent 27%
+      ),
+      radial-gradient(
+        circle at 8% 92%,
+        rgba(201, 169, 110, 0.09),
+        transparent 28%
+      ),
       linear-gradient(
         135deg,
-        ${({ theme }) =>
-          theme.colors.ivory}
-          0%,
-        ${({ theme }) =>
-          theme.colors.ivory}
-          52%,
-        #eee4f6
-          100%
+        ${({ theme }) => theme.colors.ivory} 0%,
+        ${({ theme }) => theme.colors.ivory} 55%,
+        #eee4f6 100%
       );
 
     color:
@@ -1310,35 +1521,20 @@ const Section =
 
       position: absolute;
 
-      top: -180px;
+      inset:
+        0 0 auto;
 
-      right: -180px;
-
-      width: 480px;
-
-      height: 480px;
-
-      border-radius: 50%;
+      height: 1px;
 
       background:
-        radial-gradient(
-          circle,
-          rgba(
-            91,
-            33,
-            182,
-            0.08
-          ),
-          transparent 68%
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(201, 169, 110, 0.65),
+          transparent
         );
 
-      filter:
-        blur(40px);
-
-      pointer-events:
-        none;
-
-      z-index: -1;
+      pointer-events: none;
     }
 
     &::after {
@@ -1346,45 +1542,35 @@ const Section =
 
       position: absolute;
 
-      bottom: -220px;
+      width: 620px;
+      height: 620px;
 
-      left: -180px;
+      right: -360px;
+      top: 38%;
 
-      width: 460px;
-
-      height: 460px;
+      border:
+        1px solid
+        rgba(91, 33, 182, 0.08);
 
       border-radius: 50%;
 
-      background:
-        radial-gradient(
-          circle,
-          rgba(
-            201,
-            169,
-            110,
-            0.09
-          ),
-          transparent 68%
-        );
+      box-shadow:
+        0 0 0 80px rgba(91, 33, 182, 0.018),
+        0 0 0 160px rgba(201, 169, 110, 0.018);
 
-      filter:
-        blur(45px);
-
-      pointer-events:
-        none;
+      pointer-events: none;
 
       z-index: -1;
     }
 
     @media (max-width: 768px) {
       padding:
-        120px 0 80px;
+        112px 0 80px;
     }
 
     @media (max-width: 480px) {
       padding:
-        105px 0 64px;
+        98px 0 64px;
     }
   `;
 
@@ -1419,9 +1605,9 @@ const Container =
 
 const Header =
   styled.header`
-    max-width: 820px;
+    max-width: 900px;
 
-    margin-bottom: 64px;
+    margin-bottom: 48px;
 
     @media (max-width: 768px) {
       margin-bottom: 48px;
@@ -1567,10 +1753,12 @@ const Description =
       ${({ theme }) =>
         theme.colors.textMuted};
 
-    font-size: 17px;
+    font-size: 16px;
 
     line-height:
-      1.8;
+      1.85;
+
+    max-width: 760px;
 
     @media (max-width: 768px) {
       margin-top:
@@ -1584,6 +1772,146 @@ const Description =
   `;
 
 /* =====================================================
+   APPLICATION JOURNEY
+===================================================== */
+
+const JourneyStrip =
+  styled.div`
+    display: grid;
+
+    grid-template-columns:
+      1fr auto 1fr auto 1fr;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin:
+      0 0 34px;
+
+    padding:
+      18px 20px;
+
+    border:
+      1px solid
+      rgba(69, 35, 105, 0.1);
+
+    border-radius:
+      18px;
+
+    background:
+      rgba(255, 255, 255, 0.52);
+
+    box-shadow:
+      0 10px 30px
+      rgba(60, 35, 82, 0.04);
+
+    backdrop-filter:
+      blur(10px);
+
+    @media (max-width: 760px) {
+      grid-template-columns: 1fr;
+
+      gap: 12px;
+
+      padding: 16px;
+    }
+  `;
+
+const JourneyStep =
+  styled.div`
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 0;
+  `;
+
+const JourneyNumber =
+  styled.span`
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    border:
+      1px solid
+      rgba(201, 169, 110, 0.42);
+
+    border-radius: 50%;
+
+    background:
+      rgba(201, 169, 110, 0.07);
+
+    color:
+      ${({ theme }) =>
+        theme.colors.purple};
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+  `;
+
+const JourneyTitle =
+  styled.strong`
+    display: block;
+
+    color:
+      ${({ theme }) =>
+        theme.colors.text};
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.04em;
+  `;
+
+const JourneyText =
+  styled.span`
+    display: block;
+
+    margin-top: 2px;
+
+    color:
+      ${({ theme }) =>
+        theme.colors.textMuted};
+
+    font-size: 10px;
+
+    line-height: 1.4;
+  `;
+
+const JourneyLine =
+  styled.span`
+    width: 36px;
+
+    height: 1px;
+
+    background:
+      linear-gradient(
+        90deg,
+        rgba(201, 169, 110, 0.15),
+        rgba(201, 169, 110, 0.55),
+        rgba(201, 169, 110, 0.15)
+      );
+
+    @media (max-width: 760px) {
+      display: none;
+    }
+  `;
+
+/* =====================================================
    FORM
 ===================================================== */
 
@@ -1593,14 +1921,13 @@ const Form =
 
     width: 100%;
 
-    padding: 52px;
+    padding: 58px;
 
     background:
-      rgba(
-        255,
-        255,
-        255,
-        0.86
+      linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.94),
+        rgba(255, 252, 247, 0.88)
       );
 
     border:
@@ -1609,23 +1936,50 @@ const Form =
         69,
         35,
         105,
-        0.12
+        0.1
       );
 
     border-radius:
-      ${({ theme }) =>
-        theme.radius.lg};
+      28px;
 
     box-shadow:
-      0
-      25px
-      70px
-      rgba(
-        60,
-        35,
-        82,
-        0.08
-      );
+      0 32px 90px
+      rgba(60, 35, 82, 0.1),
+      0 8px 24px
+      rgba(60, 35, 82, 0.045);
+
+    position: relative;
+
+    &::before {
+      content: "";
+
+      position: absolute;
+
+      inset: 0;
+
+      border-radius: inherit;
+
+      padding: 1px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(201, 169, 110, 0.26),
+          transparent 25%,
+          transparent 75%,
+          rgba(91, 33, 182, 0.12)
+        );
+
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+      -webkit-mask-composite: xor;
+
+      mask-composite: exclude;
+
+      pointer-events: none;
+    }
 
     backdrop-filter:
       blur(12px);
@@ -1635,12 +1989,15 @@ const Form =
 
     @media (max-width: 768px) {
       padding:
-        36px 28px;
+        40px 28px;
     }
 
     @media (max-width: 480px) {
       padding:
-        28px 20px;
+        28px 18px;
+
+      border-radius:
+        22px;
     }
   `;
 
@@ -1662,7 +2019,7 @@ const FormGrid =
       );
 
     gap:
-      28px 24px;
+      30px 24px;
 
     @media (max-width: 680px) {
       grid-template-columns:
@@ -1746,10 +2103,12 @@ const Input =
   styled.input`
     width: 100%;
 
-    min-height: 52px;
+    min-height: 54px;
 
     padding:
       0 16px;
+
+    box-sizing: border-box;
 
     border:
       1px solid
@@ -1830,10 +2189,12 @@ const Textarea =
   styled.textarea`
     width: 100%;
 
-    min-height: 140px;
+    min-height: 145px;
 
     padding:
-      15px 16px;
+      16px;
+
+    box-sizing: border-box;
 
     border:
       1px solid
@@ -1917,30 +2278,128 @@ const Textarea =
 ===================================================== */
 
 const AccountSection = styled.div`
+  position: relative;
+
   padding:
-    26px 28px;
+    30px;
 
   border:
     1px solid
-    rgba(201, 169, 110, 0.2);
+    rgba(201, 169, 110, 0.24);
 
   border-radius:
-    ${({ theme }) =>
-      theme.radius.md ||
-      theme.radius.lg};
+    22px;
 
   background:
     linear-gradient(
       135deg,
-      rgba(201, 169, 110, 0.08),
-      rgba(91, 33, 182, 0.035)
+      rgba(201, 169, 110, 0.09),
+      rgba(91, 33, 182, 0.045)
     );
+
+  overflow: hidden;
+
+  &::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    right: -80px;
+    bottom: -100px;
+
+    border:
+      1px solid
+      rgba(91, 33, 182, 0.1);
+
+    border-radius: 50%;
+  }
 
   @media (max-width: 600px) {
     padding:
-      22px 20px;
+      24px 20px;
   }
 `;
+
+const AccountTopRow =
+  styled.div`
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 24px;
+
+    position: relative;
+
+    z-index: 1;
+
+    @media (max-width: 620px) {
+      flex-direction: column;
+    }
+  `;
+
+const AccountBadge =
+  styled.div`
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+
+    padding:
+      8px 11px;
+
+    border:
+      1px solid
+      rgba(91, 33, 182, 0.12);
+
+    border-radius: 999px;
+
+    background:
+      rgba(255, 255, 255, 0.6);
+
+    color:
+      ${({ theme }) =>
+        theme.colors.purpleDeep};
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+
+    text-transform: uppercase;
+  `;
+
+const AccountBadgeIcon =
+  styled.span`
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 18px;
+    height: 18px;
+
+    border-radius: 50%;
+
+    background:
+      ${({ theme }) =>
+        theme.colors.purple};
+
+    color:
+      ${({ theme }) =>
+        theme.colors.white};
+
+    font-size: 10px;
+  `;
 
 const AccountEyebrow = styled.p`
   margin:
@@ -1972,21 +2431,21 @@ const AccountTitle = styled.h3`
       theme.fonts.display};
 
   font-size:
-    clamp(1.55rem, 3vw, 2.15rem);
+    clamp(1.7rem, 3.4vw, 2.5rem);
 
   font-weight: 600;
 
-  line-height: 1.06;
+  line-height: 1.02;
 
   letter-spacing:
-    -0.03em;
+    -0.035em;
 `;
 
 const AccountDescription = styled.p`
-  max-width: 620px;
+  max-width: 680px;
 
   margin:
-    10px 0 0;
+    12px 0 0;
 
   color:
     ${({ theme }) =>
@@ -1994,8 +2453,105 @@ const AccountDescription = styled.p`
 
   font-size: 13px;
 
-  line-height: 1.7;
+  line-height: 1.75;
+
+  strong {
+    color:
+      ${({ theme }) =>
+        theme.colors.text};
+
+    font-weight: 800;
+  }
 `;
+
+const CredentialNotice =
+  styled.div`
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    margin-top: 24px;
+
+    padding:
+      15px 16px;
+
+    border:
+      1px solid
+      rgba(91, 33, 182, 0.1);
+
+    border-radius:
+      14px;
+
+    background:
+      rgba(255, 255, 255, 0.52);
+
+    position: relative;
+
+    z-index: 1;
+
+    @media (max-width: 480px) {
+      padding: 14px;
+    }
+  `;
+
+const CredentialNoticeIcon =
+  styled.span`
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 24px;
+    height: 24px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background:
+      rgba(201, 169, 110, 0.16);
+
+    color:
+      ${({ theme }) =>
+        theme.colors.purpleDeep};
+
+    font-size: 11px;
+
+    font-weight: 900;
+  `;
+
+const CredentialNoticeTitle =
+  styled.strong`
+    display: block;
+
+    margin-bottom: 3px;
+
+    color:
+      ${({ theme }) =>
+        theme.colors.text};
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.02em;
+  `;
+
+const CredentialNoticeText =
+  styled.span`
+    display: block;
+
+    color:
+      ${({ theme }) =>
+        theme.colors.textMuted};
+
+    font-size: 11px;
+
+    line-height: 1.6;
+  `;
 
 const FieldHint = styled.span`
   color:
@@ -2006,6 +2562,182 @@ const FieldHint = styled.span`
 
   line-height: 1.5;
 `;
+
+const InputShell =
+  styled.div`
+    position: relative;
+
+    width: 100%;
+
+    ${Input} {
+      padding-right: 76px;
+    }
+  `;
+
+const InputAffix =
+  styled.span`
+    position: absolute;
+
+    right: 16px;
+    top: 50%;
+
+    transform:
+      translateY(-50%);
+
+    color:
+      ${({ theme }) =>
+        theme.colors.textMuted};
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    pointer-events: none;
+
+    opacity: 0.55;
+  `;
+
+const PasswordToggle =
+  styled.button`
+    position: absolute;
+
+    right: 9px;
+    top: 50%;
+
+    transform:
+      translateY(-50%);
+
+    min-height: 34px;
+
+    padding:
+      0 9px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    background:
+      rgba(91, 33, 182, 0.055);
+
+    color:
+      ${({ theme }) =>
+        theme.colors.purple};
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.04em;
+
+    cursor: pointer;
+
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+
+    &:hover {
+      background:
+        rgba(91, 33, 182, 0.1);
+    }
+
+    &:focus-visible {
+      outline:
+        2px solid
+        ${({ theme }) =>
+          theme.colors.champagne};
+
+      outline-offset: 2px;
+    }
+  `;
+
+const PasswordStrength =
+  styled.div`
+    margin-top: 8px;
+  `;
+
+const PasswordStrengthTrack =
+  styled.div`
+    width: 100%;
+    height: 4px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background:
+      rgba(69, 35, 105, 0.08);
+  `;
+
+const PasswordStrengthFill =
+  styled.div<{
+    $strength: number;
+  }>`
+    width:
+      ${({ $strength }) =>
+        `${Math.min($strength / 6, 1) * 100}%`};
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+      ${({ $strength }) =>
+        $strength <= 2
+          ? "#c0392b"
+          : $strength <= 4
+            ? "#b28732"
+            : "#39734b"};
+
+    transition:
+      width 0.25s ease,
+      background 0.25s ease;
+  `;
+
+const PasswordStrengthMeta =
+  styled.div`
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 5px;
+
+    color:
+      ${({ theme }) =>
+        theme.colors.textMuted};
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.03em;
+  `;
+
+const PasswordMatch =
+  styled.span<{
+    $visible: boolean;
+    $match: boolean;
+  }>`
+    min-height: 15px;
+
+    color:
+      ${({ $match }) =>
+        $match
+          ? "#39734b"
+          : "#c0392b"};
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    opacity:
+      ${({ $visible }) =>
+        $visible ? 1 : 0};
+
+    transition:
+      opacity 0.2s ease;
+  `;
 
 /* =====================================================
    TERMS SECTION
@@ -2929,6 +3661,14 @@ const Note =
 
     line-height:
       1.7;
+
+    strong {
+      color:
+        ${({ theme }) =>
+          theme.colors.text};
+
+      font-weight: 800;
+    }
   `;
 
 /* =====================================================
@@ -2949,7 +3689,7 @@ const SubmitButton =
       12px;
 
     min-height:
-      56px;
+      58px;
 
     margin-top:
       24px;

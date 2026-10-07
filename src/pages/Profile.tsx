@@ -18,7 +18,7 @@ import {
 ========================================================= */
 
 const COMMUNITY_LINK =
-  "https://chat.whatsapp.com/LXNSKWf1E8JCxECrBxpm6f?mode=gi_t";
+  "https://chat.whatsapp.com/GYwqKaaMWU5AUrMr0VxhHW?s=cl&p=i&mlu=0&ilr=4";
 
 /* =========================================================
    SESSION TYPE
@@ -238,6 +238,15 @@ const Profile = () => {
       "_blank",
       "noopener,noreferrer"
     );
+  };
+
+  const handleCommunityJump = () => {
+    document
+      .getElementById("community-access")
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
   };
 
   /* =======================================================
@@ -1027,6 +1036,7 @@ const Profile = () => {
         ================================================= */}
 
         <CommunityCard
+          id="community-access"
           $complete={
             isAccountDetailsComplete
           }
@@ -1091,6 +1101,25 @@ const Profile = () => {
             )}
           </CommunityButton>
         </CommunityCard>
+
+        <FloatingCommunityCard
+          type="button"
+          onClick={handleCommunityJump}
+          aria-label="Scroll to the Regal Affluence community section"
+        >
+          <FloatingCommunityCopy>
+            <FloatingCommunityEyebrow>
+              REGAL AFFLUENCE COMMUNITY
+            </FloatingCommunityEyebrow>
+            <FloatingCommunityTitle>
+              Join the Group
+            </FloatingCommunityTitle>
+          </FloatingCommunityCopy>
+
+          <FloatingCommunityArrow aria-hidden="true">
+            ↓
+          </FloatingCommunityArrow>
+        </FloatingCommunityCard>
 
         {communityPromptOpen && (
           <PromptOverlay
@@ -2972,6 +3001,7 @@ const CommunityCard = styled.section<{
   $complete: boolean;
 }>`
   position: relative;
+  scroll-margin-top: 28px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -3027,6 +3057,91 @@ const CommunityCard = styled.section<{
   @media (max-width: 520px) {
     padding: 22px;
   }
+`;
+
+/* =========================================================
+   COMMUNITY CONTENT
+========================================================= */
+
+const FloatingCommunityCard = styled.button`
+  position: fixed;
+  right: 26px;
+  bottom: 26px;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-width: 238px;
+  padding: 14px 16px 14px 18px;
+  border: 1px solid rgba(201,169,110,0.38);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(43,20,60,0.97), rgba(69,35,105,0.96));
+  color: ${({ theme }) => theme.colors.white};
+  text-align: left;
+  box-shadow: 0 18px 45px rgba(35,18,48,0.22), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(201,169,110,0.65);
+    box-shadow: 0 24px 55px rgba(35,18,48,0.28), 0 0 0 1px rgba(255,255,255,0.05) inset;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.champagne};
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 600px) {
+    right: 14px;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    left: 14px;
+    width: auto;
+    min-width: 0;
+    justify-content: space-between;
+    border-radius: 16px;
+  }
+`;
+
+const FloatingCommunityCopy = styled.span`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+`;
+
+const FloatingCommunityEyebrow = styled.span`
+  color: ${({ theme }) => theme.colors.champagne};
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+`;
+
+const FloatingCommunityTitle = styled.span`
+  color: ${({ theme }) => theme.colors.white};
+  font-family: ${({ theme }) => theme.fonts.display};
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+`;
+
+const FloatingCommunityArrow = styled.span`
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(201,169,110,0.38);
+  border-radius: 50%;
+  color: ${({ theme }) => theme.colors.champagne};
+  font-size: 17px;
+  line-height: 1;
 `;
 
 /* =========================================================
