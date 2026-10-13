@@ -51,6 +51,12 @@ const navigationItems = [
     id: "how-it-works",
     type: "route",
   },
+  {
+    label: "News",
+    href: "news",
+    id: "news",
+    type: "route",
+  },
 ] as const;
 
 const DESKTOP_BREAKPOINT = 900;
@@ -83,6 +89,9 @@ const teamHref =
 
 const howItWorksHref =
   `${BASE_URL}how-it-works`;
+
+const newsHref =
+  `${BASE_URL}news`;
 
 const isHomePath = () => {
   const pathname =
@@ -721,7 +730,10 @@ const Navbar = () => {
                       : item.id ===
                         "team"
                         ? teamHref
-                        : howItWorksHref;
+                        : item.id ===
+                          "news"
+                          ? newsHref
+                          : howItWorksHref;
 
                 return (
                   <NavItem
@@ -933,7 +945,10 @@ const Navbar = () => {
                       : item.id ===
                         "team"
                         ? teamHref
-                        : howItWorksHref;
+                        : item.id ===
+                          "news"
+                          ? newsHref
+                          : howItWorksHref;
 
                 return (
                   <MobileNavItem

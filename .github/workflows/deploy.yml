@@ -33,8 +33,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run tests
+        run: npm test
+
       - name: Build application
         run: npm run build
+        env:
+          # Public Supabase settings for News & Updates. Set them
+          # under Settings → Secrets and variables → Actions →
+          # Variables. Never add the service-role key here.
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v4

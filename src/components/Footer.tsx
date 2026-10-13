@@ -253,6 +253,22 @@ const Footer = () => {
                     </LinkArrow>
                   </FooterLink>
                 </li>
+
+                <li>
+                  <FooterLink
+                    href={`${BASE_URL}news`}
+                  >
+                    <span>
+                      News &amp; Updates
+                    </span>
+
+                    <LinkArrow
+                      aria-hidden="true"
+                    >
+                      ↗
+                    </LinkArrow>
+                  </FooterLink>
+                </li>
               </LinkList>
             </LinkGroup>
 

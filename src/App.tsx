@@ -1,8 +1,12 @@
+import { lazy, Suspense } from "react";
+import type { ReactNode } from "react";
 import { ThemeProvider } from "styled-components";
 
 import {
-  BrowserRouter,
-  Routes,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Navigate,
+  RouterProvider,
   Route,
 } from "react-router-dom";
 
@@ -39,6 +43,19 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import RecoverUsername from "./pages/RecoverUsername";
 import ResetPassword from "./pages/ResetPassword";
+import NotFound from "./pages/NotFound";
+
+/* =====================================================
+   NEWS & NEWSROOM (loaded on demand)
+===================================================== */
+
+const NewsList = lazy(() => import("./pages/News/NewsList"));
+const NewsArticle = lazy(() => import("./pages/News/NewsArticle"));
+
+const AdminLayout = lazy(() => import("./pages/Admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("./pages/Admin/AdminDashboard"));
+const AdminPosts = lazy(() => import("./pages/Admin/AdminPosts"));
+const AdminPostEditor = lazy(() => import("./pages/Admin/AdminPostEditor"));
 
 /* =====================================================
    ROUTER BASE
@@ -254,18 +271,76 @@ function ResetPasswordPage() {
 }
 
 /* =====================================================
-   APP
+   NEWS PAGES
 ===================================================== */
 
-function App() {
+function PublicShell({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyles />
+    <>
+      <Navbar />
 
-      <BrowserRouter
-        basename={ROUTER_BASENAME}
-      >
-        <Routes>
+      <main>
+        <Suspense fallback={<PageFallback />}>
+          {children}
+        </Suspense>
+      </main>
+
+      <Footer />
+    </>
+  );
+}
+
+function PageFallback() {
+  return <div style={{ minHeight: "100vh" }} aria-busy="true" />;
+}
+
+function NewsPage() {
+  return (
+    <PublicShell>
+      <NewsList />
+    </PublicShell>
+  );
+}
+
+function NewsArticlePage() {
+  return (
+    <PublicShell>
+      <NewsArticle />
+    </PublicShell>
+  );
+}
+
+/* =====================================================
+   NEWSROOM (ADMIN) PAGES
+===================================================== */
+
+function withFallback(element: ReactNode) {
+  return (
+    <Suspense fallback={<PageFallback />}>
+      {element}
+    </Suspense>
+  );
+}
+
+/* =====================================================
+   NOT FOUND PAGE
+===================================================== */
+
+function NotFoundPage() {
+  return (
+    <PublicShell>
+      <NotFound />
+    </PublicShell>
+  );
+}
+
+/* =====================================================
+   ROUTER
+===================================================== */
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+        <>
 
           {/* =================================================
               HOME
@@ -384,8 +459,80 @@ function App() {
             element={<ResetPasswordPage />}
           />
 
-        </Routes>
-      </BrowserRouter>
+          {/* =================================================
+              NEWS & UPDATES
+          ================================================= */}
+
+          <Route
+            path="/news"
+            element={<NewsPage />}
+          />
+
+          <Route
+            path="/news/:slug"
+            element={<NewsArticlePage />}
+          />
+
+          {/* =================================================
+              NEWSROOM (ADMIN)
+          ================================================= */}
+
+          <Route
+            path="/admin/login"
+            element={<Navigate to="/admin" replace />}
+          />
+
+          <Route
+            path="/admin"
+            element={withFallback(<AdminLayout />)}
+          >
+            <Route
+              index
+              element={<AdminDashboard />}
+            />
+
+            <Route
+              path="posts"
+              element={<AdminPosts />}
+            />
+
+            <Route
+              path="posts/new"
+              element={<AdminPostEditor />}
+            />
+
+            <Route
+              path="posts/:id"
+              element={<AdminPostEditor />}
+            />
+          </Route>
+
+          {/* =================================================
+              NOT FOUND
+          ================================================= */}
+
+          <Route
+            path="*"
+            element={<NotFoundPage />}
+          />
+
+        </>
+  ),
+  {
+    basename: ROUTER_BASENAME,
+  }
+);
+
+/* =====================================================
+   APP
+===================================================== */
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+
+      <RouterProvider router={router} />
     </ThemeProvider>
   );
 }
