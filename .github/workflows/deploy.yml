@@ -37,7 +37,7 @@ jobs:
         run: npm test
 
       - name: Build application
-        run: npm run build
+        run: npm run build:github
         env:
           # Public Supabase settings for News & Updates. Set them
           # under Settings → Secrets and variables → Actions →
